@@ -197,5 +197,5 @@ read_driver = ModelReadDriver(self.request.database)
 obj = read_driver.get_by_id(1)
 ```
 
-Or something like that. All code which involves saving/reading from database
-should be whitn method inside Read or Write driver.
+Or go to class and check available methods. All code which involves
+saving/reading from database should be whitn method inside Read or Write driver.
