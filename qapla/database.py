@@ -63,11 +63,11 @@ class DatabaseGenerator(object):
         if request.exception is not None:
             self.session.rollback()
         else:
-            # TODO: we need proper mechanism for proper handling sqlalchemy errors
+            # TODO: we need proper mechanism for handling sqlalchemy errors
             try:
                 self.session.commit()
             except:
-                pass
+                self.session.rollback()
         self.session.close()
 
 
