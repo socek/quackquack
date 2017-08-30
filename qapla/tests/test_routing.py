@@ -197,3 +197,9 @@ class TestRouting(object):
             route_name='something',
             renderer='myrenderer',
         )
+
+    def test_paths(self, routing, mapp):
+        """
+        .paths should be application's paths
+        """
+        assert routing.paths == mapp.paths

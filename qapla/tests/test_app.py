@@ -38,8 +38,8 @@ class TestApplication(object):
             yield mock
 
     @fixture
-    def mcreate_routing(self, app):
-        with patch.object(app, '_create_routing') as mock:
+    def mappend_plugins(self, app):
+        with patch.object(app, 'append_plugins') as mock:
             yield mock
 
     @fixture
@@ -56,15 +56,6 @@ class TestApplication(object):
     def mconfig_settings_mopdule(self, app):
         with patch.object(app.Config, 'settings_module') as mock:
             yield mock
-
-    def test_create_routing(self, app, mconfig):
-        """
-        .create_routing should get routing class from the Config class and initalize the routing
-        """
-        app._create_routing()
-
-        mconfig.routing_cls.assert_called_once_with(app)
-        mconfig.routing_cls.return_value.make.assert_called_once_with()
 
     def test_generate_registry(self, app):
         """
@@ -123,7 +114,7 @@ class TestApplication(object):
         mgenerate_settings,
         mcreate_config,
         mgenerate_registry,
-        mcreate_routing,
+        mappend_plugins,
     ):
         """
         ._create_app should create Application for provided endpoint
@@ -137,7 +128,7 @@ class TestApplication(object):
         mgenerate_settings.assert_called_once_with(settings, endpoint)
         mcreate_config.assert_called_once_with()
         mgenerate_registry.assert_called_once_with(app.config.registry)
-        mcreate_routing.assert_called_once_with()
+        mappend_plugins.assert_called_once_with()
 
     def test_run_command(self, app, mcreate_app):
         """
@@ -184,3 +175,94 @@ class TestApplication(object):
 
         mcreate_app.assert_called_once_with({}, 'uwsgi')
         app.config.make_wsgi_app.assert_called_once_with()
+
+    def test_append_plugins(self, app):
+        """
+        Sanity check
+        """
+        app.append_plugins()
+
+    def test_add_routing(self, app):
+        """
+        .add_routing should initalize the routing
+        """
+        routing_cls = MagicMock()
+        app.add_routing(routing_cls)
+
+        routing_cls.assert_called_once_with(app)
+        routing_cls.return_value.make.assert_called_once_with()
+        assert app.routing == routing_cls.return_value
+
+    def test_add_auth_without_root_factory(self, app):
+        """
+        .add_auth should configure authentication and authorization policies.
+        """
+        authn_policy_cls = MagicMock()
+        authz_policy_cls = MagicMock()
+        app.config = MagicMock()
+        app.settings = dict(secret=sentinel.secret)
+
+        app.add_auth(authn_policy_cls, authz_policy_cls)
+
+        authn_policy_cls.assert_called_once_with(sentinel.secret)
+        authz_policy_cls.assert_called_once_with()
+        app.config.set_authentication_policy.assert_called_once_with(
+            authn_policy_cls.return_value)
+        app.config.set_authorization_policy.assert_called_once_with(
+            authz_policy_cls.return_value)
+        assert not app.config.set_root_factory.called
+
+    def test_add_auth_with_root_factory(self, app):
+        """
+        .add_auth should configure authentication and authorization policies.
+        Default root factory should be set if provided.
+        """
+        authn_policy_cls = MagicMock()
+        authz_policy_cls = MagicMock()
+        app.config = MagicMock()
+        app.settings = dict(secret=sentinel.secret)
+
+        app.add_auth(authn_policy_cls, authz_policy_cls, sentinel.root_factory)
+
+        authn_policy_cls.assert_called_once_with(sentinel.secret)
+        authz_policy_cls.assert_called_once_with()
+        app.config.set_authentication_policy.assert_called_once_with(
+            authn_policy_cls.return_value)
+        app.config.set_authorization_policy.assert_called_once_with(
+            authz_policy_cls.return_value)
+        app.config.set_root_factory.assert_called_once_with(
+            sentinel.root_factory)
+
+    def test_add_session(self, app):
+        """
+        .add_session should configure session policies.
+        """
+        session_factory_cls = MagicMock()
+        app.config = MagicMock()
+        app.settings = dict(session_secret=sentinel.session_secret)
+
+        app.add_session(session_factory_cls)
+
+        session_factory_cls.assert_called_once_with(sentinel.session_secret)
+        app.config.set_session_factory.assert_called_once_with(
+            session_factory_cls.return_value)
+
+    def test_add_csrf_policy(self, app):
+        """
+        .add_csrf_policy should configure csrf policies.
+        """
+        policy_cls = MagicMock()
+        app.config = MagicMock()
+        app.settings = dict(
+            csrf_token_key=sentinel.csrf_token_key,
+            csrf_header_key=sentinel.csrf_header_key)
+
+        app.add_csrf_policy(policy_cls)
+
+        policy_cls.assert_called_once_with()
+        app.config.set_csrf_storage_policy.assert_called_once_with(
+            policy_cls.return_value)
+        app.config.set_default_csrf_options.assert_called_once_with(
+            require_csrf=True,
+            token=sentinel.csrf_token_key,
+            header=sentinel.csrf_header_key)

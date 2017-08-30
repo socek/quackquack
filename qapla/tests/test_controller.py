@@ -199,6 +199,13 @@ class TestController(FixturesMixin):
             location=mrequest.route_url.return_value,
             headers=mrequest.response.headerlist)
 
+    def test_settings(self, ctrl, mrequest):
+        """
+        .settings should be a settings object from registry.
+        """
+        mrequest.registry = dict(settings=sentinel.settings)
+        assert ctrl.settings == sentinel.settings
+
 
 class TestJsonController(FixturesMixin):
 
@@ -260,6 +267,11 @@ class TestFormController(FixturesMixin):
         with patch.object(ctrl, 'parse_errors') as mock:
             yield mock
 
+    @fixture
+    def mset_http_error(self, ctrl):
+        with patch.object(ctrl, 'set_http_error') as mock:
+            yield mock
+
     def test_prepare_context(self, ctrl, json, context):
         """
         .prepare_context should get values from HTTP's json_body and move it to the context
@@ -316,3 +328,16 @@ class TestFormController(FixturesMixin):
         ctrl.parse_errors(fields, error)
 
         assert ctrl.context['errors'] == [{'type': 'field', 'message': 'error1', 'field': 'name1'}]
+
+    def test_set_form_error(self, ctrl, mset_http_error):
+        """
+        .set_form_error should set response error and add proper error object in the context.
+        """
+        ctrl.context = dict(errors=[])
+
+        ctrl.set_form_error(sentinel.error_message)
+
+        mset_http_error.assert_called_once_with()
+        assert ctrl.context == {
+            'errors': [{'type': 'form', 'message': sentinel.error_message}]
+        }

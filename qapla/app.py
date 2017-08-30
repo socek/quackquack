@@ -84,6 +84,9 @@ class Application(object):
         """
 
     def add_routing(self, routing_cls):
+        """
+        Add routing to the pyramid app.
+        """
         self.routing = routing_cls(self)
         self.routing.make()
 
@@ -103,7 +106,7 @@ class Application(object):
         if root_factory:
             self.config.set_root_factory(root_factory)
 
-    def add_sessions(self, session_factory_cls):
+    def add_session(self, session_factory_cls):
         """
         Add session mechanism to the pyramid app.
         """
