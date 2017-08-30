@@ -22,15 +22,23 @@ class FinalizeController(Exception):
 
 class Controller(object):
 
+    # **************
+    # * Properties *
+    # **************
+
+    @property
+    def settings(self):
+        return self.request.registry['settings']
+
+    # ********
+    # * flow *
+    # ********
+
     def __init__(self, root_factory, request):
         self.request = request
         self.application = request.registry['application']
         self.root_factory = root_factory
         self.response = None
-
-    @property
-    def settings(self):
-        return self.request.registry['settings']
 
     def __call__(self):
         return self.run()
@@ -52,11 +60,6 @@ class Controller(object):
         except FinalizeController as finalizer:
             self.context.update(finalizer.context)
 
-    def _create_context(self):
-        self.context = {
-            'request': self.request,
-        }
-
     def _get_response(self):
         if self.response is None:
             self._create_widgets()
@@ -64,14 +67,14 @@ class Controller(object):
         else:
             return self.response
 
-    def redirect(self, to, quit=False, **kwargs):
-        url = self.request.route_url(to, **kwargs)
-        self.response = HTTPFound(
-            location=url,
-            headers=self.request.response.headerlist,
-        )
-        if quit:
-            raise QuitController(self.response)
+    # **********************************
+    # * Method ready to be overwritten *
+    # **********************************
+
+    def _create_context(self):
+        self.context = {
+            'request': self.request,
+        }
 
     def _before_make(self):
         pass
@@ -87,6 +90,19 @@ class Controller(object):
 
     def make(self):
         pass
+
+    # ******************
+    # * Helper methods *
+    # ******************
+
+    def redirect(self, to, quit=False, **kwargs):
+        url = self.request.route_url(to, **kwargs)
+        self.response = HTTPFound(
+            location=url,
+            headers=self.request.response.headerlist,
+        )
+        if quit:
+            raise QuitController(self.response)
 
 
 class JsonController(Controller):
@@ -118,7 +134,7 @@ class RestfulController(JsonController):
     def get(self):
         pass
 
-    def post(self, **kwargs):
+    def post(self):
         pass
 
     def put(self):
