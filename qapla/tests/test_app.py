@@ -23,6 +23,11 @@ class TestApplication(object):
             yield mock
 
     @fixture
+    def mdict_config(self):
+        with patch('qapla.app.dictConfig') as mock:
+            yield mock
+
+    @fixture
     def mgenerate_settings(self, app):
         with patch.object(app, '_generate_settings') as mock:
             yield mock
@@ -266,3 +271,13 @@ class TestApplication(object):
             require_csrf=True,
             token=sentinel.csrf_token_key,
             header=sentinel.csrf_header_key)
+
+    def test_add_logging(self, app, mdict_config):
+        """
+        .add_logging should configure logging from settings
+        """
+        app.settings = dict(logging=sentinel.logging)
+
+        app.add_logging()
+
+        mdict_config.assert_called_once_with(sentinel.logging)

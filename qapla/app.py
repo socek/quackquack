@@ -1,3 +1,5 @@
+from logging.config import dictConfig
+
 from pyramid.config import Configurator
 
 from qapla.settings import SettingsFactory
@@ -122,3 +124,10 @@ class Application(object):
             require_csrf=True,
             token=self.settings['csrf_token_key'],
             header=self.settings['csrf_header_key'])
+
+    def add_logging(self):
+        """
+        Add logging configuration. Needs 'logging' value in settings.
+        https://docs.python.org/3.6/library/logging.config.html#logging.config.dictConfig
+        """
+        dictConfig(self.settings['logging'])

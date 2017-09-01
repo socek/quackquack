@@ -16,6 +16,7 @@ pyramid and want to have the same code structure and similar configuration.
  * Integration with morfdict (settings)
  * Integration with Sqlalchemy and Alembic
  * Testing fixtures for py.test
+ * Logging integration with morfdict's settings
 
 # Installation
 
@@ -95,6 +96,55 @@ class RotarranApplication(DatabaseApplication):
 ```
 
 Unfortunetly you need to make proper alembic configuration on your own.
+
+### Logging
+
+Logging is configured by default's Python logging support.
+https://docs.python.org/3.6/library/logging.config.html#logging.config.dictConfig
+This is an example.
+
+```
+def logger(settings, paths):
+    log_level = environ.get('CCADS_LOGGING_LEVEL', 'INFO')
+    settings.set(
+        'logging',
+        {
+            'version': 1,
+            'disable_existing_loggers': True,
+            'formatters': {
+                'generic': {
+                    'format': '%(asctime)s %(levelname)-5.5s [%(name)s][%(threadName)s] %(message)s',
+                },
+            },
+
+            'handlers': {
+                'console': {
+                    'level': log_level,
+                    'class': 'logging.StreamHandler',
+                    'formatter': 'generic',
+                },
+            },
+
+            'loggers': {
+                'root': {
+                    'level': 'INFO',
+                    'handlers': ['console'],
+                },
+                'sqlalchemy': {
+                    'level': 'INFO',
+                    'handlers': ['console'],
+                    'qualname': 'sqlalchemy.engine',
+                    'propagate': '0',
+                },
+                'alembic': {
+                    'level': 'INFO',
+                    'handlers': ['console'],
+                    'qualname': 'alembic',
+                    'propagate': '0',
+                },
+            }
+        })
+```
 
 ## Controller
 
