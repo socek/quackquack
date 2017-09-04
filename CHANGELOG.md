@@ -7,6 +7,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ## 0.2.0 - [Unreleased]
 ### Added
 - Logging support.
+- Add routing documentation
 
 ## 0.1.0 - 2017-08-31
 ### Added

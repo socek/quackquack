@@ -249,3 +249,73 @@ obj = read_driver.get_by_id(1)
 
 Or go to class and check available methods. All code which involves
 saving/reading from database should be whitn method inside Read or Write driver.
+
+## Routing
+
+Routing is a wrapper for pyramid's default router. It is designed to use in the
+most common way: adding route for controller. Pyramid's url dispatching is
+configured in two steps
+
+- configure url
+- configure controller
+
+It is made that because controller can habdle more then 1 url. Qapla's router
+simplyfi this flow, so one url == one controller. Also this router will try to
+read the @view_config configuration from the controller's class attributes.
+
+Route.add method is for adding the url and controller.
+- controller: controller class
+- route: name for the route
+- url - url pattern
+
+Reading from yaml is very simple, because each entry is interpreted as call for
+the .add method, where controller arg is dotted url for the controller class.
+By using named entries you will configure a prefix for controller dotted url.
+Example:
+
+```yaml
+rotarran.auth.controllers:
+  -
+    controller: LoginController
+    route: auth:login
+    url: /auth/login
+  -
+    controller: LogoutController
+    route: auth:logout
+    url: /auth/logout
+  -
+    controller: AuthDataController
+    route: auth:data
+    url: /auth
+  -
+    controller: RegistrationController
+    route: auth:registration
+    url: /auth/registration
+```
+
+Router class is designed to be used by inherit it and overwrite the .make method,
+and there it will be configured.
+Example:
+
+```python
+from qapla.routing import Routing
+
+
+class RotarranRouting(Routing):
+
+    def make(self):
+        super().make()
+        self.read_from_file(self.paths.get('app:auth:routing'))
+        self.read_from_file(self.paths.get('app:home:routing'))
+        self.read_from_file(self.paths.get('app:menu:routing'))
+        self.read_from_file(self.paths.get('app:wallets:routing'))
+```
+
+Adding this routing to the application is done by adding like other plugins.
+
+```python
+class RotarranApplication(DatabaseApplication):
+
+    def append_plugins(self):
+        self.add_routing(RotarranRouting)
+```

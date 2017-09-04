@@ -41,11 +41,20 @@ class Routing(object):
         return self.application.paths
 
     def read_from_file(self, path):
+        """
+        Read routing configuration from a .yaml file
+        """
         parser = RouteYamlParser(path)
         for route in parser.parse():
             self.add(**route)
 
     def add(self, controller, route, url, *args, **kwargs):
+        """
+        Add routing for controller.
+        - controller: controller class
+        - route: name for the route
+        - url - url pattern
+        """
         self.config.add_route(
             route,
             url,
