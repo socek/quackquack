@@ -8,37 +8,42 @@ from qapla.app import Application
 
 class DatabaseConfig(object):
 
-    def __init__(self, config, settings, paths):
+    def __init__(self, config, settings, paths, dbname=None):
         self.config = config
         self.settings = settings
         self.paths = paths
+        self.dbname = dbname
 
     def build(self):
-        engine = self.get_engine()
+        engine = self.get_engine(self.dbname)
         self.maker = self.get_maker(engine)
         self.config.registry.dbmaker = self.maker
         self.config.add_request_method(DatabaseGenerator(), name='database', reify=True)
         return self.maker
 
-    def get_engine(self, db=None):
-        url = self.get_url(db)
+    def get_engine(self, dbname=None):
+        url = self.get_url(dbname)
         return create_engine(url, **self.settings['db:options'])
 
     def get_maker(self, engine):
         return sessionmaker(bind=engine)
 
-    def get_url(self, db=None):
-        db = db or self.settings['db:name']
+    def get_url(self, dbname=None):
+        dbname = dbname or self.dbname or self.settings['db:name']
         return '{type}://{login}:{password}@{host}:{port}/{name}'.format(
             type=self.settings['db:type'],
             login=self.settings['db:login'],
             password=self.settings['db:password'],
             host=self.settings['db:host'],
             port=self.settings['db:port'],
-            name=db)
+            name=dbname)
 
     def recreate(self, for_test=True):
-        db = self.settings['db:name']
+        if for_test:
+            db = self.settings['db:name']
+        else:
+            db = self.settings['db:test_name']
+
         engine = self.get_engine('postgres')
         session = sessionmaker(bind=engine)()
         session.connection().connection.set_isolation_level(0)
@@ -46,8 +51,9 @@ class DatabaseConfig(object):
         session.execute('CREATE DATABASE {}'.format(db))
         session.close()
 
-        section = 'alembic_test' if for_test else 'alembic'
-        alembic_cfg = Config(self.paths.get('backend:ini'), ini_section=section)
+        alembic_cfg = Config()
+        alembic_cfg.set_main_option('script_location', 'versions')
+        alembic_cfg.set_main_option('dbname', db)
         command.upgrade(alembic_cfg, "head")
 
 
