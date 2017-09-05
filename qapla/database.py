@@ -8,14 +8,17 @@ from qapla.app import Application
 
 class DatabaseConfig(object):
 
-    def __init__(self, config, settings, paths, dbname=None):
+    def __init__(self, config, settings, paths):
         self.config = config
         self.settings = settings
         self.paths = paths
-        self.dbname = dbname
+        if settings['is_test']:
+            self.dbname = self.settings['db:test_name']
+        else:
+            self.dbname = self.settings['db:name']
 
     def build(self):
-        engine = self.get_engine(self.dbname)
+        engine = self.get_engine()
         self.maker = self.get_maker(engine)
         self.config.registry.dbmaker = self.maker
         self.config.add_request_method(DatabaseGenerator(), name='database', reify=True)
@@ -29,7 +32,7 @@ class DatabaseConfig(object):
         return sessionmaker(bind=engine)
 
     def get_url(self, dbname=None):
-        dbname = dbname or self.dbname or self.settings['db:name']
+        dbname = dbname or self.dbname
         return '{type}://{login}:{password}@{host}:{port}/{name}'.format(
             type=self.settings['db:type'],
             login=self.settings['db:login'],
@@ -38,22 +41,17 @@ class DatabaseConfig(object):
             port=self.settings['db:port'],
             name=dbname)
 
-    def recreate(self, for_test=True):
-        if for_test:
-            db = self.settings['db:name']
-        else:
-            db = self.settings['db:test_name']
-
+    def recreate(self):
         engine = self.get_engine('postgres')
         session = sessionmaker(bind=engine)()
         session.connection().connection.set_isolation_level(0)
-        session.execute('DROP DATABASE {}'.format(db))
-        session.execute('CREATE DATABASE {}'.format(db))
+        session.execute('DROP DATABASE {}'.format(self.dbname))
+        session.execute('CREATE DATABASE {}'.format(self.dbname))
         session.close()
 
         alembic_cfg = Config()
         alembic_cfg.set_main_option('script_location', 'versions')
-        alembic_cfg.set_main_option('dbname', db)
+        alembic_cfg.set_main_option('is_test', str(self.settings['is_test']))
         command.upgrade(alembic_cfg, "head")
 
 
