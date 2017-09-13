@@ -6,30 +6,32 @@ from sqlalchemy.orm import sessionmaker
 from qapla.app import Application
 
 
-class DatabaseConfig(object):
+class DatabasePlugin(object):
 
-    def __init__(self, config, settings, paths):
-        self.config = config
-        self.settings = settings
-        self.paths = paths
-        if settings['is_test']:
+    def __init__(self, app):
+        self.app = app
+        self.settings = app.settings
+        self.paths = app.paths
+
+        if app.settings['is_test']:
             self.dbname = self.settings['db:test_name']
         else:
             self.dbname = self.settings['db:name']
 
-    def build(self):
-        engine = self.get_engine()
-        self.maker = self.get_maker(engine)
-        self.config.registry.dbmaker = self.maker
-        self.config.add_request_method(DatabaseGenerator(), name='database', reify=True)
-        return self.maker
+    def add_to_web(self):
+        self.app.config.registry.sessionmaker = self.sessionmaker
+        self.app.config.add_request_method(
+            RequestDBSessionGenerator(),
+            name='database',
+            reify=True)
+
+    def add_to_app(self):
+        self.engine = self.get_engine()
+        self.sessionmaker = sessionmaker(bind=self.engine)
 
     def get_engine(self, dbname=None):
         url = self.get_url(dbname)
         return create_engine(url, **self.settings['db:options'])
-
-    def get_maker(self, engine):
-        return sessionmaker(bind=engine)
 
     def get_url(self, dbname=None):
         dbname = dbname or self.dbname
@@ -42,6 +44,9 @@ class DatabaseConfig(object):
             name=dbname)
 
     def recreate(self):
+        """
+        Drop old database and migrate from scratch.
+        """
         engine = self.get_engine('postgres')
         session = sessionmaker(bind=engine)()
         session.connection().connection.set_isolation_level(0)
@@ -55,10 +60,10 @@ class DatabaseConfig(object):
         command.upgrade(alembic_cfg, "head")
 
 
-class DatabaseGenerator(object):
+class RequestDBSessionGenerator(object):
 
     def __call__(self, request):
-        maker = request.registry.dbmaker
+        maker = request.registry.sessionmaker
         self.session = maker()
         request.add_finished_callback(self.cleanup)
         return self.session
@@ -77,9 +82,15 @@ class DatabaseGenerator(object):
 
 class DatabaseApplication(Application):
 
-    def add_database(self):
+    def add_database_app(self):
+        """
+        Add sqlalchemy database to the Application.
+        """
+        self._db_plugin = DatabasePlugin(self)
+        self._db_plugin.add_to_app()
+
+    def add_database_web(self):
         """
         Add sqlalchemy database to the pyramid app.
         """
-        self._db_config = DatabaseConfig(self.config, self.settings, self.paths)
-        self._db_config.build()
+        self._db_plugin.add_to_web()
