@@ -44,13 +44,16 @@ class RotarranApplication(Application):
     class Config(Application.Config):
         settings_module = 'rotarran.application'
 
-    def append_plugins(self):
-        self.add_routing(RotarranRouting)
+    def append_app_plugins(self):
+        self.add_logging()
+
+    def append_web_plugins(self):
+        self.add_routing(CCAdsRouting)
         self.add_auth(
             AuthTktAuthenticationPolicy,
             ACLAuthorizationPolicy,
-            RotarranFactory)
-        self.add_sessions(SignedCookieSessionFactory)
+            CCAdsFactory)
+        self.add_session(SignedCookieSessionFactory)
         self.add_csrf_policy(SessionCSRFStoragePolicy)
 
 main = RotarranApplication()
@@ -83,16 +86,20 @@ setup(
 ### Sqlalchemy and alembic integration
 
 In order to make our application able to use database thru sqlalchemy and migration thru alembic, first we need to make
-our Application class inherit from DatabaseApplication. After that we need to add .add_database method into append_plugins
-section.
+our Application class inherit from DatabaseApplication. After that we need to add .add_database method into append_app_plugins
+and append_web_plugins section. Database is a plugin that do not need pyramid, that is why it needs to be plugged in on
+the app plugins step.
 
 ```python
 from qapla.database import DatabaseApplication
 
 class RotarranApplication(DatabaseApplication):
 
-    def append_plugins(self):
-        self.add_database()
+    def append_app_plugins(self):
+        self.add_database_app()
+
+    def append_web_plugins(self):
+        self.add_database_web()
 ```
 
 Unfortunetly you need to make proper alembic configuration on your own.
@@ -144,6 +151,14 @@ def logger(settings, paths):
                 },
             }
         })
+```
+
+After that you need to call add_logging in the append_app_plugins method.
+
+```
+class RotarranApplication(Application):
+    def append_app_plugins(self):
+        self.add_logging()
 ```
 
 ## Controller
@@ -316,6 +331,6 @@ Adding this routing to the application is done by adding like other plugins.
 ```python
 class RotarranApplication(DatabaseApplication):
 
-    def append_plugins(self):
+    def append_web_plugins(self):
         self.add_routing(RotarranRouting)
 ```

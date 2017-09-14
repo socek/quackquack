@@ -21,6 +21,10 @@ class Application(object):
         """
         settings = settings or {}
         self._create_app(settings, 'uwsgi')
+
+        self._create_config()
+        self._generate_registry(self.config.registry)
+        self.append_web_plugins()
         return self.config.make_wsgi_app()
 
     def run_tests(self, settings=None):
@@ -46,9 +50,7 @@ class Application(object):
 
     def _create_app(self, settings={}, endpoint='uwsgi'):
         self._generate_settings(settings, endpoint)
-        self._create_config()
-        self._generate_registry(self.config.registry)
-        self.append_plugins()
+        self.append_app_plugins()
 
     def _generate_settings(
         self,
@@ -80,9 +82,14 @@ class Application(object):
 
     # Plugins
 
-    def append_plugins(self):
+    def append_app_plugins(self):
         """
-        This is the place to add your plugins.
+        This is the place to add your application plugins.
+        """
+
+    def append_web_plugins(self):
+        """
+        This is the place to add your application plugins.
         """
 
     def add_routing(self, routing_cls):

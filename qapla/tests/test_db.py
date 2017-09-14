@@ -3,38 +3,44 @@ from mock import call
 from mock import patch
 from mock import sentinel
 from pytest import fixture
+from pytest import mark
 
 from qapla.database import DatabaseApplication
-from qapla.database import DatabaseConfig
-from qapla.database import DatabaseGenerator
+from qapla.database import DatabasePlugin
+from qapla.database import RequestDBSessionGenerator
 
 
-class TestDatabaseConfig(object):
-
-    @fixture
-    def settings(self):
-        return {}
+class TestDatabasePlugin(object):
 
     @fixture
-    def paths(self):
-        return {}
+    def settings(self, mapp):
+        mapp.settings = {
+            'db:test_name': 'testname',
+            'db:name': 'normalname',
+        }
+        return mapp.settings
 
     @fixture
-    def mconfig(self):
+    def paths(self, mapp):
+        mapp.paths = {}
+        return mapp.paths
+
+    @fixture
+    def mapp(self):
         return MagicMock()
 
     @fixture
-    def database(self, mconfig, settings, paths):
-        return DatabaseConfig(mconfig, settings, paths)
+    def database(self, mapp, settings, paths):
+        return DatabasePlugin(mapp)
+
+    @fixture
+    def mconfig(self, mapp):
+        mapp.config = MagicMock()
+        return mapp.config
 
     @fixture
     def mget_engine(self, database):
         with patch.object(database, 'get_engine') as mock:
-            yield mock
-
-    @fixture
-    def msessionmaker(self):
-        with patch('qapla.database.sessionmaker') as mock:
             yield mock
 
     @fixture
@@ -43,13 +49,18 @@ class TestDatabaseConfig(object):
             yield mock
 
     @fixture
+    def msessionmaker(self):
+        with patch('qapla.database.sessionmaker') as mock:
+            yield mock
+
+    @fixture
     def mcreate_engine(self):
         with patch('qapla.database.create_engine') as mock:
             yield mock
 
     @fixture
-    def mdatabase_generator(self):
-        with patch('qapla.database.DatabaseGenerator') as mock:
+    def mrequest_db_session_generator(self):
+        with patch('qapla.database.RequestDBSessionGenerator') as mock:
             yield mock
 
     @fixture
@@ -62,19 +73,54 @@ class TestDatabaseConfig(object):
         with patch('qapla.database.command') as mock:
             yield mock
 
-    def test_build(self, database, mget_engine, msessionmaker, mconfig, mdatabase_generator):
+    @mark.parametrize(
+        'is_test, dbname_key',
+        [
+            [True, 'db:test_name'],
+            [False, 'db:name'],
+        ]
+    )
+    def test_init(self, mapp, settings, is_test, dbname_key):
         """
-        .build should append sessionmaker to a registry and add database generator to the request object
+        DatabasePlugin should take different dbname depend on the is_test
+        setting.
         """
-        database.build()
+        settings['is_test'] = is_test
+        plugin = DatabasePlugin(mapp)
+
+        assert plugin.app == mapp
+        assert plugin.settings == settings
+        assert plugin.paths == mapp.paths
+        assert plugin.dbname == settings[dbname_key]
+
+    def test_add_to_app(self, database, mget_engine, msessionmaker):
+        """
+        .add_to_app should create engine and session maker for app.
+        """
+        database.add_to_app()
 
         mget_engine.assert_called_once_with()
         msessionmaker.assert_called_once_with(bind=mget_engine.return_value)
-        assert mconfig.registry.dbmaker == msessionmaker.return_value
+
+        assert database.engine == mget_engine.return_value
+        assert database.sessionmaker == msessionmaker.return_value
+
+    def test_add_to_web(self, database, mconfig, mrequest_db_session_generator):
+        """
+        .add_to_web should append sessionmaker to a registry and add database
+        generator to the request object
+        """
+        database.sessionmaker = sentinel.sessionmaker
+
+        database.add_to_web()
+
+        assert mconfig.registry.sessionmaker == sentinel.sessionmaker
         mconfig.add_request_method.assert_called_once_with(
-            mdatabase_generator.return_value,
+            mrequest_db_session_generator.return_value,
             name='database',
-            reify=True)
+            reify=True
+        )
+        mrequest_db_session_generator.assert_called_once_with()
 
     def test_get_engine(self, database, mget_url, mcreate_engine, settings):
         """
@@ -90,7 +136,7 @@ class TestDatabaseConfig(object):
             two='2',
             three='three')
 
-    def test_get_url(self, database, settings):
+    def test_get_url(self, mapp, settings):
         """
         .get_url should create sqlalchemy's database url from application's settings
         """
@@ -100,6 +146,8 @@ class TestDatabaseConfig(object):
         settings['db:host'] = 'google.pl'
         settings['db:port'] = '123'
         settings['db:name'] = 'superdb'
+
+        database = DatabasePlugin(mapp)
 
         assert database.get_url() == 'postgresql://mylogin:mypassword@google.pl:123/superdb'
 
@@ -117,9 +165,6 @@ class TestDatabaseConfig(object):
         .recreate should connect to a different db, then drop and create configured one. After that it should start
         migration.
         """
-        settings['db:name'] = 'mydbname'
-        paths['backend:ini'] = '/stairway/to/heaven'
-
         database.recreate()
 
         mget_engine.assert_called_once_with('postgres')
@@ -129,20 +174,20 @@ class TestDatabaseConfig(object):
         session.connection.assert_called_once_with()
         session.connection.return_value.connection.set_isolation_level.assert_called_once_with(0)
         assert session.execute.call_args_list == [
-            call('DROP DATABASE mydbname'),
-            call('CREATE DATABASE mydbname'),
+            call('DROP DATABASE normalname'),
+            call('CREATE DATABASE normalname'),
         ]
         session.close.assert_called_once_with()
 
-        malembic_config.assert_called_once_with('/stairway/to/heaven', ini_section='alembic_test')
+        malembic_config.assert_called_once_with()
         mcommand.upgrade(malembic_config.return_value, "head")
 
 
-class TestDatabaseGenerator(object):
+class TestRequestDBSessionGenerator(object):
 
     @fixture
     def generator(self):
-        return DatabaseGenerator()
+        return RequestDBSessionGenerator()
 
     @fixture
     def mrequest(self):
@@ -157,9 +202,9 @@ class TestDatabaseGenerator(object):
         """
         .__call__ should create new session and add cleanup step for it.
         """
-        assert generator(mrequest) == mrequest.registry.dbmaker.return_value
+        assert generator(mrequest) == mrequest.registry.sessionmaker.return_value
 
-        mrequest.registry.dbmaker.assert_called_once_with()
+        mrequest.registry.sessionmaker.assert_called_once_with()
         mrequest.add_finished_callback(generator.cleanup)
 
     def test_cleanup_on_exception(self, generator, msession, mrequest):
@@ -190,22 +235,25 @@ class TestDatabaseApplication(object):
         return DatabaseApplication()
 
     @fixture
-    def mdatabase_config(self):
-        with patch('qapla.database.DatabaseConfig') as mock:
+    def mdatabase_plugin(self):
+        with patch('qapla.database.DatabasePlugin') as mock:
             yield mock
 
-    def test_add_database(self, app, mdatabase_config):
+    def test_add_database_app(self, app, mdatabase_plugin):
         """
-        .add_database should add database config to the pyramid application.
+        .add_database_app should add database config to the application.
         """
-        app.config = sentinel.config
-        app.settings = sentinel.settings
-        app.paths = sentinel.paths
+        app.add_database_app()
 
-        app.add_database()
+        mdatabase_plugin.assert_called_once_with(app)
+        mdatabase_plugin.return_value.add_to_app.assert_called_once_with()
+        assert app._db_plugin == mdatabase_plugin.return_value
 
-        mdatabase_config.assert_called_once_with(
-            sentinel.config,
-            sentinel.settings,
-            sentinel.paths)
-        mdatabase_config.return_value.build.assert_called_once_with()
+    def test_add_database_web(self, app):
+        """
+        .add_database_web should add database config to the pyramid application.
+        """
+        app._db_plugin = MagicMock()
+        app.add_database_web()
+
+        app._db_plugin.add_to_web.assert_called_once_with()
