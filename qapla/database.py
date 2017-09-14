@@ -13,10 +13,14 @@ class DatabasePlugin(object):
         self.settings = app.settings
         self.paths = app.paths
 
-        if app.settings['is_test']:
+        if app.settings.get('is_test', False):
             self.dbname = self.settings['db:test_name']
         else:
             self.dbname = self.settings['db:name']
+
+    def add_to_app(self):
+        self.engine = self.get_engine()
+        self.sessionmaker = sessionmaker(bind=self.engine)
 
     def add_to_web(self):
         self.app.config.registry.sessionmaker = self.sessionmaker
@@ -24,10 +28,6 @@ class DatabasePlugin(object):
             RequestDBSessionGenerator(),
             name='database',
             reify=True)
-
-    def add_to_app(self):
-        self.engine = self.get_engine()
-        self.sessionmaker = sessionmaker(bind=self.engine)
 
     def get_engine(self, dbname=None):
         url = self.get_url(dbname)
@@ -56,7 +56,7 @@ class DatabasePlugin(object):
 
         alembic_cfg = Config()
         alembic_cfg.set_main_option('script_location', 'versions')
-        alembic_cfg.set_main_option('is_test', str(self.settings['is_test']))
+        alembic_cfg.set_main_option('is_test', str(self.settings.get('is_test', False)))
         command.upgrade(alembic_cfg, "head")
 
 

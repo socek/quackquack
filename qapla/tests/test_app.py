@@ -43,8 +43,13 @@ class TestApplication(object):
             yield mock
 
     @fixture
-    def mappend_plugins(self, app):
-        with patch.object(app, 'append_plugins') as mock:
+    def mappend_app_plugins(self, app):
+        with patch.object(app, 'append_app_plugins') as mock:
+            yield mock
+
+    @fixture
+    def mappend_web_plugins(self, app):
+        with patch.object(app, 'append_web_plugins') as mock:
             yield mock
 
     @fixture
@@ -117,9 +122,7 @@ class TestApplication(object):
         self,
         app,
         mgenerate_settings,
-        mcreate_config,
-        mgenerate_registry,
-        mappend_plugins,
+        mappend_app_plugins,
     ):
         """
         ._create_app should create Application for provided endpoint
@@ -131,9 +134,7 @@ class TestApplication(object):
         app._create_app(settings, endpoint)
 
         mgenerate_settings.assert_called_once_with(settings, endpoint)
-        mcreate_config.assert_called_once_with()
-        mgenerate_registry.assert_called_once_with(app.config.registry)
-        mappend_plugins.assert_called_once_with()
+        mappend_app_plugins.assert_called_once_with()
 
     def test_run_command(self, app, mcreate_app):
         """
@@ -159,7 +160,14 @@ class TestApplication(object):
 
         mcreate_app.assert_called_once_with({}, 'tests')
 
-    def test_run_uwsgi(self, app, mcreate_app):
+    def test_run_uwsgi(
+        self,
+        app,
+        mcreate_app,
+        mcreate_config,
+        mgenerate_registry,
+        mappend_web_plugins,
+    ):
         """
         .run_uwsgi should create app for 'uwsgi' endpoint and return uwsgi application.
         """
@@ -169,8 +177,18 @@ class TestApplication(object):
 
         mcreate_app.assert_called_once_with({}, 'uwsgi')
         app.config.make_wsgi_app.assert_called_once_with()
+        mcreate_config.assert_called_once_with()
+        mgenerate_registry.assert_called_once_with(app.config.registry)
+        mappend_web_plugins.assert_called_once_with()
 
-    def test_call(self, app, mcreate_app):
+    def test_call(
+        self,
+        app,
+        mcreate_app,
+        mcreate_config,
+        mgenerate_registry,
+        mappend_web_plugins,
+    ):
         """
         .__call__ should create app for 'uwsgi' endpoint and return uwsgi application.
         """
@@ -180,12 +198,21 @@ class TestApplication(object):
 
         mcreate_app.assert_called_once_with({}, 'uwsgi')
         app.config.make_wsgi_app.assert_called_once_with()
+        mcreate_config.assert_called_once_with()
+        mgenerate_registry.assert_called_once_with(app.config.registry)
+        mappend_web_plugins.assert_called_once_with()
 
-    def test_append_plugins(self, app):
+    def test_append_app_plugins(self, app):
         """
         Sanity check
         """
-        app.append_plugins()
+        app.append_app_plugins()
+
+    def test_append_web_plugins(self, app):
+        """
+        Sanity check
+        """
+        app.append_web_plugins()
 
     def test_add_routing(self, app):
         """
