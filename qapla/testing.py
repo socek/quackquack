@@ -32,8 +32,8 @@ class ApplicationFixture(object):
         has_inited = _cache.get('has_inited', False)
         if not has_inited:
             _cache['has_inited'] = True
-            application._db_config.recreate()
-        session = application._db_config.maker()
+            application._db_plugin.recreate()
+        session = application._db_plugin.sessionmaker()
         yield session
         session.close()
 
