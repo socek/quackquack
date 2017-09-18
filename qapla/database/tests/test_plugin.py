@@ -4,10 +4,10 @@ from mock import patch
 from mock import sentinel
 from pytest import fixture
 from pytest import mark
+from pytest import raises
 
-from qapla.database import DatabaseApplication
-from qapla.database import DatabasePlugin
-from qapla.database import RequestDBSessionGenerator
+from qapla.database.exceptions import SettingMissing
+from qapla.database.plugin import DatabasePlugin
 
 
 class TestDatabasePlugin(object):
@@ -15,8 +15,9 @@ class TestDatabasePlugin(object):
     @fixture
     def settings(self, mapp):
         mapp.settings = {
-            'db:test_name': 'testname',
-            'db:name': 'normalname',
+            'db:url': 'postgresql://scott:tiger@postgres/database',
+            'db:test_url': 'postgresql://scott:tiger@postgres/database_test',
+            'db:default_url': 'postgresql://scott:tiger@postgres/postgres',
         }
         return mapp.settings
 
@@ -49,28 +50,38 @@ class TestDatabasePlugin(object):
             yield mock
 
     @fixture
+    def mvalidate_settings(self, database):
+        with patch.object(database, 'validate_settings') as mock:
+            yield mock
+
+    @fixture
     def msessionmaker(self):
-        with patch('qapla.database.sessionmaker') as mock:
+        with patch('qapla.database.plugin.sessionmaker') as mock:
             yield mock
 
     @fixture
     def mcreate_engine(self):
-        with patch('qapla.database.create_engine') as mock:
+        with patch('qapla.database.plugin.create_engine') as mock:
             yield mock
 
     @fixture
     def mrequest_db_session_generator(self):
-        with patch('qapla.database.RequestDBSessionGenerator') as mock:
+        with patch('qapla.database.plugin.RequestDBSessionGenerator') as mock:
             yield mock
 
     @fixture
     def malembic_config(self):
-        with patch('qapla.database.Config') as mock:
+        with patch('qapla.database.plugin.Config') as mock:
             yield mock
 
     @fixture
     def mcommand(self):
-        with patch('qapla.database.command') as mock:
+        with patch('qapla.database.plugin.command') as mock:
+            yield mock
+
+    @fixture
+    def mmake_url(self):
+        with patch('qapla.database.plugin.make_url') as mock:
             yield mock
 
     @mark.parametrize(
@@ -91,9 +102,14 @@ class TestDatabasePlugin(object):
         assert plugin.app == mapp
         assert plugin.settings == settings
         assert plugin.paths == mapp.paths
-        assert plugin.dbname == settings[dbname_key]
 
-    def test_add_to_app(self, database, mget_engine, msessionmaker):
+    def test_add_to_app(
+        self,
+        database,
+        mget_engine,
+        msessionmaker,
+        mvalidate_settings,
+    ):
         """
         .add_to_app should create engine and session maker for app.
         """
@@ -101,6 +117,7 @@ class TestDatabasePlugin(object):
 
         mget_engine.assert_called_once_with()
         msessionmaker.assert_called_once_with(bind=mget_engine.return_value)
+        mvalidate_settings.assert_called_once_with()
 
         assert database.engine == mget_engine.return_value
         assert database.sessionmaker == msessionmaker.return_value
@@ -138,18 +155,38 @@ class TestDatabasePlugin(object):
 
     def test_get_url(self, mapp, settings):
         """
-        .get_url should create sqlalchemy's database url from application's settings
+        .get_url should get sqlalchemy's database url from application's settings
         """
-        settings['db:type'] = 'postgresql'
-        settings['db:login'] = 'mylogin'
-        settings['db:password'] = 'mypassword'
-        settings['db:host'] = 'google.pl'
-        settings['db:port'] = '123'
-        settings['db:name'] = 'superdb'
-
         database = DatabasePlugin(mapp)
 
-        assert database.get_url() == 'postgresql://mylogin:mypassword@google.pl:123/superdb'
+        settings[database.DB_KEY] = sentinel.db_url
+
+        assert database.get_url() == sentinel.db_url
+
+    def test_get_url_on_test(self, mapp, settings):
+        """
+        .get_url should get sqlalchemy's database url for test database if
+        is_test is is set to True
+        """
+        database = DatabasePlugin(mapp)
+
+        settings[database.DB_KEY] = sentinel.db_url
+        settings[database.TEST_DB_KEY] = sentinel.test_db_url
+        settings['is_test'] = True
+
+        assert database.get_url() == sentinel.test_db_url
+
+    def test_get_url_on_force(self, mapp, settings):
+        """
+        .get_url should get sqlalchemy's database url choosed by the args from
+        application's settings
+        """
+        database = DatabasePlugin(mapp)
+
+        settings[database.DB_KEY] = sentinel.db_url
+        settings[database.TEST_DB_KEY] = sentinel.test_db_url
+
+        assert database.get_url(database.TEST_DB_KEY) == sentinel.test_db_url
 
     def test_recreate(
         self,
@@ -167,93 +204,49 @@ class TestDatabasePlugin(object):
         """
         database.recreate()
 
-        mget_engine.assert_called_once_with('postgres')
+        mget_engine.assert_called_once_with(database.DEFAULT_DB_KEY)
         msessionmaker.assert_called_once_with(bind=mget_engine.return_value)
         msessionmaker.return_value.assert_called_once_with()
         session = msessionmaker.return_value.return_value
         session.connection.assert_called_once_with()
         session.connection.return_value.connection.set_isolation_level.assert_called_once_with(0)
         assert session.execute.call_args_list == [
-            call('DROP DATABASE normalname'),
-            call('CREATE DATABASE normalname'),
+            call('DROP DATABASE database'),
+            call('CREATE DATABASE database'),
         ]
         session.close.assert_called_once_with()
 
         malembic_config.assert_called_once_with()
         mcommand.upgrade(malembic_config.return_value, "head")
 
-
-class TestRequestDBSessionGenerator(object):
-
-    @fixture
-    def generator(self):
-        return RequestDBSessionGenerator()
-
-    @fixture
-    def mrequest(self):
-        return MagicMock()
-
-    @fixture
-    def msession(self, generator):
-        generator.session = MagicMock()
-        return generator.session
-
-    def test_call(self, generator, mrequest):
+    @mark.parametrize(
+        "keys",
+        [
+            [],
+            [DatabasePlugin.DB_KEY],
+            [DatabasePlugin.DB_KEY, DatabasePlugin.TEST_DB_KEY],
+        ]
+    )
+    def test_validate_settings(self, database, keys):
         """
-        .__call__ should create new session and add cleanup step for it.
+        .validate_settings should raise error when one of the needed settings
+        is missing.
         """
-        assert generator(mrequest) == mrequest.registry.sessionmaker.return_value
+        database.settings = {}
+        for key in keys:
+            database.settings[key] = True
 
-        mrequest.registry.sessionmaker.assert_called_once_with()
-        mrequest.add_finished_callback(generator.cleanup)
+        with raises(SettingMissing):
+            database.validate_settings()
 
-    def test_cleanup_on_exception(self, generator, msession, mrequest):
+    def test_validate_settings_validating_uris(self, database, settings, mmake_url):
         """
-        .cleanup should rollback database changes on exception
+        .validate_settings should validate if database urls are valid.
         """
-        mrequest.exception = True
+        database.validate_settings()
 
-        generator.cleanup(mrequest)
-        msession.rollback.assert_called_once_with()
-        msession.close.assert_called_once_with()
-
-    def test_cleanup_on_success(self, generator, msession, mrequest):
-        """
-        .cleanup should commit changes on response success
-        """
-        mrequest.exception = None
-
-        generator.cleanup(mrequest)
-        msession.commit.assert_called_once_with()
-        msession.close.assert_called_once_with()
-
-
-class TestDatabaseApplication(object):
-
-    @fixture
-    def app(self):
-        return DatabaseApplication()
-
-    @fixture
-    def mdatabase_plugin(self):
-        with patch('qapla.database.DatabasePlugin') as mock:
-            yield mock
-
-    def test_add_database_app(self, app, mdatabase_plugin):
-        """
-        .add_database_app should add database config to the application.
-        """
-        app.add_database_app()
-
-        mdatabase_plugin.assert_called_once_with(app)
-        mdatabase_plugin.return_value.add_to_app.assert_called_once_with()
-        assert app._db_plugin == mdatabase_plugin.return_value
-
-    def test_add_database_web(self, app):
-        """
-        .add_database_web should add database config to the pyramid application.
-        """
-        app._db_plugin = MagicMock()
-        app.add_database_web()
-
-        app._db_plugin.add_to_web.assert_called_once_with()
+        assert mmake_url.call_args_list == [
+            call(settings[database.DB_KEY]),
+            call(settings[database.TEST_DB_KEY]),
+            call(settings[database.DEFAULT_DB_KEY]),
+        ]
