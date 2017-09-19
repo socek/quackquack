@@ -11,7 +11,7 @@ install_requires = [
 if __name__ == '__main__':
     setup(
         name='qapla',
-        version='0.3.1',
+        version='0.4.0',
         packages=find_packages(),
         install_requires=install_requires,
         license='Apache License 2.0',
