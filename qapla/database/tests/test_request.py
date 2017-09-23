@@ -1,4 +1,5 @@
 from mock import MagicMock
+from mock import sentinel
 from pytest import fixture
 from pytest import raises
 
@@ -6,10 +7,11 @@ from qapla.database.request import RequestDBSessionGenerator
 
 
 class TestRequestDBSessionGenerator(object):
+    registry_key = sentinel.registry_key
 
     @fixture
     def generator(self):
-        return RequestDBSessionGenerator()
+        return RequestDBSessionGenerator(self.registry_key)
 
     @fixture
     def mrequest(self):
@@ -24,9 +26,9 @@ class TestRequestDBSessionGenerator(object):
         """
         .__call__ should create new session and add cleanup step for it.
         """
-        assert generator(mrequest) == mrequest.registry.sessionmaker.return_value
+        assert generator(mrequest) == mrequest.registry[self.registry_key].return_value
 
-        mrequest.registry.sessionmaker.assert_called_once_with()
+        mrequest.registry[self.registry_key].assert_called_once_with()
         mrequest.add_finished_callback(generator.cleanup)
 
     def test_cleanup_on_exception(self, generator, msession, mrequest):
