@@ -1,7 +1,6 @@
 from mock import MagicMock
 from mock import sentinel
 from pytest import fixture
-from pytest import raises
 
 from qapla.database.request import RequestDBSessionGenerator
 
@@ -50,8 +49,7 @@ class TestRequestDBSessionGenerator(object):
         mrequest.exception = None
         msession.commit.side_effect = RuntimeError('x')
 
-        with raises(RuntimeError):
-            generator.cleanup(mrequest)
+        generator.cleanup(mrequest)
 
         msession.rollback.assert_called_once_with()
         msession.close.assert_called_once_with()

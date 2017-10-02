@@ -17,6 +17,4 @@ class RequestDBSessionGenerator(object):
                 self.session.commit()
             except:
                 self.session.rollback()
-                self.session.close()
-                raise
         self.session.close()
