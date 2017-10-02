@@ -33,7 +33,6 @@ class TestDatabasePlugin(object):
         """
         plugin.add_to_app()
 
-        mdatabase.validate_settings.assert_called_once_with()
         mdatabase.add_to_app.assert_called_once_with()
 
     def test_add_to_web(self, plugin, mdatabase):
