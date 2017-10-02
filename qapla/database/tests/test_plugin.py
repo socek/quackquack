@@ -27,13 +27,13 @@ class TestDatabasePlugin(object):
         """
         assert mdatabase in plugin.databases.values()
 
-    def test_add_to_app(self, plugin, mdatabase):
+    def test_add_to_app(self, plugin, mapp, mdatabase):
         """
         .add_to_app should validate settings for all databases and init them
         """
         plugin.add_to_app()
 
-        mdatabase.add_to_app.assert_called_once_with()
+        mdatabase.add_to_app.assert_called_once_with(mapp)
 
     def test_add_to_web(self, plugin, mdatabase):
         """

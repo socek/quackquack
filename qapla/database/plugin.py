@@ -15,7 +15,7 @@ class DatabasePlugin(object):
         Init all the provided databases.
         """
         for database in self.databases.values():
-            database.add_to_app()
+            database.add_to_app(self.app)
 
     def add_to_web(self):
         """
