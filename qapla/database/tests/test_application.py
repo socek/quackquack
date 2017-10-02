@@ -24,13 +24,13 @@ class TestDatabaseApplication(object):
 
         mdatabase_plugin.assert_called_once_with(app)
         mdatabase_plugin.return_value.add_to_app.assert_called_once_with()
-        assert app._db_plugin == mdatabase_plugin.return_value
+        assert app.dbs == mdatabase_plugin.return_value
 
     def test_add_database_web(self, app):
         """
         .add_database_web should add database config to the pyramid application.
         """
-        app._db_plugin = MagicMock()
+        app.dbs = MagicMock()
         app.add_database_web()
 
-        app._db_plugin.add_to_web.assert_called_once_with()
+        app.dbs.add_to_web.assert_called_once_with()

@@ -3,13 +3,25 @@ from alembic import context
 
 class AlembicEnv(object):
 
-    def __init__(self, app, base_model):
+    def __init__(self, app, base_model, dbname):
         self.app = app
         self.base_model = base_model
         self.metadata = self.base_model.metadata
+        self.dbname = dbname
+        self.db = None
 
     def run(self):
-        self.app.run_command()
+        self._init_app()
+        self.db = self.app.dbs[self.dbname]
+        self._run_migration_depending_on_offline_mode()
+
+    def _init_app(self):
+        if context.config.get_main_option('is_test', False):
+            self.app.run_tests()
+        else:
+            self.app.run_command()
+
+    def _run_migration_depending_on_offline_mode(self):
         if context.is_offline_mode():
             self.run_migrations_offline()
         else:
@@ -27,7 +39,7 @@ class AlembicEnv(object):
         script output.
 
         """
-        url = self.app._db_plugin.get_url()
+        url = self.db.get_url()
 
         context.configure(
             url=url,
@@ -43,7 +55,7 @@ class AlembicEnv(object):
         and associate a connection with the context.
 
         """
-        connectable = self.app._db_plugin.get_engine()
+        connectable = self.db.get_engine()
 
         with connectable.connect() as connection:
             context.configure(

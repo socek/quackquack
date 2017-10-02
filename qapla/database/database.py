@@ -8,16 +8,56 @@ from qapla.database.exceptions import SettingMissing
 from qapla.database.request import RequestDBSessionGenerator
 
 
-class Database(object):
+class DatabaseSetting(object):
     _PREFIX = 'db'
+    _SETTING_MISSING_FORMAT = (
+        "'{0}' key is needed for use '{1}'' database in application")
+
+    def __init__(self, settings, name='database'):
+        self.name = name
+        self.settings = settings
+
+    def get_key(self, subkey=None):
+        keys = [self._PREFIX, self.name]
+        if subkey:
+            keys.append(subkey)
+        return ':'.join(keys)
+
+    def __getitem__(self, subkey):
+        key = self.get_key(subkey)
+        return self.settings[key]
+
+    def __setitem__(self, subkey, value):
+        key = self.get_key(subkey)
+        self.settings[key] = value
+
+    def get(self, subkey, default=None):
+        key = self.get_key(subkey)
+        return self.settings.get(key, default)
+
+    def validate(self):
+        to_validate = ['url', 'default_url']
+        for subkey in to_validate:
+            self.validate_exists(subkey)
+            make_url(self[subkey])
+
+    def validate_exists(self, subkey):
+        key = self.get_key(subkey)
+        if key not in self.settings:
+            raise SettingMissing(
+                key,
+                self._SETTING_MISSING_FORMAT.format(key, self.name))
+
+
+class Database(object):
 
     def __init__(self, name='database'):
         self.name = name
 
     def add_to_app(self, app):
         self.app = app
-        self.settings = app.settings
-        self._validate_settings()
+        self.settings = DatabaseSetting(app.settings, self.name)
+        self.settings.validate()
         self.engine = self.get_engine()
         self.sessionmaker = sessionmaker(bind=self.engine)
 
@@ -50,46 +90,18 @@ class Database(object):
         alembic_cfg.set_main_option('db_app_name', self.name)
         command.upgrade(alembic_cfg, "head")
 
-    def _validate_settings(self):
-        to_validate = ['url', 'default_url']
-        for subkey in to_validate:
-            self._validate_setting_exists(subkey)
-            make_url(self.get_setting(subkey))
-
-    def _validate_setting_exists(self, subkey):
-        key = self._get_key(subkey)
-        if key not in self.settings:
-            raise SettingMissing(
-                key,
-                "'{0}' key is needed for use '{1}'' database in application".format(
-                    key,
-                    self.name))
-
-    def _get_key(self, subkey=None):
-        keys = [self._PREFIX, self.name]
-        if subkey:
-            keys.append(subkey)
-        return ':'.join(keys)
-
-    def get_setting(self, subkey, default=NotImplemented):
-        key = self._get_key(subkey)
-        if default is NotImplemented:
-            return self.settings[key]
-        else:
-            return self.settings.get(key, default)
-
     def get_engine(self, default_url=False):
         url = self.get_url(default_url)
         return create_engine(
             url,
-            **self.get_setting('options', {}))
+            **self.settings.get('options', {}))
 
     def get_url(self, default_url=False):
         """
         Get url from settings.
         """
         subkey = 'default_url' if default_url else 'url'
-        return self.get_setting(subkey)
+        return self.settings[subkey]
 
     def get_dbname(self):
         """

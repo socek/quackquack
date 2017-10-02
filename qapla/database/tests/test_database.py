@@ -8,6 +8,7 @@ from pytest import raises
 from sqlalchemy.exc import ArgumentError
 
 from qapla.database.database import Database
+from qapla.database.database import DatabaseSetting
 from qapla.database.exceptions import SettingMissing
 
 
@@ -20,7 +21,7 @@ class TestDatabase(object):
         return Database(self.NAME)
 
     @fixture
-    def mapp(self, database, mget_engine, mvalidate_settings, msessionmaker):
+    def mapp(self, database, mget_engine, mdatabase_setting, msessionmaker):
         mapp = MagicMock()
         database.add_to_app(mapp)
         return mapp
@@ -28,11 +29,6 @@ class TestDatabase(object):
     @fixture
     def mget_engine(self, database):
         with patch.object(database, 'get_engine') as mock:
-            yield mock
-
-    @fixture
-    def mvalidate_settings(self, database):
-        with patch.object(database, '_validate_settings') as mock:
             yield mock
 
     @fixture
@@ -80,12 +76,17 @@ class TestDatabase(object):
         with patch('qapla.database.database.command') as mock:
             yield mock
 
+    @fixture
+    def mdatabase_setting(self):
+        with patch('qapla.database.database.DatabaseSetting') as mock:
+            yield mock
+
     def test_add_to_app(
         self,
         database,
         mget_engine,
-        mvalidate_settings,
         msessionmaker,
+        mdatabase_setting,
     ):
         """
         .add_to_app should create engine and sessionmaker.
@@ -95,12 +96,13 @@ class TestDatabase(object):
         database.add_to_app(mapp)
 
         assert database.app is mapp
-        assert database.settings is mapp.settings
-        mvalidate_settings.assert_called_once_with()
-        mget_engine.assert_called_once_with()
+        assert database.settings is mdatabase_setting.return_value
         assert database.engine is mget_engine.return_value
-        msessionmaker.assert_called_once_with(bind=database.engine)
         assert database.sessionmaker is msessionmaker.return_value
+        mget_engine.assert_called_once_with()
+        msessionmaker.assert_called_once_with(bind=database.engine)
+        mdatabase_setting.assert_called_once_with(mapp.settings, self.NAME)
+        mdatabase_setting.return_value.validate.assert_called_once_with()
 
     def test_add_to_web(
         self,
@@ -123,63 +125,6 @@ class TestDatabase(object):
             name=self.NAME,
             reify=True)
 
-    def test_validate_settings_on_missing(self, database):
-        """
-        ._validate_settings should raise an error when needed setting is not
-        found.
-        """
-        database.settings = {}
-
-        with raises(SettingMissing):
-            database._validate_settings()
-
-    def test_validate_settings_on_bad_url(self, database):
-        """
-        ._validate_settings should raise an error when urls are not valid.
-        """
-        database.settings = {'db:dbname:url': 'badurl'}
-
-        with raises(ArgumentError):
-            database._validate_settings()
-
-    def test_validate_settings_on_success(self, database):
-        """
-        ._validate_settings should do nothing if settings are valid.
-        """
-        database.settings = {
-            'db:dbname:url': 'postgresql://localhost/dbname',
-            'db:dbname:default_url': 'postgresql://localhost/postgres'}
-
-        database._validate_settings()
-
-    @mark.parametrize(
-        'subkey, result',
-        [
-            ['subkey', 'db:dbname:subkey'],
-            [None, 'db:dbname'],
-        ])
-    def test_get_key(self, database, subkey, result):
-        """
-        .get_key should return formatted key name for settings.
-        """
-        assert database._get_key(subkey) == result
-
-    def test_get_setting(self, database):
-        """
-        .get_setting should get key from setting
-        """
-        database.settings = {'db:dbname:key': sentinel.key}
-
-        assert database.get_setting('key') is sentinel.key
-
-    def test_get_setting_with_default(self, database):
-        """
-        .get_setting should return default if not setting avalible
-        """
-        database.settings = {}
-
-        assert database.get_setting('subkey', sentinel.default_key) is sentinel.default_key
-
     @mark.parametrize(
         'default_url',
         [True, False],
@@ -189,7 +134,7 @@ class TestDatabase(object):
         .get_engine should get engine for database.
         """
         database.settings = {
-            'db:dbname:options': {
+            'options': {
                 'something': sentinel.something}}
 
         assert database.get_engine(default_url) == mcreate_engine.return_value
@@ -207,8 +152,8 @@ class TestDatabase(object):
         .get_url should get url from settings.
         """
         database.settings = {
-            'db:dbname:url': False,
-            'db:dbname:default_url': True,
+            'url': False,
+            'default_url': True,
         }
 
         assert database.get_url(default_url) == default_url
@@ -218,7 +163,7 @@ class TestDatabase(object):
         .get_dbname should return name of the database from the url
         """
         database.settings = {
-            'db:dbname:url': 'postgresql+pg8000://scott:tiger@localhost/mydbh'}
+            'url': 'postgresql+pg8000://scott:tiger@localhost/mydbh'}
 
         assert database.get_dbname() == 'mydbh'
 
@@ -293,3 +238,77 @@ class TestDatabase(object):
                 'db_app_name',
                 database.name)]
         mcommand.upgrade.assert_called_once_with(alembic_cfg, 'head')
+
+
+class TestDatabaseSetting(object):
+    NAME = 'dbname'
+
+    def test_validate_settings_on_missing(self):
+        """
+        ._validate_settings should raise an error when needed setting is not
+        found.
+        """
+        settings = DatabaseSetting({}, 'dbname')
+
+        with raises(SettingMissing):
+            settings.validate()
+
+    def test_validate_settings_on_bad_url(self):
+        """
+        ._validate_settings should raise an error when urls are not valid.
+        """
+        settings = {'db:dbname:url': 'badurl'}
+        settings = DatabaseSetting(settings, 'dbname')
+
+        with raises(ArgumentError):
+            settings.validate()
+
+    def test_validate_settings_on_success(self):
+        """
+        ._validate_settings should do nothing if settings are valid.
+        """
+        settings = {
+            'db:dbname:url': 'postgresql://localhost/dbname',
+            'db:dbname:default_url': 'postgresql://localhost/postgres'}
+        settings = DatabaseSetting(settings, 'dbname')
+
+        settings.validate()
+
+    @mark.parametrize(
+        'subkey, result',
+        [
+            ['subkey', 'db:dbname:subkey'],
+            [None, 'db:dbname'],
+        ])
+    def test_get_key(self, subkey, result):
+        """
+        .get_key should return formatted key name for settings.
+        """
+        settings = DatabaseSetting({}, self.NAME)
+        assert settings.get_key(subkey) == result
+
+    def test_get_setting(self):
+        """
+        DatabaseSetting should act like a dict, whit generated names.
+        """
+        settings = DatabaseSetting({'db:dbname:key': sentinel.key}, self.NAME)
+
+        assert settings['key'] is sentinel.key
+
+    def test_set_setting(self):
+        """
+        DatabaseSetting should act like a dict, whit generated names.
+        """
+        settings = DatabaseSetting({'db:dbname:key': sentinel.key_value}, self.NAME)
+        settings['key'] = sentinel.second_key_value
+
+        assert settings['key'] is sentinel.second_key_value
+        assert settings.settings == {'db:dbname:key': sentinel.second_key_value}
+
+    def test_get_setting_with_default(self):
+        """
+        .get_setting should return default if not setting avalible
+        """
+        settings = DatabaseSetting({})
+
+        assert settings.get('subkey', sentinel.default_key) is sentinel.default_key

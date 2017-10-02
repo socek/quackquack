@@ -9,11 +9,11 @@ class DatabaseApplication(Application):
         """
         Add sqlalchemy database to the Application.
         """
-        self._db_plugin = DatabasePlugin(self)
-        self._db_plugin.add_to_app()
+        self.dbs = DatabasePlugin(self)
+        self.dbs.add_to_app()
 
     def add_database_web(self):
         """
         Add sqlalchemy database to the pyramid app.
         """
-        self._db_plugin.add_to_web()
+        self.dbs.add_to_web()
