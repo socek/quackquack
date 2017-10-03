@@ -9,7 +9,6 @@ class RequestDBSessionGenerator(object):
         return self.session
 
     def create_session(self, request):
-        print('creatin!')
         return request.registry[self.registry_key]()
 
     def cleanup(self, request):
@@ -20,12 +19,10 @@ class RequestDBSessionGenerator(object):
 
     def _rollback(self):
         self.session.rollback()
-        print('closing! 1')
-        self.session.close()
+        self.session.remove()
 
     def _commit(self):
         try:
             self.session.commit()
         finally:
-            print('closing! 2')
-            self.session.close()
+            self.session.remove()

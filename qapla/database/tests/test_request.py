@@ -39,7 +39,7 @@ class TestRequestDBSessionGenerator(object):
 
         generator.cleanup(mrequest)
         msession.rollback.assert_called_once_with()
-        msession.close.assert_called_once_with()
+        msession.remove.assert_called_once_with()
 
     def test_cleanup_on_commit_exception(self, generator, msession, mrequest):
         """
@@ -53,8 +53,7 @@ class TestRequestDBSessionGenerator(object):
         with raises(RuntimeError):
             generator.cleanup(mrequest)
 
-        msession.rollback.assert_called_once_with()
-        msession.close.assert_called_once_with()
+        msession.remove.assert_called_once_with()
 
     def test_cleanup_on_success(self, generator, msession, mrequest):
         """
@@ -64,4 +63,4 @@ class TestRequestDBSessionGenerator(object):
 
         generator.cleanup(mrequest)
         msession.commit.assert_called_once_with()
-        msession.close.assert_called_once_with()
+        msession.remove.assert_called_once_with()

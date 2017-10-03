@@ -42,7 +42,7 @@ class BaseApplicationFixture(object):
         session = dbplugin.get_session()
         yield session
         session.rollback()
-        session.close()
+        session.remove()
 
 
 class ControllerFixtureMixin(object):
