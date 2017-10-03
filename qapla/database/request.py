@@ -19,10 +19,12 @@ class RequestDBSessionGenerator(object):
 
     def _rollback(self):
         self.session.rollback()
+        print('closing! 1')
         self.session.close()
 
     def _commit(self):
         try:
             self.session.commit()
         finally:
+            print('closing! 2')
             self.session.close()
