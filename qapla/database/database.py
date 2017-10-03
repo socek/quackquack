@@ -59,6 +59,7 @@ class Database(object):
         self.app = app
         self.settings = DatabaseSetting(app.settings, self.name)
         self.settings.validate()
+        self.paths = app.paths
         self.engine = self.get_engine()
         self.sessionmaker = scoped_session(sessionmaker(bind=self.engine))
 
@@ -81,14 +82,15 @@ class Database(object):
         engine = self.get_engine(True)
         session = sessionmaker(bind=engine)()
         session.connection().connection.set_isolation_level(0)
-        session.execute('DROP DATABASE {}'.format(dbname))
+        session.execute('DROP DATABASE IF EXISTS {}'.format(dbname))
         session.execute('CREATE DATABASE {}'.format(dbname))
         session.close()
 
     def _migrate(self):
         alembic_cfg = Config()
-        alembic_cfg.set_main_option('script_location', 'versions')  # TODO: change this to a path from settings
+        alembic_cfg.set_main_option('script_location', self.paths.get('versions'))
         alembic_cfg.set_main_option('db_app_name', self.name)
+        alembic_cfg.set_main_option('is_test', 'true')
         command.upgrade(alembic_cfg, "head")
 
     def get_engine(self, default_url=False):

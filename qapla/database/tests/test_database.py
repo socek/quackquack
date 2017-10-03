@@ -231,7 +231,7 @@ class TestDatabase(object):
             .set_isolation_level
             .assert_called_once_with(0))
         assert session.execute.call_args_list == [
-            call('DROP DATABASE xena'),
+            call('DROP DATABASE IF EXISTS xena'),
             call('CREATE DATABASE xena')]
 
         session.close.assert_called_once_with()
@@ -242,6 +242,7 @@ class TestDatabase(object):
         from that config.
         """
         alembic_cfg = mconfig.return_value
+        database.paths = MagicMock()
 
         database._migrate()
 
@@ -249,11 +250,15 @@ class TestDatabase(object):
         assert alembic_cfg.set_main_option.call_args_list == [
             call(
                 'script_location',
-                'versions'),
+                database.paths.get.return_value),
             call(
                 'db_app_name',
-                database.name)]
+                database.name),
+            call(
+                'is_test',
+                'true')]
         mcommand.upgrade.assert_called_once_with(alembic_cfg, 'head')
+        database.paths.get.assert_called_once_with('versions')
 
 
 class TestDatabaseSetting(object):
