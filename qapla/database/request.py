@@ -4,12 +4,12 @@ class RequestDBSessionGenerator(object):
         self.registry_key = registry_key
 
     def __call__(self, request):
-        request_db = RequestDB(request, self.registry_key)
+        request_db = RequestDBSession(request, self.registry_key)
         request.add_finished_callback(request_db.cleanup)
         return request_db.run()
 
 
-class RequestDB(object):
+class RequestDBSession(object):
 
     def __init__(self, request, registry_key):
         self.request = request

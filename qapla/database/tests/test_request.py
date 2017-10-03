@@ -1,47 +1,75 @@
 from mock import MagicMock
+from mock import patch
 from mock import sentinel
 from pytest import fixture
 from pytest import raises
 
+from qapla.database.request import RequestDBSession
 from qapla.database.request import RequestDBSessionGenerator
 
 
-class TestRequestDBSessionGenerator(object):
+class FixturesMixing(object):
     registry_key = sentinel.registry_key
+
+    @fixture
+    def mrequest(self):
+        return MagicMock()
+
+
+class TestRequestDBSessionGenerator(FixturesMixing):
 
     @fixture
     def generator(self):
         return RequestDBSessionGenerator(self.registry_key)
 
     @fixture
-    def mrequest(self):
-        return MagicMock()
+    def mrequest_db(self):
+        with patch('qapla.database.request.RequestDBSession') as mock:
+            yield mock
+
+    def test_call(self, generator, mrequest, mrequest_db):
+        """
+        RequestDBSessionGenerator should create RequestDBSession and use it
+        in generation of db session for request.
+        """
+        assert generator(mrequest) == mrequest_db.return_value.run.return_value
+
+        mrequest_db.assert_called_once_with(mrequest, self.registry_key)
+        mrequest.add_finished_callback.assert_called_once_with(
+            mrequest_db.return_value.cleanup)
+        mrequest_db.return_value.run.assert_called_once_with()
+
+
+class TestRequestDBSession(FixturesMixing):
 
     @fixture
-    def msession(self, generator):
-        generator.session = MagicMock()
-        return generator.session
+    def request_session(self, mrequest):
+        return RequestDBSession(mrequest, self.registry_key)
 
-    def test_call(self, generator, mrequest):
-        """
-        .__call__ should create new session and add cleanup step for it.
-        """
-        assert generator(mrequest) == mrequest.registry[self.registry_key].return_value
+    @fixture
+    def msession(self, request_session):
+        request_session.session = MagicMock()
+        return request_session.session
 
-        mrequest.registry[self.registry_key].assert_called_once_with()
-        mrequest.add_finished_callback(generator.cleanup)
+    @fixture
+    def mmaker(self, request_session, mrequest):
+        request_session.maker = MagicMock()
+        mrequest.registry = {
+            self.registry_key: request_session.maker,
+        }
+        return request_session.maker
 
-    def test_cleanup_on_exception(self, generator, msession, mrequest):
+    def test_cleanup_on_exception(self, request_session, msession, mrequest, mmaker):
         """
         .cleanup should rollback database changes on exception
         """
         mrequest.exception = True
 
-        generator.cleanup(mrequest)
+        request_session.cleanup(mrequest)
         msession.rollback.assert_called_once_with()
-        msession.remove.assert_called_once_with()
+        mmaker.remove.assert_called_once_with()
 
-    def test_cleanup_on_commit_exception(self, generator, msession, mrequest):
+    def test_cleanup_on_commit_exception(self, request_session, msession, mrequest, mmaker):
         """
         .cleanup should rollback database changes on commit's exception.
         This is not very often, but we need to rollback changes and re-raise
@@ -51,16 +79,27 @@ class TestRequestDBSessionGenerator(object):
         msession.commit.side_effect = RuntimeError('x')
 
         with raises(RuntimeError):
-            generator.cleanup(mrequest)
+            request_session.cleanup(mrequest)
 
-        msession.remove.assert_called_once_with()
+        mmaker.remove.assert_called_once_with()
 
-    def test_cleanup_on_success(self, generator, msession, mrequest):
+    def test_cleanup_on_success(self, request_session, msession, mrequest, mmaker):
         """
         .cleanup should commit changes on response success
         """
         mrequest.exception = None
 
-        generator.cleanup(mrequest)
+        request_session.cleanup(mrequest)
         msession.commit.assert_called_once_with()
-        msession.remove.assert_called_once_with()
+        mmaker.remove.assert_called_once_with()
+
+    def test_run(self, request_session, mmaker):
+        """
+        .run should get session maker and create session from it.
+        """
+        del request_session.maker
+
+        assert request_session.run() == mmaker.return_value
+
+        assert request_session.maker == mmaker
+        assert request_session.session == mmaker.return_value
