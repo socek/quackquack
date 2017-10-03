@@ -5,6 +5,7 @@ class RequestDBSessionGenerator(object):
 
     def __call__(self, request):
         request_db = RequestDB(request)
+        request_db.run()
         request.add_finished_callback(request_db.cleanup)
         return request_db.session
 
