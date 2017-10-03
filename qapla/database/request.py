@@ -9,6 +9,7 @@ class RequestDBSessionGenerator(object):
         return self.session
 
     def create_session(self, request):
+        print('creatin!')
         return request.registry[self.registry_key]()
 
     def cleanup(self, request):
