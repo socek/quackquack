@@ -4,17 +4,28 @@ class RequestDBSessionGenerator(object):
         self.registry_key = registry_key
 
     def __call__(self, request):
-        maker = request.registry[self.registry_key]
-        self.session = maker()
+        self.session = self.create_session(request)
         request.add_finished_callback(self.cleanup)
         return self.session
 
+    def create_session(self, request):
+        return request.registry[self.registry_key]()
+
     def cleanup(self, request):
         if request.exception is not None:
-            self.session.rollback()
+            self._rollback()
         else:
-            try:
-                self.session.commit()
-            except:
-                self.session.rollback()
+            self._commit()
+
+    def _rollback(self):
+        self.session.rollback()
         self.session.close()
+
+    def _commit(self):
+        try:
+            self.session.commit()
+        except:
+            self.session.rollback()
+            raise
+        finally:
+            self.session.close()

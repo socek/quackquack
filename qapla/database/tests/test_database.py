@@ -21,7 +21,14 @@ class TestDatabase(object):
         return Database(self.NAME)
 
     @fixture
-    def mapp(self, database, mget_engine, mdatabase_setting, msessionmaker):
+    def mapp(
+        self,
+        database,
+        mget_engine,
+        mdatabase_setting,
+        msessionmaker,
+        mscoped_session,
+    ):
         mapp = MagicMock()
         database.add_to_app(mapp)
         return mapp
@@ -81,12 +88,18 @@ class TestDatabase(object):
         with patch('qapla.database.database.DatabaseSetting') as mock:
             yield mock
 
+    @fixture
+    def mscoped_session(self):
+        with patch('qapla.database.database.scoped_session') as mock:
+            yield mock
+
     def test_add_to_app(
         self,
         database,
         mget_engine,
         msessionmaker,
         mdatabase_setting,
+        mscoped_session,
     ):
         """
         .add_to_app should create engine and sessionmaker.
@@ -98,11 +111,12 @@ class TestDatabase(object):
         assert database.app is mapp
         assert database.settings is mdatabase_setting.return_value
         assert database.engine is mget_engine.return_value
-        assert database.sessionmaker is msessionmaker.return_value
+        assert database.sessionmaker is mscoped_session.return_value
         mget_engine.assert_called_once_with()
         msessionmaker.assert_called_once_with(bind=database.engine)
         mdatabase_setting.assert_called_once_with(mapp.settings, self.NAME)
         mdatabase_setting.return_value.validate.assert_called_once_with()
+        mscoped_session.assert_called_once_with(msessionmaker.return_value)
 
     def test_add_to_web(
         self,
@@ -110,6 +124,7 @@ class TestDatabase(object):
         mapp,
         mrequest_dbsession_generator,
         msessionmaker,
+        mscoped_session,
     ):
         """
         .add_to_web should add sessionmaker to request
@@ -118,12 +133,13 @@ class TestDatabase(object):
 
         database.add_to_web()
 
-        assert mapp.config.registry == {self.NAME: msessionmaker.return_value}
+        assert mapp.config.registry == {self.NAME: mscoped_session.return_value}
         mrequest_dbsession_generator.assert_called_once_with(self.NAME)
         mapp.config.add_request_method.assert_called_once_with(
             mrequest_dbsession_generator.return_value,
             name=self.NAME,
             reify=True)
+        mscoped_session.assert_called_once_with(msessionmaker.return_value)
 
     @mark.parametrize(
         'default_url',

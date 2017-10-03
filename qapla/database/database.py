@@ -2,6 +2,7 @@ from alembic import command
 from alembic.config import Config
 from sqlalchemy.engine import create_engine
 from sqlalchemy.engine.url import make_url
+from sqlalchemy.orm import scoped_session
 from sqlalchemy.orm import sessionmaker
 
 from qapla.database.exceptions import SettingMissing
@@ -59,7 +60,7 @@ class Database(object):
         self.settings = DatabaseSetting(app.settings, self.name)
         self.settings.validate()
         self.engine = self.get_engine()
-        self.sessionmaker = sessionmaker(bind=self.engine)
+        self.sessionmaker = scoped_session(sessionmaker(bind=self.engine))
 
     def add_to_web(self):
         self.app.config.registry[self.name] = self.sessionmaker
