@@ -24,8 +24,5 @@ class RequestDBSessionGenerator(object):
     def _commit(self):
         try:
             self.session.commit()
-        except:
-            self.session.rollback()
-            raise
         finally:
             self.session.close()
