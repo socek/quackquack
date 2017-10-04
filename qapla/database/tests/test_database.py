@@ -252,9 +252,6 @@ class TestDatabase(object):
                 'script_location',
                 database.paths.get.return_value),
             call(
-                'db_app_name',
-                database.name),
-            call(
                 'is_test',
                 'true')]
         mcommand.upgrade.assert_called_once_with(alembic_cfg, 'head')

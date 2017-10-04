@@ -89,7 +89,6 @@ class Database(object):
     def _migrate(self):
         alembic_cfg = Config()
         alembic_cfg.set_main_option('script_location', self.paths.get('versions'))
-        alembic_cfg.set_main_option('db_app_name', self.name)
         alembic_cfg.set_main_option('is_test', 'true')
         command.upgrade(alembic_cfg, "head")
 
