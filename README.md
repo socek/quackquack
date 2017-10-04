@@ -85,24 +85,7 @@ setup(
 
 ### Sqlalchemy and alembic integration
 
-In order to make our application able to use database thru sqlalchemy and migration thru alembic, first we need to make
-our Application class inherit from DatabaseApplication. After that we need to add .add_database method into append_app_plugins
-and append_web_plugins section. Database is a plugin that do not need pyramid, that is why it needs to be plugged in on
-the app plugins step.
-
-```python
-from qapla.database import DatabaseApplication
-
-class RotarranApplication(DatabaseApplication):
-
-    def append_app_plugins(self):
-        self.add_database_app()
-
-    def append_web_plugins(self):
-        self.add_database_web()
-```
-
-Unfortunetly you need to make proper alembic configuration on your own.
+This section was moved to the [README-database.md](README-database.md).
 
 ### Logging
 

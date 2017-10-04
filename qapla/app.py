@@ -11,6 +11,10 @@ class Application(object):
         settings_module = None
         settings = SettingsFactory
 
+    def __init__(self):
+        self.is_created = False
+        self.method = None
+
     def __call__(self, settings=None):
         settings = settings or {}
         return self.run_uwsgi(settings)
@@ -48,14 +52,16 @@ class Application(object):
         settings = settings or {}
         self._create_app(settings, 'command')
 
-    def _create_app(self, settings={}, endpoint='uwsgi'):
-        self._generate_settings(settings, endpoint)
+    def _create_app(self, settings={}, method='uwsgi'):
+        self._generate_settings(settings, method)
         self.append_app_plugins()
+        self.is_created = True
+        self.method = method
 
     def _generate_settings(
         self,
         settings,
-        endpoint,
+        method,
     ):
         self.settings = settings
         self.paths = {}
@@ -63,7 +69,7 @@ class Application(object):
             self.Config.settings_module,
             self.settings,
             self.paths)
-        self.settings, self.paths = factory.get_for(endpoint)
+        self.settings, self.paths = factory.get_for(method)
 
     def _create_config(self):
         kwargs = self._get_config_kwargs()

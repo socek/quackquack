@@ -61,6 +61,9 @@ class Database(object):
         self.settings.validate()
         self.paths = app.paths
         self.engine = self.get_engine()
+        self._create_session_maker()
+
+    def _create_session_maker(self):
         self.sessionmaker = scoped_session(sessionmaker(bind=self.engine))
 
     def add_to_web(self):
