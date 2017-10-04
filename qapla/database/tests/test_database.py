@@ -257,6 +257,16 @@ class TestDatabase(object):
         mcommand.upgrade.assert_called_once_with(alembic_cfg, 'head')
         database.paths.get.assert_called_once_with('versions')
 
+    def test_close(self, database, msessionmaker):
+        """
+        .close should remove the session from the session maker.
+        """
+        database.sessionmaker = MagicMock()
+
+        database.close()
+
+        database.sessionmaker.remove.assert_called_once_with()
+
 
 class TestDatabaseSetting(object):
     NAME = 'dbname'

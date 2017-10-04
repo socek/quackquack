@@ -113,3 +113,6 @@ class Database(object):
 
     def get_session(self):
         return self.sessionmaker()
+
+    def close(self):
+        self.sessionmaker.remove()
