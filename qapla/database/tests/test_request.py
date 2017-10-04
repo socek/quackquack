@@ -2,7 +2,6 @@ from mock import MagicMock
 from mock import patch
 from mock import sentinel
 from pytest import fixture
-from pytest import raises
 
 from qapla.database.request import RequestDBSession
 from qapla.database.request import RequestDBSessionGenerator
@@ -66,21 +65,8 @@ class TestRequestDBSession(FixturesMixing):
         mrequest.exception = True
 
         request_session.cleanup(mrequest)
+
         msession.rollback.assert_called_once_with()
-        mmaker.remove.assert_called_once_with()
-
-    def test_cleanup_on_commit_exception(self, request_session, msession, mrequest, mmaker):
-        """
-        .cleanup should rollback database changes on commit's exception.
-        This is not very often, but we need to rollback changes and re-raise
-        the error.
-        """
-        mrequest.exception = None
-        msession.commit.side_effect = RuntimeError('x')
-
-        with raises(RuntimeError):
-            request_session.cleanup(mrequest)
-
         mmaker.remove.assert_called_once_with()
 
     def test_cleanup_on_success(self, request_session, msession, mrequest, mmaker):
@@ -90,7 +76,7 @@ class TestRequestDBSession(FixturesMixing):
         mrequest.exception = None
 
         request_session.cleanup(mrequest)
-        msession.commit.assert_called_once_with()
+        assert not msession.rollback.called
         mmaker.remove.assert_called_once_with()
 
     def test_run(self, request_session, mmaker):

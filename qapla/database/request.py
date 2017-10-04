@@ -28,16 +28,5 @@ class RequestDBSession(object):
 
     def cleanup(self, request):
         if request.exception is not None:
-            self._rollback()
-        else:
-            self._commit()
-
-    def _rollback(self):
-        self.session.rollback()
+            self.session.rollback()
         self.maker.remove()
-
-    def _commit(self):
-        try:
-            self.session.commit()
-        finally:
-            self.maker.remove()
