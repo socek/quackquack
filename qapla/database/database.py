@@ -54,6 +54,7 @@ class Database(object):
 
     def __init__(self, name='database', paths_key='migrations'):
         self.name = name
+        self.paths_key = paths_key
 
     def add_to_app(self, app):
         self.app = app
@@ -91,7 +92,9 @@ class Database(object):
 
     def _migrate(self):
         alembic_cfg = Config()
-        alembic_cfg.set_main_option('script_location', self.paths.get('migrations'))
+        alembic_cfg.set_main_option(
+            'script_location',
+            self.paths.get(self.paths_key))
         alembic_cfg.set_main_option('is_test', 'true')
         command.upgrade(alembic_cfg, "head")
 

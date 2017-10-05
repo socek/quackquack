@@ -255,7 +255,7 @@ class TestDatabase(object):
                 'is_test',
                 'true')]
         mcommand.upgrade.assert_called_once_with(alembic_cfg, 'head')
-        database.paths.get.assert_called_once_with('versions')
+        database.paths.get.assert_called_once_with('migrations')
 
     def test_close(self, database, msessionmaker):
         """
