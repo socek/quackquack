@@ -176,15 +176,30 @@ Avalible fixtures:
 
 You can use the [CQRS](https://martinfowler.com/bliki/CQRS.html) methodology. For this we have designed ReadDriver and
 WriteDriver in the `qapla.driver` module. Using it is very simple. You should have ReadDriver and WriteDriver for every
-model you use. Example:
+model you use.
+
+It seperates using the database in controllers. In between we will use 2 drivers: write and read. Sometimes they will
+return the objects and sometimes the raw data in dict/list. Using this methodology we can separate unit tests (mocking
+drivers) with integration one (testing drivers).
+
+In order to use drivers, you should make 2 classes:
 
 ```python
-from qapla.driver import ReadDriver
+class ModelReadDriver(ReadDriver):
+    model = Model
 
-from rotarran.models import UserModel
 
-class UserReadDriver(ReadDriver):
-    model = UserDriver
-
-obj = UserReadDriver(dbsession).get_by_id(1)
+class ModelWriteDriver(WriteDriver):
+    model = Model
 ```
+
+In the controller you should use:
+
+```python
+read_driver = ModelReadDriver(self.request.database)
+
+obj = read_driver.get_by_id(1)
+```
+
+Or go to class and check available methods. All code which involves
+saving/reading from database should be whitn method inside Read or Write driver.
