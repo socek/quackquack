@@ -7,6 +7,13 @@
     3. [More info](#more-info)
 2. [Configuration](#configuration)
     1. [Application](#application)
+    2. [Migration - Alembic](#migration---alembic)
+3. [How To Use](#how-to-use)
+    1. [Web server - request](#web-server---request)
+    2. [Migration](#migration)
+    3. [Celery](#celery)
+    4. [Tests](#tests)
+    5. [CQRS](#cqrs)
 
 ## About
 
@@ -106,7 +113,7 @@ instance and `rotarran.application.db.Model` is Sqlalchemy Base Model.
 
 ## How To Use
 
-### In web server - request
+### Web server - request
 
 For using the database session, you can get the database session from the request object. Just get the name provieded
 in the configuration, like it was a normal property. Example:
