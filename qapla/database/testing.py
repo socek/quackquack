@@ -4,6 +4,22 @@ from pytest import mark
 
 @mark.integration
 class BaseApplicationFixture(object):
+    """
+    This test class is responsible for starting the application in test mode.
+    The tests implemented under this class will get the @mark.integration mark,
+    so please use this class only when needed.
+
+    To configure you need to set these 2 class properties:
+        - APP_CLASS - class from which create the application. It should be inherited from qapla.database.application.DatabaseApplication
+        - DATABASE_KEY - key of the database, default: 'database'
+
+    List of avalible fixtures:
+        - application - CCAdsApplication instance with tests settings.
+        - dbplugin - qapla.database.database.Database instance for the database set by the DATABASE_KEY
+        - dbsession - sqlalchemy session for the database set by the DATABASE_KEY. It will be automatically closed
+        - settings - settings for the application
+        - paths - paths for the application
+    """
     _test_cache = None
     _test_app = None
     APP_CLASS = None
@@ -41,3 +57,11 @@ class BaseApplicationFixture(object):
         yield session
         session.rollback()
         dbplugin.sessionmaker.remove()
+
+    @fixture
+    def settings(self, application):
+        return application.settings
+
+    @fixture
+    def paths(self, application):
+        return application.paths
