@@ -65,11 +65,9 @@ class Application(object):
         method,
     ):
         self.settings = settings
-        self.paths = {}
         factory = self.Config.settings(
             self.Config.settings_module,
-            self.settings,
-            self.paths)
+            self.settings)
         self.settings, self.paths = factory.get_for(method)
 
     def _create_config(self):

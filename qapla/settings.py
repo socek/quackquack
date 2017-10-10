@@ -16,10 +16,9 @@ class SettingsFactory(object):
         'command': [('command', False), ('local_command', False), ('local', False)],
     }
 
-    def __init__(self, module, settings=None, paths=None):
+    def __init__(self, module, settings=None):
         self.module = module
         self.settings = settings or {}
-        self.paths = paths or {}
 
     def get_for(self, endpoint):
         files = self.ENDPOINTS[endpoint]

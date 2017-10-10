@@ -111,8 +111,7 @@ class TestApplication(object):
 
         app.Config.settings.assert_called_once_with(
             mconfig_settings_mopdule,
-            sentinel.base_settings,
-            {})
+            sentinel.base_settings)
         factory.get_for.assert_called_once_with(sentinel.endpoint)
 
         assert app.settings == sentinel.left
