@@ -78,10 +78,15 @@ class Database(object):
         """
         Drop old database and migrate from scratch.
         """
-        self._drop_database()
+        self._clear_database()
         self._migrate()
 
-    def _drop_database(self):
+    def _clear_database(self):
+        """
+        In order to drop database, we need to connect to another one (using
+        default_url). With that connection we need to drop and create new
+        database.
+        """
         dbname = self.get_dbname()
         engine = self.get_engine(True)
         session = sessionmaker(bind=engine)()

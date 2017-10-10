@@ -44,8 +44,8 @@ class TestDatabase(object):
             yield mock
 
     @fixture
-    def mdrop_database(self, database):
-        with patch.object(database, '_drop_database') as mock:
+    def mclear_database(self, database):
+        with patch.object(database, '_clear_database') as mock:
             yield mock
 
     @fixture
@@ -192,16 +192,16 @@ class TestDatabase(object):
         assert database.get_session() == database.sessionmaker.return_value
         database.sessionmaker.assert_called_once_with()
 
-    def test_recreate(self, database, mdrop_database, mmigrate):
+    def test_recreate(self, database, mclear_database, mmigrate):
         """
         .recreate should drop old database and run migrations from scratch.
         """
         database.recreate()
 
-        mdrop_database.assert_called_once_with()
+        mclear_database.assert_called_once_with()
         mmigrate.assert_called_once_with()
 
-    def test_drop_database(
+    def test_clear_database(
         self,
         database,
         mget_dbname,
@@ -209,13 +209,13 @@ class TestDatabase(object):
         msessionmaker,
     ):
         """
-        ._drop_database should drop database by connecting to default one (you
+        ._clear_database should drop database by connecting to default one (you
         can not drop database if you are connected to it) and dropping it.
         """
         session = msessionmaker.return_value.return_value
         mget_dbname.return_value = 'xena'
 
-        database._drop_database()
+        database._clear_database()
 
         mget_dbname.assert_called_once_with()
         mget_engine.assert_called_once_with(True)
