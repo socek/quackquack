@@ -52,7 +52,8 @@ class Application(object):
         settings = settings or {}
         self._create_app(settings, 'command')
 
-    def _create_app(self, settings={}, method='uwsgi'):
+    def _create_app(self, settings=None, method='uwsgi'):
+        settings = settings or {}
         self._generate_settings(settings, method)
         self.append_app_plugins()
         self.is_created = True
