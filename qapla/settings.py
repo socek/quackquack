@@ -12,8 +12,8 @@ class SettingsFactory(object):
     ENDPOINTS = {
         'uwsgi': [('local', False)],
         'tests': [('tests', False), ('local', False)],
-        'shell': [('shell', False), ('local_shell', False)],
-        'command': [('command', False), ('local_command', False)],
+        'shell': [('shell', False), ('local_shell', False), ('local', False)],
+        'command': [('command', False), ('local_command', False), ('local', False)],
     }
 
     def __init__(self, module, settings=None, paths=None):
