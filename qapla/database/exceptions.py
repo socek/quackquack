@@ -4,5 +4,6 @@ class SettingMissing(Exception):
     """
 
     def __init__(self, key, description):
+        super().__init__()
         self.key = key
         self.description = description
