@@ -4,6 +4,10 @@ from morfdict import Factory
 class SettingsFactory(object):
     """
     This class will generate settings for different endpoints.
+    SettingsFactory.module is a dotted prefix for the settings (for example app.settings).
+    All endpoints will import the default module. After that the endpoint will try
+    to import the rest modules provided in the list. If it is with `True`, the
+    Factory will raise an error (FileNotFound). Otherwise the error will not be raised.
     """
     ENDPOINTS = {
         'uwsgi': [('local', False)],
