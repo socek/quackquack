@@ -1,4 +1,25 @@
-# Qapla - About
+# Qapla
+
+# Table of Contents
+1. [About](#about)
+2. [Features](#features)
+3. [Installation](#installation)
+4. [How To Use](#how-to-use)
+    1. [Application boilerplate + settings integration](#application-boilerplate-+-settings-integration)
+        1. [Sqlalchemy and alembic integration](#sqlalchemy-and-alembic-integration)
+        2. [Logging](#logging)
+    2. [Controller](#controller)
+        1. [Flow](#flow)
+        2. [Controller helpers](#controller-helpers)
+        3. [JsonController](#jsoncontroller)
+        4. [RestfulController](#restfulcontroller)
+    3. [Routing](#routing)
+5. More info
+    1. [Changelog](CHANGELOG.md)
+    2. [Database](README-database.md)
+
+
+# About
 
 This project is pyramid's boilerplate code for applications. It is useful when you have couple of application using
 pyramid and want to have the same code structure and similar configuration.
@@ -41,7 +62,7 @@ Example Application class is looking like this:
 from qapla.app import Application
 class RotarranApplication(Application):
 
-    class Config(Application.Config):
+    class Config(Application.MetaConfig):
         settings_module = 'rotarran.application'
 
     def append_app_plugins(self):
@@ -59,7 +80,7 @@ class RotarranApplication(Application):
 main = RotarranApplication()
 ```
 
-First we need to create Application class. Application.Config.settings_module is python url for where the settings
+First we need to create Application class. Application.MetaConfig.settings_module is python url for where the settings
 will be stored (morfdict support configuration in many files, for example "default.py" + "local.py"). After that we
 should add some plugins. In this example we add plugins for:
 - routing - which comes with routing as .yml file
@@ -85,24 +106,7 @@ setup(
 
 ### Sqlalchemy and alembic integration
 
-In order to make our application able to use database thru sqlalchemy and migration thru alembic, first we need to make
-our Application class inherit from DatabaseApplication. After that we need to add .add_database method into append_app_plugins
-and append_web_plugins section. Database is a plugin that do not need pyramid, that is why it needs to be plugged in on
-the app plugins step.
-
-```python
-from qapla.database import DatabaseApplication
-
-class RotarranApplication(DatabaseApplication):
-
-    def append_app_plugins(self):
-        self.add_database_app()
-
-    def append_web_plugins(self):
-        self.add_database_web()
-```
-
-Unfortunetly you need to make proper alembic configuration on your own.
+This section was moved to the [README-database.md](README-database.md).
 
 ### Logging
 
@@ -183,23 +187,23 @@ more magic behind this. Configuration by class properties works only if you use
 qapla.routing.Routing for your routing configuration.
 
 Flow of running the controller
-1. _create_context() - create default context
-2. _before_make() - do some stuff before make
-3. _make() - run .make method
-4. _after_make() - do some stuff after make
-5. _create_widgets() - add something into the context
-6. _get_response() - return prepered response or create new one if not created
+1. `_create_context()` - create default context
+2. `_before_make()` - do some stuff before make
+3. `_make()` - run .make method
+4. `_after_make()` - do some stuff after make
+5. `_create_widgets()` - add something into the context
+6. `_get_response()` - return prepered response or create new one if not created
 
 Before and after make methods are places to make something like "context processor"
 in django (code which will be runned around normal controller code). In order
 to proper use of these you need to inherite from controllers with these method
 overwritten.
 
-_make method is a wrapper for .make which, besides running .make, will catch
+`_make method` is a wrapper for .make which, besides running .make, will catch
 FinalizeController error. This is an error which will end the .make method, but
 run the rest of the controller flow. Another useful error is QuitController,
 which will end the request without finishing the controller flow. FinalizeController
-will run ._after_make and ._create_widgets method, but QuitController will not.
+will run `._after_make` and `._create_widgets` method, but `QuitController` will not.
 
 If you will not create response object, the default one will be used. If you would
 like to create response, you need to set Controller.response property, for example:
@@ -211,7 +215,7 @@ self.response = HTTPFound(
 )
 ```
 
-_create_widgets method will be called only, if you have no response created in the
+`_create_widgets` method will be called only, if you have no response created in the
 .make mthod.
 
 ### Controller helpers
@@ -234,36 +238,6 @@ the controller:
 3. def put(self):
 4. def patch(self):
 5. def delete(self):
-
-## Drivers
-
-Drivers methodology is implemention of "Command Query Responsibility Segregation".
-It seperates using the database in controllers. In between we will use 2
-drivers: write and read. Sometimes they will return the objects and sometimes
-the raw data in dict/list. Using this methodology we can separate unit tests
-(mocking drivers) with integration one (testing drivers).
-
-In order to use drivers, you should make 2 classes:
-
-```python
-class ModelReadDriver(ReadDriver):
-    model = Model
-
-
-class ModelWriteDriver(WriteDriver):
-    model = Model
-```
-
-In the controller you should use:
-
-```python
-read_driver = ModelReadDriver(self.request.database)
-
-obj = read_driver.get_by_id(1)
-```
-
-Or go to class and check available methods. All code which involves
-saving/reading from database should be whitn method inside Read or Write driver.
 
 ## Routing
 

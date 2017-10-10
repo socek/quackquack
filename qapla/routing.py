@@ -51,7 +51,7 @@ class Routing(object):
     def add(self, controller, route, url, *args, **kwargs):
         """
         Add routing for controller.
-        - controller: controller class
+        - controller: controller class or dotted url to it
         - route: name for the route
         - url - url pattern
         """
@@ -64,17 +64,16 @@ class Routing(object):
         self.add_view(controller, route_name=route)
 
     def add_view(self, controller, **kwargs):
-        url = self._convert_url(controller)
-
-        controller_class = self.config.maybe_dotted(url)
+        """
+        Add view/controller handler.
+        - controller: controller class or dotted url to it
+        """
+        controller_class = self.config.maybe_dotted(controller)
 
         for name in self.values_to_set:
             self.set_controller_config(kwargs, controller_class, name)
 
-        self.config.add_view(url, **kwargs)
-
-    def _convert_url(self, url):
-        return url
+        self.config.add_view(controller, **kwargs)
 
     def set_controller_config(self, kwargs, controller, name):
         value = getattr(controller, name, None)

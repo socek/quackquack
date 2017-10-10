@@ -7,9 +7,13 @@ from qapla.settings import SettingsFactory
 
 class Application(object):
 
-    class Config(object):
+    class MetaConfig(object):
         settings_module = None
         settings = SettingsFactory
+
+    def __init__(self):
+        self.is_created = False
+        self.method = None
 
     def __call__(self, settings=None):
         settings = settings or {}
@@ -48,22 +52,22 @@ class Application(object):
         settings = settings or {}
         self._create_app(settings, 'command')
 
-    def _create_app(self, settings={}, endpoint='uwsgi'):
-        self._generate_settings(settings, endpoint)
+    def _create_app(self, settings=None, method='uwsgi'):
+        settings = settings or {}
+        self._generate_settings(settings, method)
         self.append_app_plugins()
+        self.is_created = True
+        self.method = method
 
     def _generate_settings(
         self,
         settings,
-        endpoint,
+        method,
     ):
-        self.settings = settings
-        self.paths = {}
-        factory = self.Config.settings(
-            self.Config.settings_module,
-            self.settings,
-            self.paths)
-        self.settings, self.paths = factory.get_for(endpoint)
+        factory = self.MetaConfig.settings(
+            self.MetaConfig.settings_module,
+            settings)
+        self.settings, self.paths = factory.get_for(method)
 
     def _create_config(self):
         kwargs = self._get_config_kwargs()

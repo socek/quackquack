@@ -42,6 +42,14 @@ class TestReadDriver(FixtureMixin):
         mdatabase.query.return_value.filter.assert_called_once_with(mmodel.id == sentinel.object_id)
         mdatabase.query.assert_called_once_with(mmodel)
 
+    def test_list_all(self, driver, mdatabase, mmodel):
+        """
+        .list_all should return all elements from the database.
+        """
+        assert driver.list_all() == mdatabase.query.return_value.all.return_value
+        mdatabase.query.return_value.all.assert_called_once_with()
+        mdatabase.query.assert_called_once_with(mmodel)
+
 
 class TestWriteDriver(FixtureMixin):
 

@@ -4,6 +4,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning]
 (http://semver.org/).
 
+## 0.4.0 - 2017-10-10
+### Changed
+- Way of configuring database. Old: sperate for host, port, database and so on. New: Every database should have database
+    setting on its own.
+- Application.Config changed name to a Application.MetaConfig
+
+### Added
+- Add WidthDatabase decorator.
+
+### Fixed
+- Starting of the database in the tests envoritment
+
+
 ## 0.3.1 - 2017-09-15
 ### Fixed
 - Database fixture for testing
