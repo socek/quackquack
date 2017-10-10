@@ -8,6 +8,7 @@ class QuitController(Exception):
     """
 
     def __init__(self, response=None):
+        super().__init__()
         self.response = response
 
 
@@ -17,6 +18,7 @@ class FinalizeController(Exception):
     """
 
     def __init__(self, context=None):
+        super().__init__()
         self.context = context or {}
 
 
