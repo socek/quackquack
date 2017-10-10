@@ -8,6 +8,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Changed
 - Way of configuring database. Old: sperate for host, port, database and so on. New: Every database should have database
     setting on its own.
+- Application.Config changed name to a Application.MetaConfig
 
 ### Added
 - Add WidthDatabase decorator.

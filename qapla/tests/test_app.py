@@ -59,12 +59,12 @@ class TestApplication(object):
 
     @fixture
     def mconfig_settings(self, app):
-        with patch.object(app.Config, 'settings') as mock:
+        with patch.object(app.MetaConfig, 'settings') as mock:
             yield mock
 
     @fixture
     def mconfig_settings_mopdule(self, app):
-        with patch.object(app.Config, 'settings_module') as mock:
+        with patch.object(app.MetaConfig, 'settings_module') as mock:
             yield mock
 
     def test_generate_registry(self, app):
@@ -104,12 +104,12 @@ class TestApplication(object):
         method should result in creating app.settings and app.paths.
         """
         app.settings = sentinel.settings
-        factory = app.Config.settings.return_value
+        factory = app.MetaConfig.settings.return_value
         factory.get_for.return_value = [sentinel.left, sentinel.right]
 
         app._generate_settings(sentinel.base_settings, sentinel.endpoint)
 
-        app.Config.settings.assert_called_once_with(
+        app.MetaConfig.settings.assert_called_once_with(
             mconfig_settings_mopdule,
             sentinel.base_settings)
         factory.get_for.assert_called_once_with(sentinel.endpoint)

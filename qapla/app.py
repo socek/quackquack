@@ -7,7 +7,7 @@ from qapla.settings import SettingsFactory
 
 class Application(object):
 
-    class Config(object):
+    class MetaConfig(object):
         settings_module = None
         settings = SettingsFactory
 
@@ -64,8 +64,8 @@ class Application(object):
         settings,
         method,
     ):
-        factory = self.Config.settings(
-            self.Config.settings_module,
+        factory = self.MetaConfig.settings(
+            self.MetaConfig.settings_module,
             settings)
         self.settings, self.paths = factory.get_for(method)
 

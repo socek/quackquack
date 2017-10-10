@@ -62,7 +62,7 @@ Example Application class is looking like this:
 from qapla.app import Application
 class RotarranApplication(Application):
 
-    class Config(Application.Config):
+    class Config(Application.MetaConfig):
         settings_module = 'rotarran.application'
 
     def append_app_plugins(self):
@@ -80,7 +80,7 @@ class RotarranApplication(Application):
 main = RotarranApplication()
 ```
 
-First we need to create Application class. Application.Config.settings_module is python url for where the settings
+First we need to create Application class. Application.MetaConfig.settings_module is python url for where the settings
 will be stored (morfdict support configuration in many files, for example "default.py" + "local.py"). After that we
 should add some plugins. In this example we add plugins for:
 - routing - which comes with routing as .yml file
