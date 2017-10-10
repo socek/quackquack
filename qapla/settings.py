@@ -1,4 +1,8 @@
+from collections import namedtuple
+
 from morfdict import Factory
+
+SettingsModule = namedtuple('SettingsModule', ['name', 'is_needed'])
 
 
 class SettingsFactory(object):
@@ -10,10 +14,19 @@ class SettingsFactory(object):
     Factory will raise an error (FileNotFound). Otherwise the error will not be raised.
     """
     ENDPOINTS = {
-        'uwsgi': [('local', False)],
-        'tests': [('tests', False), ('local', False)],
-        'shell': [('shell', False), ('local_shell', False), ('local', False)],
-        'command': [('command', False), ('local_command', False), ('local', False)],
+        'uwsgi': [
+            SettingsModule('local', False)],
+        'tests': [
+            SettingsModule('tests', False),
+            SettingsModule('local', False)],
+        'shell': [
+            SettingsModule('shell', False),
+            SettingsModule('local_shell', False),
+            SettingsModule('local', False)],
+        'command': [
+            SettingsModule('command', False),
+            SettingsModule('local_command', False),
+            SettingsModule('local', False)],
     }
 
     def __init__(self, module, settings=None):
