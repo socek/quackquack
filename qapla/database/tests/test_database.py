@@ -7,6 +7,7 @@ from pytest import mark
 from pytest import raises
 from sqlalchemy.exc import ArgumentError
 
+from qapla.database.database import ConfigurationError
 from qapla.database.database import Database
 from qapla.database.database import DatabaseSetting
 from qapla.database.exceptions import SettingMissing
@@ -140,6 +141,17 @@ class TestDatabase(object):
             name=self.NAME,
             reify=True)
         mscoped_session.assert_called_once_with(msessionmaker.return_value)
+
+    def test_add_to_web_when_no_app(
+        self,
+        database,
+    ):
+        """
+        .add_to_web should raise an error if called before .add_to_app
+        """
+        database.app = None
+        with raises(ConfigurationError):
+            database.add_to_web()
 
     @mark.parametrize(
         'default_url',

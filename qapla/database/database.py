@@ -9,6 +9,13 @@ from qapla.database.exceptions import SettingMissing
 from qapla.database.request import RequestDBSessionGenerator
 
 
+class ConfigurationError(Exception):
+
+    def __init__(self, description):
+        super().__init__()
+        self.description = description
+
+
 class DatabaseSetting(object):
     """
     Settings for the database.
@@ -68,6 +75,7 @@ class Database(object):
     def __init__(self, name='database', paths_key='migrations'):
         self.name = name
         self.paths_key = paths_key
+        self.app = None
 
     def add_to_app(self, app):
         self.app = app
@@ -81,6 +89,8 @@ class Database(object):
         self.sessionmaker = scoped_session(sessionmaker(bind=self.engine))
 
     def add_to_web(self):
+        if not self.app:
+            raise ConfigurationError('.add_to_web should be called AFTER .add_to_app')
         self.app.config.registry[self.name] = self.sessionmaker
         self.app.config.add_request_method(
             RequestDBSessionGenerator(self.name),
