@@ -10,9 +10,23 @@ from qapla.database.request import RequestDBSessionGenerator
 
 
 class DatabaseSetting(object):
+    """
+    Settings for the database.
+    This class will help set settings for the database. Making settings key may
+    be a little bit difficult, that is why this class is design for.
+
+    Expected values:
+    - url* - url for the sqlalchemy database
+    - default_url* - url for different sqlalchemy database which allows dropping
+        and creating the first one
+    - options - arguments which will be passed to the sqlalchemy's create_engine
+
+    * - mandatory arguments, which wll be validated and raise an error if don't.
+    """
     _PREFIX = 'db'
     _SETTING_MISSING_FORMAT = (
         "'{0}' key is needed for use '{1}'' database in application")
+    _TO_VALIDATE = ('url', 'default_url')
 
     def __init__(self, settings, name='database'):
         self.name = name
@@ -37,8 +51,7 @@ class DatabaseSetting(object):
         return self.settings.get(key, default)
 
     def validate(self):
-        to_validate = ['url', 'default_url']
-        for subkey in to_validate:
+        for subkey in self._TO_VALIDATE:
             self.validate_exists(subkey)
             make_url(self[subkey])
 
