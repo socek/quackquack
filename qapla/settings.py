@@ -29,9 +29,8 @@ class SettingsFactory(object):
             SettingsModule('local', False)],
     }
 
-    def __init__(self, module, settings=None):
+    def __init__(self, module):
         self.module = module
-        self.settings = settings or {}
 
     def get_for(self, endpoint):
         files = self.ENDPOINTS[endpoint]
@@ -41,7 +40,7 @@ class SettingsFactory(object):
         files = files or []
         factory = Factory(self.module)
         settings, paths = factory.make_settings(
-            settings=self.settings,
+            settings={},
             additional_modules=files,
         )
         return settings, paths

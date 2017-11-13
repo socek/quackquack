@@ -39,5 +39,5 @@ class TestSettingsFactory(object):
 
         mfactory.assert_called_once_with('mymodule')
         mfactory.return_value.make_settings.assert_called_once_with(
-            settings=factory.settings,
+            settings={},
             additional_modules=['one', 'two', 'three'])

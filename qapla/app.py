@@ -1,6 +1,6 @@
 from logging.config import dictConfig
 
-from pyramid.config import Configurator
+from pyramid.config import Configurator as PyramidConfigurator
 
 from qapla.settings import SettingsFactory
 
@@ -71,7 +71,7 @@ class Application(object):
 
     def _create_config(self):
         kwargs = self._get_config_kwargs()
-        self.config = Configurator(**kwargs)
+        self.config = PyramidConfigurator(**kwargs)
 
     def _get_config_kwargs(self):
         return {

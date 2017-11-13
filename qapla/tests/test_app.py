@@ -19,7 +19,7 @@ class TestApplication(object):
 
     @fixture
     def mconfigurator(self):
-        with patch('qapla.app.Configurator') as mock:
+        with patch('qapla.app.PyramidConfigurator') as mock:
             yield mock
 
     @fixture

@@ -11,7 +11,6 @@ from qapla.routing import Routing
 
 
 class TestRouteYamlParser(object):
-
     @fixture
     def parser(self):
         return RouteYamlParser('/highway/to/hell')
@@ -44,14 +43,12 @@ class TestRouteYamlParser(object):
 
     def test_read_yaml(self, parser):
         tmp = NamedTemporaryFile(delete=False)
-        tmp.write(
-            bytes(
-                dump(
-                    {'mydata': 15}
-                ),
-                'utf8',
-            )
-        )
+        tmp.write(bytes(
+            dump({
+                'mydata': 15
+            }),
+            'utf8',
+        ))
         tmp.close()
 
         parser.path = tmp.name
@@ -61,6 +58,7 @@ class TestRouteYamlParser(object):
     def test_parsing(self, parser):
         def key_sorting(obj):
             return obj['controller']
+
         data = {
             'convent': {
                 'controllers': [
@@ -95,28 +93,30 @@ class TestRouteYamlParser(object):
         result = list(parser._parse_route_yaml(data))
         result.sort(key=key_sorting)
 
-        assert result == sorted([
-            {
-                'controller': 'convent.controllers.ConventListController',
-                'route': 'convent:list',
-                'url': '/',
-            },
-            {
-                'controller': 'convent.controllers.ConventEditController',
-                'route': 'convent:edit',
-                'url': '/edit',
-            },
-            {
-                'controller': 'game.controllers.GameListController',
-                'route': 'game:list',
-                'url': '/g',
-            },
-            {
-                'controller': 'game.controllers.GameEditController',
-                'route': 'game:edit',
-                'url': '/g/edit',
-            },
-        ], key=key_sorting)
+        assert result == sorted(
+            [
+                {
+                    'controller': 'convent.controllers.ConventListController',
+                    'route': 'convent:list',
+                    'url': '/',
+                },
+                {
+                    'controller': 'convent.controllers.ConventEditController',
+                    'route': 'convent:edit',
+                    'url': '/edit',
+                },
+                {
+                    'controller': 'game.controllers.GameListController',
+                    'route': 'game:list',
+                    'url': '/g',
+                },
+                {
+                    'controller': 'game.controllers.GameEditController',
+                    'route': 'game:edit',
+                    'url': '/g/edit',
+                },
+            ],
+            key=key_sorting)
 
 
 class ExampleController(object):
@@ -125,14 +125,17 @@ class ExampleController(object):
 
 
 class TestRouting(object):
-
     @fixture
-    def mapp(self):
+    def mpyramid(self):
         return MagicMock()
 
     @fixture
-    def routing(self, mapp):
-        return Routing(mapp)
+    def mpaths(self):
+        return MagicMock()
+
+    @fixture
+    def routing(self, mpyramid, mpaths):
+        return Routing(mpyramid, mpaths)
 
     @fixture
     def m_route_yaml_parser(self):
@@ -141,12 +144,8 @@ class TestRouting(object):
             yield mock
 
     @fixture
-    def mconfig(self, mapp):
-        return mapp.config
-
-    @fixture
-    def mpaths(self, mapp):
-        return mapp.paths
+    def mconfig(self, mpyramid):
+        return mpyramid.config
 
     @fixture
     def madd(self, routing):
@@ -185,21 +184,16 @@ class TestRouting(object):
         mconfig.add_route('route', 'url', 'arg', kw='arg')
         madd_view.assert_called_once_with('controller', route_name='route')
 
-    def test_add_view(self, routing, mconfig):
-        mconfig.maybe_dotted.return_value = ExampleController
+    def test_add_view(self, routing, mpyramid):
+        mpyramid.maybe_dotted.return_value = ExampleController
         routing.add_view(
             'impaf.tests.test_routing.ExampleController',
             route_name='something',
         )
 
-        mconfig.add_view(
+        mpyramid.add_view(
             'impaf.tests.test_routing.ExampleController',
             route_name='something',
             renderer='myrenderer',
         )
 
-    def test_paths(self, routing, mapp):
-        """
-        .paths should be application's paths
-        """
-        assert routing.paths == mapp.paths

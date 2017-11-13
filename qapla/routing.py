@@ -29,16 +29,9 @@ class Routing(object):
         'require_csrf',
     ]
 
-    def __init__(self, application):
-        self.application = application
-
-    @property
-    def config(self):
-        return self.application.config
-
-    @property
-    def paths(self):
-        return self.application.paths
+    def __init__(self, pyramid, paths):
+        self.pyramid = pyramid
+        self.paths = paths
 
     def read_from_file(self, path):
         """
@@ -55,11 +48,7 @@ class Routing(object):
         - route: name for the route
         - url - url pattern
         """
-        self.config.add_route(
-            route,
-            url,
-            *args,
-            **kwargs)
+        self.pyramid.add_route(route, url, *args, **kwargs)
 
         self.add_view(controller, route_name=route)
 
@@ -68,12 +57,12 @@ class Routing(object):
         Add view/controller handler.
         - controller: controller class or dotted url to it
         """
-        controller_class = self.config.maybe_dotted(controller)
+        controller_class = self.pyramid.maybe_dotted(controller)
 
         for name in self.values_to_set:
             self.set_controller_config(kwargs, controller_class, name)
 
-        self.config.add_view(controller, **kwargs)
+        self.pyramid.add_view(controller, **kwargs)
 
     def set_controller_config(self, kwargs, controller, name):
         value = getattr(controller, name, None)
@@ -85,7 +74,6 @@ class Routing(object):
 
 
 class RouteYamlParser(object):
-
     def __init__(self, path):
         self.path = path
 
