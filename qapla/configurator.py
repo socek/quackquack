@@ -3,7 +3,7 @@ from qapla.application import Application
 
 class Configurator(object):
     def __init__(self):
-        self.is_created = False
+        self.is_started = False
         self.method = None
         self.plugins = []
         self.application_count = 0
@@ -15,14 +15,14 @@ class Configurator(object):
         self.append_plugins()
         self.init_plugins()
 
-        self.is_created = True
+        self.is_started = True
 
     def init_plugins(self):
         for plugin in self.plugins:
             plugin.init_plugin(self)
 
     def __enter__(self):
-        if not self.is_created:
+        if not self.is_started:
             raise RuntimeError('Configurator is not started! '
                                'Use Configurator.start_configurator(method)')
 
