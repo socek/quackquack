@@ -2,7 +2,7 @@ from collections import namedtuple
 
 from morfdict import Factory
 
-from qapla.plugin import Plugin
+from sapp.plugin import Plugin
 
 SettingsModule = namedtuple('SettingsModule', ['name', 'is_needed'])
 
