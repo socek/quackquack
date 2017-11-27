@@ -1,6 +1,6 @@
 from logging.config import dictConfig
 
-from qapla.plugin import Plugin
+from sapp.plugin import Plugin
 
 
 class LoggingPlugin(Plugin):
@@ -10,7 +10,4 @@ class LoggingPlugin(Plugin):
     """
 
     def start_plugin(self, configurator):
-        self.configurator = configurator
-
-    def start_web_plugin(self, pyramid):
-        dictConfig(self.configurator.settings['logging'])
+        dictConfig(configurator.settings['logging'])
