@@ -19,6 +19,10 @@ class TestSettingsPlugin(PluginFixtures):
             yield mock
 
     def test_start_plugin(self, plugin, mfactory, mconfigurator):
+        """
+        .start_plugin should create settings for provided method, which is set
+        in the configurator.
+        """
         mconfigurator.method = 'wsgi'
         mfactory.return_value.make_settings.return_value = [
             sentinel.settings, sentinel.paths
@@ -32,3 +36,15 @@ class TestSettingsPlugin(PluginFixtures):
 
         assert plugin.settings == mconfigurator.settings == sentinel.settings
         assert plugin.paths == mconfigurator.paths == sentinel.paths
+
+    def test_application(self, plugin, mapplication):
+        """
+        .enter should add settings and paths to the application.
+        """
+        plugin.settings = sentinel.settings
+        plugin.paths = sentinel.paths
+
+        plugin.enter(mapplication)
+
+        assert mapplication.settings == sentinel.settings
+        assert mapplication.paths == sentinel.paths

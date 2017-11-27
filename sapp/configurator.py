@@ -1,4 +1,8 @@
-from qapla.application import Application
+from sapp.application import Application
+
+
+class ConfiguratorNotStartedError(RuntimeError):
+    pass
 
 
 class Configurator(object):
@@ -10,11 +14,10 @@ class Configurator(object):
         self.application = None
 
     def start_configurator(self, method):
-        self.method = method
-
         self.append_plugins()
         self.init_plugins()
 
+        self.method = method
         self.is_started = True
 
     def init_plugins(self):
@@ -23,8 +26,9 @@ class Configurator(object):
 
     def __enter__(self):
         if not self.is_started:
-            raise RuntimeError('Configurator is not started! '
-                               'Use Configurator.start_configurator(method)')
+            raise ConfiguratorNotStartedError(
+                'Configurator is not started! '
+                'Use Configurator.start_configurator(method)')
 
         self.application_count += 1
         if not self.application:
