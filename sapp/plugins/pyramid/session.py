@@ -1,4 +1,4 @@
-from qapla.plugin import Plugin
+from sapp.plugin import Plugin
 
 
 class SessionPlugin(Plugin):
@@ -12,7 +12,7 @@ class SessionPlugin(Plugin):
     def start_plugin(self, configurator):
         self.settings = self.configurator.settings
 
-    def start_web_plugin(self, pyramid):
+    def start_pyramid(self, pyramid):
         secret = self.settings['session_secret']
         session_factory = self.session_factory_cls(secret)
         pyramid.set_session_factory(session_factory)

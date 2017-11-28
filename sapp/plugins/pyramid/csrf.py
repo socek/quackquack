@@ -1,4 +1,4 @@
-from qapla.plugin import Plugin
+from sapp.plugin import Plugin
 
 
 class CsrfPlugin(Plugin):
@@ -12,7 +12,7 @@ class CsrfPlugin(Plugin):
     def start_plugin(self, configurator):
         self.settings = self.configurator.settings
 
-    def start_web_plugin(self, pyramid):
+    def start_pyramid(self, pyramid):
         pyramid.set_csrf_storage_policy(self.policy_cls())
         pyramid.set_default_csrf_options(
             require_csrf=True,

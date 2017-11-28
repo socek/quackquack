@@ -111,6 +111,6 @@ class RoutingPlugin(Plugin):
     def start_plugin(self, configurator):
         self.configurator = configurator
 
-    def start_web_plugin(self, pyramid):
+    def start_pyramid(self, pyramid):
         self.routing = self.routing_cls(pyramid, self.configurator.paths)
         self.routing.make()

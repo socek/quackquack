@@ -2,7 +2,7 @@ from sqlalchemy.engine import create_engine
 from sqlalchemy.engine.url import make_url
 from sqlalchemy.orm import sessionmaker
 
-from qapla.database.database import DatabaseSetting
+from sapp.database.database import DatabaseSetting
 
 
 class Database(object):

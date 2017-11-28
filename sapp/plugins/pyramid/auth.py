@@ -1,4 +1,4 @@
-from qapla.plugin import Plugin
+from sapp.plugin import Plugin
 
 
 class AuthPlugin(Plugin):
@@ -14,7 +14,7 @@ class AuthPlugin(Plugin):
     def start_plugin(self, configurator):
         self.settings = self.configurator.settings
 
-    def start_web_plugin(self, pyramid):
+    def start_pyramid(self, pyramid):
         authn_policy = self.authn_policy_cls(self.settings['secret'])
         authz_policy = self.authz_policy_cls()
         self.config.set_authentication_policy(authn_policy)

@@ -1,6 +1,6 @@
 from sqlalchemy.engine.url import make_url
 
-from qapla.database.exceptions import SettingMissing
+from sapp.database.exceptions import SettingMissing
 
 
 class ConfigurationError(Exception):
