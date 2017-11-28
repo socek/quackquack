@@ -1,4 +1,5 @@
 from mock import MagicMock
+from mock import patch
 from pytest import fixture
 from pytest import raises
 
@@ -93,3 +94,11 @@ class TestConfigurator(object):
         assert call[1] == RuntimeError
         assert call[2] == error
         assert call[3] is not None
+
+    def test_mocking(self, configurator):
+        """
+        Mocking the application objects should be simple an easy.
+        """
+        with patch.object(configurator, 'create_application') as mock:
+            with configurator as app:
+                assert app == mock.return_value

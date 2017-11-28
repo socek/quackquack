@@ -25,6 +25,9 @@ class Configurator(object):
             plugin.init_plugin(self)
 
     def __enter__(self):
+        return self.create_application()
+
+    def create_application(self):
         if not self.is_started:
             raise ConfiguratorNotStartedError(
                 'Configurator is not started! '
