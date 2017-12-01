@@ -23,14 +23,16 @@ class TestConfiguratorWithPyramid(object):
 
     @fixture
     def mpyramid_configurator(self):
-        with patch('sapp.plugins.pyramid.configurator.PyramidConfigurator') as mock:
+        with patch('sapp.plugins.pyramid.configurator.PyramidConfigurator'
+                   ) as mock:
             yield mock
 
     def test_starting_pyramid_application(self, configurator,
                                           mpyramid_configurator):
         """
+        .start_pyramid should create wsgi application
         """
-        result = configurator('arg', kw='arg2')
+        result = configurator.start_pyramid('arg', kw='arg2')
 
         mpyramid_configurator.assert_called_once_with('arg', kw='arg2')
         pyramid = mpyramid_configurator.return_value
@@ -38,4 +40,4 @@ class TestConfiguratorWithPyramid(object):
         assert pyramid.make_wsgi_app.return_value == result
 
         configurator.plugin1.start_pyramid.assert_called_once_with(pyramid)
-        assert configurator.method == 'wsgi'
+        assert configurator.method == 'pyramid'
