@@ -125,6 +125,7 @@ class RestfulController(JsonController):
             'PUT': self.put,
             'PATCH': self.patch,
             'DELETE': self.delete,
+            'OPTIONS': self.options,
         }
 
     def make(self):
@@ -144,4 +145,7 @@ class RestfulController(JsonController):
         pass
 
     def delete(self):
+        pass
+
+    def options(self):
         pass
