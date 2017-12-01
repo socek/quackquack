@@ -1,17 +1,45 @@
+"""
+Simple Application
+------------------
+
+About this project
+
+This project will help starting an application, which needs to have initialization
+step at the beginning (for example: for gathering settings) and use them in many
+places/endpoints.
+For example, normally you would need to use two separate mechanism for settings
+in celery application and web application, because you should not use web
+application startup in the celery app. This package provide sollution for this
+problem.
+"""
+
 from setuptools import find_packages
 from setuptools import setup
 
-install_requires = [
-    'pyramid>=1.9',
-    'PyYAML>=3.12',
-    'morfdict>=0.4.6',
-]
+setup(
+    name='Simple Application',
+    version='0.1',
+    description='Simple Application Mechanism',
+    packages=find_packages(),
+    install_requires=[
+        'morfdict==0.4.7',
+    ],
+    tests_require=['coverage', 'pytest', 'pytest-cov'],
+    long_description=__doc__,
+    author='Dominik "Socek" Długajczyk',
+    author_email='msocek@gmail.com',
+    license='MIT',
+    zip_safe=True,
+    url='https://github.com/socek/qapla',
+    keywords=['application', 'settings'],
+    entry_points={},
+    classifiers=[
+        'Development Status :: 4 - Beta', 'Environment :: Web Environment',
+        'Intended Audience :: Developers',
+        'License :: OSI Approved :: MIT License',
+        'Operating System :: OS Independent', 'Programming Language :: Python',
+        'Programming Language :: Python :: 3',
+        'Programming Language :: Python :: 3.6'
+    ], )
 
-if __name__ == '__main__':
-    setup(
-        name='sapp',
-        version='0.5.0',
-        packages=find_packages(),
-        install_requires=install_requires,
-        license='Apache License 2.0',
-    )
+
