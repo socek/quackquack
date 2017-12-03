@@ -1,310 +1,42 @@
-# Qapla
+# Simple Application
 
 # Table of Contents
-1. [About](#about)
-2. [Features](#features)
-3. [Installation](#installation)
-4. [How To Use](#how-to-use)
-    1. [Application boilerplate + settings integration](#application-boilerplate-+-settings-integration)
-        1. [Sqlalchemy and alembic integration](#sqlalchemy-and-alembic-integration)
-        2. [Logging](#logging)
-    2. [Controller](#controller)
-        1. [Flow](#flow)
-        2. [Controller helpers](#controller-helpers)
-        3. [JsonController](#jsoncontroller)
-        4. [RestfulController](#restfulcontroller)
-    3. [Routing](#routing)
-5. More info
-    1. [Changelog](CHANGELOG.md)
-    2. [Database](README-database.md)
+1. [Overview](#overview)
+2. [Quick Using Guide](#quick_using_guide)
+4. More info
+    1. [Changelog](docs/CHANGELOG.md)
 
 
-# About
+# Overview
 
-This project is pyramid's boilerplate code for applications. It is useful when you have couple of application using
-pyramid and want to have the same code structure and similar configuration.
-"Qapla'" is a Klingon's world for "success".
+This project will help starting an application, which needs to have initialization
+step at the beginning (for example: for gathering settings) and use them in many
+places/endpoints.
+For example, normally you would need to use two separate mechanism for settings
+in celery application and web application, because you should not use web
+application startup process in the celery app. This package provide solution
+for this problem, by providing one simple and independent (for use in any place)
+mechanism to use everywhere.
 
-# Features
+# Quick Using Guide
 
-1. Controller as a class instead of methods with a simple flow and configuration from class properties
-2. 4 controller types:
- * Controller (return templates)
- * JsonController (return json)
- * RestfulController (designed for restfull apps)
- * FormController (designed for form validation in restfull apps)
-3. Boilerplate for
- * Integration with morfdict (settings)
- * Integration with Sqlalchemy and Alembic
- * Testing fixtures for py.test
- * Logging integration with morfdict's settings
-
-# Installation
-
-```
-pip install qapla
-```
-
-You should add "qapla==0.1" into you requiretment's list (either if you have requiretments.txt or in setup.py). Please
-be aware that qapla versions will not be backward compatible, so you need to use fixed version instead of something like
-"qapla>=0.1". Qapla have no fixed version for it's requiretment so please also be aware that after upgrading for example
-pyramid, the qapla can stop working. So you should fix the pyramid's version in your application.
-
-# How to use
-
-Qapla is designed to use it's features separately.
-
-## Application boilerplate + settings integration
-
-Example Application class is looking like this:
+To use Simple Application (Sapp for short) you need to inherit from Configurator,
+add some plugins and use it as context manager.
 
 ```python
-from qapla.app import Application
-class RotarranApplication(Application):
+from sapp.configurator import Configurator
+from sapp.plugins.settings import SettingsPlugin
 
-    class Config(Application.MetaConfig):
-        settings_module = 'rotarran.application'
+class MyConfigurator(Configurator):
+    def append_plugins(self):
+        self.add_plugin(SettingsPlugin('path.to.settings'))
 
-    def append_app_plugins(self):
-        self.add_logging()
+main = MyConfigurator()
 
-    def append_web_plugins(self):
-        self.add_routing(CCAdsRouting)
-        self.add_auth(
-            AuthTktAuthenticationPolicy,
-            ACLAuthorizationPolicy,
-            CCAdsFactory)
-        self.add_session(SignedCookieSessionFactory)
-        self.add_csrf_policy(SessionCSRFStoragePolicy)
-
-main = RotarranApplication()
-```
-
-First we need to create Application class. Application.MetaConfig.settings_module is python url for where the settings
-will be stored (morfdict support configuration in many files, for example "default.py" + "local.py"). After that we
-should add some plugins. In this example we add plugins for:
-- routing - which comes with routing as .yml file
-- auth
-- session
-- csrf
-
-All these plugins can be configured in normal pyramid way.
-The "main" variable is for pyramid's configuration. This is the object which needs to be configured when creating egg
-for the pyramid's application, example:
-
-```python
-setup(
-    name='rotarran',
-    packages=find_packages(),
-    entry_points={
-        'paste.app_factory': [
-            'main = rotarran:main'
-        ],
-    }
-)
-```
-
-### Sqlalchemy and alembic integration
-
-This section was moved to the [README-database.md](README-database.md).
-
-### Logging
-
-Logging is configured by default's Python logging support.
-https://docs.python.org/3.6/library/logging.config.html#logging.config.dictConfig
-This is an example.
+with main as app:
+    print(app.settings)
 
 ```
-def logger(settings, paths):
-    log_level = environ.get('CCADS_LOGGING_LEVEL', 'INFO')
-    settings.set(
-        'logging',
-        {
-            'version': 1,
-            'disable_existing_loggers': True,
-            'formatters': {
-                'generic': {
-                    'format': '%(asctime)s %(levelname)-5.5s [%(name)s][%(threadName)s] %(message)s',
-                },
-            },
 
-            'handlers': {
-                'console': {
-                    'level': log_level,
-                    'class': 'logging.StreamHandler',
-                    'formatter': 'generic',
-                },
-            },
+`app.settings` in above example is variable made by the SettingsPlugin.
 
-            'loggers': {
-                'root': {
-                    'level': 'INFO',
-                    'handlers': ['console'],
-                },
-                'sqlalchemy': {
-                    'level': 'INFO',
-                    'handlers': ['console'],
-                    'qualname': 'sqlalchemy.engine',
-                    'propagate': '0',
-                },
-                'alembic': {
-                    'level': 'INFO',
-                    'handlers': ['console'],
-                    'qualname': 'alembic',
-                    'propagate': '0',
-                },
-            }
-        })
-```
-
-After that you need to call add_logging in the append_app_plugins method.
-
-```
-class RotarranApplication(Application):
-    def append_app_plugins(self):
-        self.add_logging()
-```
-
-## Controller
-
-### flow
-
-Qapla's controller is very simple.
-
-```python
-from qapla.controller import Controller
-
-class HomeController(Controller):
-
-    renderer = 'path/to/template.jinja2'
-
-    def make(self):
-        self.context['yey'] = 'it worked!'
-```
-
-This sample controller will render html from template using context. There is no
-more magic behind this. Configuration by class properties works only if you use
-qapla.routing.Routing for your routing configuration.
-
-Flow of running the controller
-1. `_create_context()` - create default context
-2. `_before_make()` - do some stuff before make
-3. `_make()` - run .make method
-4. `_after_make()` - do some stuff after make
-5. `_create_widgets()` - add something into the context
-6. `_get_response()` - return prepered response or create new one if not created
-
-Before and after make methods are places to make something like "context processor"
-in django (code which will be runned around normal controller code). In order
-to proper use of these you need to inherite from controllers with these method
-overwritten.
-
-`_make method` is a wrapper for .make which, besides running .make, will catch
-FinalizeController error. This is an error which will end the .make method, but
-run the rest of the controller flow. Another useful error is QuitController,
-which will end the request without finishing the controller flow. FinalizeController
-will run `._after_make` and `._create_widgets` method, but `QuitController` will not.
-
-If you will not create response object, the default one will be used. If you would
-like to create response, you need to set Controller.response property, for example:
-
-```python
-self.response = HTTPFound(
-    location=url,
-    headers=self.request.response.headerlist,
-)
-```
-
-`_create_widgets` method will be called only, if you have no response created in the
-.make mthod.
-
-### Controller helpers
-
-.redirect method will make HTTP 302 redirection response. If you use quit=True,
-then this method will raise QuitController.
-
-### JsonController
-
-This controller will return json (generated from .context) instead of rendered
-template.
-
-### RestfulController
-
-This controller will return json and have proper HTTP REST method to use within
-the controller:
-
-1. def get(self):
-2. def post(self):
-3. def put(self):
-4. def patch(self):
-5. def delete(self):
-
-## Routing
-
-Routing is a wrapper for pyramid's default router. It is designed to use in the
-most common way: adding route for controller. Pyramid's url dispatching is
-configured in two steps
-
-- configure url
-- configure controller
-
-It is made that because controller can habdle more then 1 url. Qapla's router
-simplyfi this flow, so one url == one controller. Also this router will try to
-read the @view_config configuration from the controller's class attributes.
-
-Route.add method is for adding the url and controller.
-- controller: controller class
-- route: name for the route
-- url - url pattern
-
-Reading from yaml is very simple, because each entry is interpreted as call for
-the .add method, where controller arg is dotted url for the controller class.
-By using named entries you will configure a prefix for controller dotted url.
-Example:
-
-```yaml
-rotarran.auth.controllers:
-  -
-    controller: LoginController
-    route: auth:login
-    url: /auth/login
-  -
-    controller: LogoutController
-    route: auth:logout
-    url: /auth/logout
-  -
-    controller: AuthDataController
-    route: auth:data
-    url: /auth
-  -
-    controller: RegistrationController
-    route: auth:registration
-    url: /auth/registration
-```
-
-Router class is designed to be used by inherit it and overwrite the .make method,
-and there it will be configured.
-Example:
-
-```python
-from qapla.routing import Routing
-
-
-class RotarranRouting(Routing):
-
-    def make(self):
-        super().make()
-        self.read_from_file(self.paths.get('app:auth:routing'))
-        self.read_from_file(self.paths.get('app:home:routing'))
-        self.read_from_file(self.paths.get('app:menu:routing'))
-        self.read_from_file(self.paths.get('app:wallets:routing'))
-```
-
-Adding this routing to the application is done by adding like other plugins.
-
-```python
-class RotarranApplication(DatabaseApplication):
-
-    def append_web_plugins(self):
-        self.add_routing(RotarranRouting)
-```
