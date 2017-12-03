@@ -18,19 +18,18 @@ class SettingsPlugin(Plugin):
     """
 
     METHODS = {
-        'wsgi':
-        [SettingsModule('wsgi', False),
-         SettingsModule('local', False)],
-        'tests':
-        [SettingsModule('tests', False),
-         SettingsModule('local', False)],
-        'shell':
-        [SettingsModule('shell', False),
-         SettingsModule('local', False)],
+        'pyramid': [
+            SettingsModule('pyramid', False),
+            SettingsModule('local', False)],
+        'tests': [
+            SettingsModule('tests', False),
+            SettingsModule('local', False)],
+        'shell': [
+            SettingsModule('shell', False),
+            SettingsModule('local', False)],
         'command': [
             SettingsModule('command', False),
-            SettingsModule('local', False)
-        ],
+            SettingsModule('local', False)],
     }
 
     def __init__(self, settings_module):
