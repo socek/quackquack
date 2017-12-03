@@ -8,6 +8,6 @@ class TestPlugin(object):
 
     def test_plugin(self):
         plugin = Plugin()
-        plugin.init_plugin('configurator')
+        plugin.start('configurator')
         plugin.enter('application')
         plugin.exit('application', 'exc_type', 'exc_value', 'traceback')

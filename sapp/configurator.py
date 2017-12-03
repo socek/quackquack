@@ -13,16 +13,16 @@ class Configurator(object):
         self.application_count = 0
         self.application = None
 
-    def start_configurator(self, method):
+    def start(self, method):
         self.append_plugins()
-        self.init_plugins()
+        self._start_plugins()
 
         self.method = method
         self.is_started = True
 
-    def init_plugins(self):
+    def _start_plugins(self):
         for plugin in self.plugins:
-            plugin.init_plugin(self)
+            plugin.start(self)
 
     def __enter__(self):
         return self.create_application()
@@ -31,7 +31,7 @@ class Configurator(object):
         if not self.is_started:
             raise ConfiguratorNotStartedError(
                 'Configurator is not started! '
-                'Use Configurator.start_configurator(method)')
+                'Use Configurator.start(method)')
 
         self.application_count += 1
         if not self.application:

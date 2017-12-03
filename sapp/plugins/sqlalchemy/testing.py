@@ -14,10 +14,7 @@ class BaseIntegrationFixture(object):
 
     List of avalible fixtures:
         - config - Sapp's Configurator instance with tests settings.
-        - dbplugin - qapla.database.database.Database instance for the database set by the DATABASE_KEY
-        - dbsession - sqlalchemy session for the database set by the DATABASE_KEY. It will be automatically closed
-        - settings - settings for the application
-        - paths - paths for the application
+        - app - Sapp's application instance
     """
     SESSION_CACHE = {}
     CONFIGURATOR_CLASS = None
@@ -31,7 +28,7 @@ class BaseIntegrationFixture(object):
         key = 'config'
         if key not in self.SESSION_CACHE:
             config = self.CONFIGURATOR_CLASS()
-            config.start_configurator('test')
+            config.start('test')
             self.SESSION_CACHE[key] = config
         return self.SESSION_CACHE[key]
 
@@ -39,3 +36,4 @@ class BaseIntegrationFixture(object):
     def app(self, config):
         with config as app:
             yield app
+

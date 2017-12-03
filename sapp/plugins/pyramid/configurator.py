@@ -14,7 +14,7 @@ class ConfiguratorWithPyramid(Configurator):
         Create application with 'uwsgi' settings and return pyramid's uwsgi
         application object.
         """
-        self.start_configurator('pyramid')
+        self.start('pyramid')
 
         pyramid = PyramidConfigurator(*args, **kwargs)
         self.start_pyramid_plugins(pyramid)

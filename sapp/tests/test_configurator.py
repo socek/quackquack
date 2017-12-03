@@ -31,18 +31,18 @@ class TestConfigurator(object):
             with configurator:
                 pass
 
-    def test_start_configuration(self, configurator):
+    def test_start(self, configurator):
         """
-        .start_configurator should append plugins and init them.
-        Also proper flags should be set.
+        .start should append plugins and init them. Also proper flags should be
+        set.
         """
-        configurator.start_configurator('wsgi')
+        configurator.start('wsgi')
 
         assert configurator.method == 'wsgi'
         assert configurator.is_started
 
-        configurator.plugin1.init_plugin.assert_called_once_with(configurator)
-        configurator.plugin2.init_plugin.assert_called_once_with(configurator)
+        configurator.plugin1.start.assert_called_once_with(configurator)
+        configurator.plugin2.start.assert_called_once_with(configurator)
 
         assert configurator.plugins == [
             configurator.plugin1, configurator.plugin2
@@ -53,15 +53,15 @@ class TestConfigurator(object):
         Using configurator as context manager should enter and exit plugins only
         once.
         """
-        configurator.start_configurator('shell')
+        configurator.start('shell')
 
         with configurator as app:
             with configurator as app:
                 configurator.plugin1.enter.assert_called_once_with(app)
                 configurator.plugin2.enter.assert_called_once_with(app)
 
-        configurator.plugin1.init_plugin.assert_called_once_with(configurator)
-        configurator.plugin2.init_plugin.assert_called_once_with(configurator)
+        configurator.plugin1.start.assert_called_once_with(configurator)
+        configurator.plugin2.start.assert_called_once_with(configurator)
 
         configurator.plugin1.exit.assert_called_once_with(
             app, None, None, None)
@@ -73,15 +73,15 @@ class TestConfigurator(object):
         When using configurator as context manager and an exception is raised,
         all plugins should get that exception.
         """
-        configurator.start_configurator('shell')
+        configurator.start('shell')
         error = RuntimeError()
 
         with raises(RuntimeError):
             with configurator as app:
                 raise error
 
-        configurator.plugin1.init_plugin.assert_called_once_with(configurator)
-        configurator.plugin2.init_plugin.assert_called_once_with(configurator)
+        configurator.plugin1.start.assert_called_once_with(configurator)
+        configurator.plugin2.start.assert_called_once_with(configurator)
 
         call = configurator.plugin1.exit.call_args_list[0][0]
         assert call[0] == app

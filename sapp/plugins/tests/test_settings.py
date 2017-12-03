@@ -23,7 +23,7 @@ class TestSettingsPlugin(PluginFixtures):
         .start_plugin should create settings for provided method, which is set
         in the configurator.
         """
-        mconfigurator.method = 'wsgi'
+        mconfigurator.method = 'pyramid'
         mfactory.return_value.make_settings.return_value = [
             sentinel.settings, sentinel.paths
         ]
@@ -32,7 +32,7 @@ class TestSettingsPlugin(PluginFixtures):
 
         mfactory.asset_called_once_with(self.MODULE)
         mfactory.return_value.make_settings.asset_called_once_with(
-            settings={}, additional_modules=plugin.METHODS['wsgi'])
+            settings={}, additional_modules=plugin.METHODS['pyramid'])
 
         assert plugin.settings == mconfigurator.settings == sentinel.settings
         assert plugin.paths == mconfigurator.paths == sentinel.paths

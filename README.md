@@ -1,10 +1,20 @@
 # Simple Application
 
+Version: 0.1.0
+
 # Table of Contents
 1. [Overview](#overview)
-2. [Quick Using Guide](#quick_using_guide)
-4. More info
-    1. [Changelog](docs/CHANGELOG.md)
+2. [Quick Using Guide](#quick-using-guide)
+3. [Tutorial](docs/tutorial.md)
+    * [Configuration](docs/tutorial.md#configuration)
+    * [Starting](docs/tutorial.md#starting)
+    * [Creating Plugins](docs/tutorial.md#creating-plugins)
+    * [Extending Configurator](docs/tutorial.md#extending-configurator)
+4. [Plugins](docs/plugins.md)
+    * [Settings](docs/plugins.md#settings)
+    * [Logging](docs/plugins.md#logging)
+5. More info
+    * [Changelog](docs/CHANGELOG.md)
 
 
 # Overview
@@ -20,18 +30,20 @@ mechanism to use everywhere.
 
 # Quick Using Guide
 
-To use Simple Application (Sapp for short) you need to inherit from Configurator,
-add some plugins and use it as context manager.
+To use Simple Application (Sapp for short) you need to inherit from Configurator
+in which you need to add some plugins. After configuring, you need to "start"
+the application. After that you can use the configurator as context manager.
 
 ```python
 from sapp.configurator import Configurator
-from sapp.plugins.settings import SettingsPlugin
+from sapp.plugins import SettingsPlugin
 
 class MyConfigurator(Configurator):
     def append_plugins(self):
         self.add_plugin(SettingsPlugin('path.to.settings'))
 
 main = MyConfigurator()
+main.start('application')
 
 with main as app:
     print(app.settings)
@@ -39,4 +51,4 @@ with main as app:
 ```
 
 `app.settings` in above example is variable made by the SettingsPlugin.
-
+If you would like to know more, please go to the [Tutorial](docs/tutorial.md)
