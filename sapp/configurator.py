@@ -13,8 +13,8 @@ class Configurator(object):
         self.application_count = 0
         self.application = None
 
-    def start(self, method):
-        self.method = method
+    def start(self, **kwargs):
+        self.extra = kwargs
 
         self.append_plugins()
         self._start_plugins()

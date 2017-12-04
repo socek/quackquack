@@ -36,9 +36,9 @@ class TestConfigurator(object):
         .start should append plugins and init them. Also proper flags should be
         set.
         """
-        configurator.start('wsgi')
+        configurator.start(wsgi=1)
 
-        assert configurator.method == 'wsgi'
+        assert configurator.extra == {'wsgi': 1}
         assert configurator.is_started
 
         configurator.plugin1.start.assert_called_once_with(configurator)
@@ -53,7 +53,7 @@ class TestConfigurator(object):
         Using configurator as context manager should enter and exit plugins only
         once.
         """
-        configurator.start('shell')
+        configurator.start()
 
         with configurator as app:
             with configurator as app:
@@ -73,7 +73,7 @@ class TestConfigurator(object):
         When using configurator as context manager and an exception is raised,
         all plugins should get that exception.
         """
-        configurator.start('shell')
+        configurator.start()
         error = RuntimeError()
 
         with raises(RuntimeError):

@@ -32,7 +32,7 @@ class TestConfiguratorWithPyramid(object):
         """
         .start_pyramid should create wsgi application
         """
-        result = configurator.start_pyramid('arg', kw='arg2')
+        result = configurator.start_pyramid({'extra': 1}, 'arg', kw='arg2')
 
         mpyramid_configurator.assert_called_once_with('arg', kw='arg2')
         pyramid = mpyramid_configurator.return_value
@@ -40,4 +40,4 @@ class TestConfiguratorWithPyramid(object):
         assert pyramid.make_wsgi_app.return_value == result
 
         configurator.plugin1.start_pyramid.assert_called_once_with(pyramid)
-        assert configurator.method == 'pyramid'
+        assert configurator.extra == {'extra': 1}
