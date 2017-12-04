@@ -16,11 +16,11 @@ class TestLoggingPlugin(PluginFixtures):
         with patch('sapp.plugins.logging.dictConfig') as mock:
             yield mock
 
-    def test_start_plugin(self, plugin, mconfigurator, mdict_config):
+    def test_start(self, plugin, mconfigurator, mdict_config):
         """
-        .start_plugin should configure logging using settings
+        .start should configure logging using settings
         """
         mconfigurator.settings = {'logging': sentinel.logging}
-        plugin.start_plugin(mconfigurator)
+        plugin.start(mconfigurator)
 
         mdict_config.assert_called_once_with(sentinel.logging)

@@ -18,9 +18,9 @@ class TestSettingsPlugin(PluginFixtures):
         with patch('sapp.plugins.settings.Factory') as mock:
             yield mock
 
-    def test_start_plugin(self, plugin, mfactory, mconfigurator):
+    def test_start(self, plugin, mfactory, mconfigurator):
         """
-        .start_plugin should create settings for provided method, which is set
+        .start should create settings for provided method, which is set
         in the configurator.
         """
         mconfigurator.method = 'pyramid'
@@ -28,7 +28,7 @@ class TestSettingsPlugin(PluginFixtures):
             sentinel.settings, sentinel.paths
         ]
 
-        plugin.start_plugin(mconfigurator)
+        plugin.start(mconfigurator)
 
         mfactory.asset_called_once_with(self.MODULE)
         mfactory.return_value.make_settings.asset_called_once_with(

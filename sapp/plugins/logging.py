@@ -9,5 +9,5 @@ class LoggingPlugin(Plugin):
     https://docs.python.org/3.6/library/logging.config.html#logging.config.dictConfig
     """
 
-    def start_plugin(self, configurator):
+    def start(self, configurator):
         dictConfig(configurator.settings['logging'])

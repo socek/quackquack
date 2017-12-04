@@ -35,7 +35,7 @@ class SettingsPlugin(Plugin):
     def __init__(self, settings_module):
         self.settings_module = settings_module
 
-    def start_plugin(self, configurator):
+    def start(self, configurator):
         self._start_for_method(configurator.method)
 
         configurator.settings = self.settings
