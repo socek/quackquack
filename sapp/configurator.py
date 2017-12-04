@@ -14,10 +14,11 @@ class Configurator(object):
         self.application = None
 
     def start(self, method):
+        self.method = method
+
         self.append_plugins()
         self._start_plugins()
 
-        self.method = method
         self.is_started = True
 
     def _start_plugins(self):
