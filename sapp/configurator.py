@@ -5,6 +5,10 @@ class ConfiguratorNotStartedError(RuntimeError):
     pass
 
 
+class ExtraValueMissing(RuntimeError):
+    pass
+
+
 class Configurator(object):
     def __init__(self):
         self.is_started = False
@@ -31,8 +35,7 @@ class Configurator(object):
     def create_application(self):
         if not self.is_started:
             raise ConfiguratorNotStartedError(
-                'Configurator is not started! '
-                'Use Configurator.start(method)')
+                'Configurator is not started! Use Configurator.start(method)')
 
         self.application_count += 1
         if not self.application:

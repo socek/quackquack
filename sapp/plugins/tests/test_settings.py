@@ -1,7 +1,9 @@
 from mock import patch
 from mock import sentinel
 from pytest import fixture
+from pytest import raises
 
+from sapp.configurator import ExtraValueMissing
 from sapp.plugins.settings import SettingsPlugin
 from sapp.testing import PluginFixtures
 
@@ -23,7 +25,7 @@ class TestSettingsPlugin(PluginFixtures):
         .start should create settings for provided method, which is set
         in the configurator.
         """
-        mconfigurator.method = 'pyramid'
+        mconfigurator.extra = {plugin.EXTRA_KEY: 'pyramid'}
         mfactory.return_value.make_settings.return_value = [
             sentinel.settings, sentinel.paths
         ]
@@ -36,6 +38,22 @@ class TestSettingsPlugin(PluginFixtures):
 
         assert plugin.settings == mconfigurator.settings == sentinel.settings
         assert plugin.paths == mconfigurator.paths == sentinel.paths
+
+    def test_start_when_extra_key_is_missing(self, plugin, mfactory,
+                                             mconfigurator):
+        """
+        .start should raise an error when configurator does not have EXTRA_KEY
+        in the extra dict.
+        """
+        mconfigurator.extra = {}
+        mfactory.return_value.make_settings.return_value = [
+            sentinel.settings, sentinel.paths
+        ]
+
+        with raises(ExtraValueMissing):
+            plugin.start(mconfigurator)
+
+        assert not mfactory.called
 
     def test_application(self, plugin, mapplication):
         """

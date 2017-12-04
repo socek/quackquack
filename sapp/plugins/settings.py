@@ -3,6 +3,7 @@ from collections import namedtuple
 from morfdict import Factory
 
 from sapp.plugin import Plugin
+from sapp.configurator import ExtraValueMissing
 
 SettingsModule = namedtuple('SettingsModule', ['name', 'is_needed'])
 
@@ -16,6 +17,7 @@ class SettingsPlugin(Plugin):
     Factory will raise an error (FileNotFound). Otherwise the error will not be
     raised.
     """
+    EXTRA_KEY = 'settings_endpoint'
 
     METHODS = {
         'pyramid': [
@@ -36,7 +38,11 @@ class SettingsPlugin(Plugin):
         self.settings_module = settings_module
 
     def start(self, configurator):
-        self._start_for_method(configurator.method)
+        if self.EXTRA_KEY not in configurator.extra:
+            raise ExtraValueMissing(self.EXTRA_KEY)
+
+        endpoint = configurator.extra[self.EXTRA_KEY]
+        self._start_for_method(endpoint)
 
         configurator.settings = self.settings
         configurator.paths = self.paths
