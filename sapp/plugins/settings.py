@@ -17,7 +17,7 @@ class SettingsPlugin(Plugin):
     Factory will raise an error (FileNotFound). Otherwise the error will not be
     raised.
     """
-    EXTRA_KEY = 'settings_endpoint'
+    EXTRA_KEY = 'endpoint'
 
     METHODS = {
         'pyramid': [
