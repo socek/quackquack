@@ -46,10 +46,10 @@ object.
 main = MyConfigurator()
 
 def start_for_pyramid():
-    main.start('pyramid')
+    main.start(endpoint='pyramid')
 
 def start_for_celery():
-    main.start('celery')
+    main.start(endpoint='celery')
 ```
 
 # Creating Plugins
@@ -94,7 +94,7 @@ class ConfiguratorWithPyramid(Configurator):
             method(pyramid)
 
     def start_pyramid(self, *args, **kwargs):
-        self.start('pyramid')
+        self.start(endpoint='pyramid')
 
         pyramid = PyramidConfigurator(*args, **kwargs)
         self.start_pyramid_plugins(pyramid)

@@ -43,7 +43,7 @@ class MyConfigurator(Configurator):
         self.add_plugin(SettingsPlugin('path.to.settings'))
 
 main = MyConfigurator()
-main.start('application')
+main.start(endpoint='application')
 
 with main as app:
     print(app.settings)
