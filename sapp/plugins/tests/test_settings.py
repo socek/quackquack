@@ -1,4 +1,6 @@
-import sys
+import os
+
+from os.path import dirname
 
 from pytest import fixture
 from pytest import raises
@@ -6,6 +8,7 @@ from unittest.mock import MagicMock
 from unittest.mock import patch
 from unittest.mock import sentinel
 
+from sapp.plugins.settings import Paths
 from sapp.plugins.settings import SettingsPlugin
 from sapp.testing import PluginFixtures
 
@@ -19,8 +22,7 @@ class TestSettingsPlugin(PluginFixtures):
 
     @fixture
     def mstring_dict(self):
-        with patch('sapp.plugins.settings.StringDict') as mock:
-            yield mock
+        return {}
 
     @fixture
     def mpaths(self):
@@ -72,14 +74,11 @@ class TestSettingsPlugin(PluginFixtures):
         """
         .create_settings should create SettingsDict and PathsDict.
         """
-        plugin.create_settings() == [
-            mstring_dict.return_value, mpaths.return_value
-        ]
-        mstring_dict.assert_called_once_with()
+        plugin.create_settings() == [mstring_dict, mpaths.return_value]
         mpaths.assert_called_once_with()
 
     def test_import(self, plugin):
-        assert plugin._import('sys') == sys
+        assert plugin._import('os') == os
 
     def test_start(self, plugin, mconfigurator,
                    mgather_settings_for_startpoint,
@@ -162,3 +161,36 @@ class TestSettingsPlugin(PluginFixtures):
         mimport.side_effect = ImportError()
 
         plugin.append('wrong', silent_errors=True)
+
+
+class TestPaths(object):
+    @fixture
+    def paths(self):
+        return Paths()
+
+    def test_set_prefix(self, paths):
+        """
+        .set_prefix should set prefix on the paths.
+        """
+        paths['name'] = 'come'
+        assert paths['name'] == 'come'
+
+        paths.set_prefix('myprefix/')
+        assert paths['name'] == 'myprefix/come'
+
+    def test_setitem_with_bad_value(self, paths):
+        """
+        Paths can be set only by the str objects.
+        """
+        paths['name'] = 'key'
+
+        with raises(ValueError):
+            paths['name'] = 12
+
+    def test_set_prefix_from_module(self, paths):
+        """
+        .set_prefix_from_module should set prefix from module dir path
+        """
+        paths.set_prefix_from_module(os)
+
+        assert paths.prefix == dirname(os.__file__)

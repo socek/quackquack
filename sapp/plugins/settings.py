@@ -1,7 +1,25 @@
-from morfdict.models import Paths
-from morfdict.models import StringDict
+from os.path import dirname
 
 from sapp.plugin import Plugin
+
+
+class Paths(dict):
+    def __init__(self):
+        self.prefix = ''
+
+    def set_prefix(self, prefix):
+        self.prefix = prefix
+
+    def __getitem__(self, key):
+        return self.prefix + super().__getitem__(key)
+
+    def __setitem__(self, key, value):
+        if not isinstance(value, str):
+            raise ValueError('Paths can be set only by strings!')
+        return super().__setitem__(key, value)
+
+    def set_prefix_from_module(self, module):
+        self.prefix = dirname(module.__file__)
 
 
 class SettingsPlugin(Plugin):
@@ -25,7 +43,7 @@ class SettingsPlugin(Plugin):
         application.paths = self.paths
 
     def create_settings(self):
-        return dict(settings=StringDict(), paths=Paths())
+        return dict(settings={}, paths=Paths())
 
     def push_settings_to_configurator(self, configurator, settings):
         configurator.settings = settings['settings']
