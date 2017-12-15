@@ -28,7 +28,7 @@ class BaseIntegrationFixture(object):
         key = 'config'
         if key not in self.SESSION_CACHE:
             config = self.CONFIGURATOR_CLASS()
-            config.start('test')
+            config.start('tests')
             self.SESSION_CACHE[key] = config
         return self.SESSION_CACHE[key]
 

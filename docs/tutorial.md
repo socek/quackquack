@@ -46,10 +46,10 @@ object.
 main = MyConfigurator()
 
 def start_for_pyramid():
-    main.start(endpoint='pyramid')
+    main.start('pyramid')
 
 def start_for_celery():
-    main.start(endpoint='celery')
+    main.start('celery')
 ```
 
 # Creating Plugins
@@ -80,6 +80,11 @@ class Plugin(object):
         """
 ```
 
+All kwargs used in the `Configurator.start` method. You can used it in your
+plugin, but you need to remember of one thing: extras parameters should be used
+only for values changing depend on the way of starting the configurator. For
+other plugin's settings, you should use normal `__init__` method.
+
 # Extending Configurator
 
 If you would need to add another phase for plugins, you will need to add another
@@ -94,7 +99,7 @@ class ConfiguratorWithPyramid(Configurator):
             method(pyramid)
 
     def start_pyramid(self, *args, **kwargs):
-        self.start(endpoint='pyramid')
+        self.start('pyramid')
 
         pyramid = PyramidConfigurator(*args, **kwargs)
         self.start_pyramid_plugins(pyramid)

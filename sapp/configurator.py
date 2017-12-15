@@ -17,7 +17,8 @@ class Configurator(object):
         self.application_count = 0
         self.application = None
 
-    def start(self, **kwargs):
+    def start(self, startpoint=None, **kwargs):
+        self.startpoint = startpoint
         self.extra = kwargs
 
         self.append_plugins()

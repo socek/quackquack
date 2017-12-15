@@ -15,7 +15,7 @@ class ConfiguratorWithPyramid(Configurator):
         application object.
         """
         extra = extra or {}
-        self.start(**extra)
+        self.start('pyramid', **extra)
 
         pyramid = PyramidConfigurator(*args, **kwargs)
         self.start_pyramid_plugins(pyramid)

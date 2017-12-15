@@ -36,9 +36,10 @@ class TestConfigurator(object):
         .start should append plugins and init them. Also proper flags should be
         set.
         """
-        configurator.start(wsgi=1)
+        configurator.start('wsgi', wsgi=1)
 
         assert configurator.extra == {'wsgi': 1}
+        assert configurator.startpoint == 'wsgi'
         assert configurator.is_started
 
         configurator.plugin1.start.assert_called_once_with(configurator)
