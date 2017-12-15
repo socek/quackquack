@@ -1,9 +1,11 @@
-from mock import patch
-from mock import sentinel
+import sys
+
 from pytest import fixture
 from pytest import raises
+from unittest.mock import MagicMock
+from unittest.mock import patch
+from unittest.mock import sentinel
 
-from sapp.configurator import ExtraValueMissing
 from sapp.plugins.settings import SettingsPlugin
 from sapp.testing import PluginFixtures
 
@@ -12,48 +14,47 @@ class TestSettingsPlugin(PluginFixtures):
     MODULE = sentinel.settings_module
 
     @fixture
-    def plugin(self, mfactory):
+    def plugin(self):
         return SettingsPlugin(self.MODULE)
 
     @fixture
-    def mfactory(self):
-        with patch('sapp.plugins.settings.Factory') as mock:
+    def mstring_dict(self):
+        with patch('sapp.plugins.settings.StringDict') as mock:
             yield mock
 
-    def test_start(self, plugin, mfactory, mconfigurator):
-        """
-        .start should create settings for provided method, which is set
-        in the configurator.
-        """
-        mconfigurator.extra = {plugin.EXTRA_KEY: 'pyramid'}
-        mfactory.return_value.make_settings.return_value = [
-            sentinel.settings, sentinel.paths
-        ]
+    @fixture
+    def mpaths(self):
+        with patch('sapp.plugins.settings.Paths') as mock:
+            yield mock
 
-        plugin.start(mconfigurator)
+    @fixture
+    def mconfigurator(self):
+        return MagicMock()
 
-        mfactory.asset_called_once_with(self.MODULE)
-        mfactory.return_value.make_settings.asset_called_once_with(
-            settings={}, additional_modules=plugin.METHODS['pyramid'])
+    @fixture
+    def mgather_settings_for_startpoint(self, plugin):
+        with patch.object(plugin, '_gather_settings_for_startpoint') as mock:
+            yield mock
 
-        assert plugin.settings == mconfigurator.settings == sentinel.settings
-        assert plugin.paths == mconfigurator.paths == sentinel.paths
+    @fixture
+    def mpush_settings_to_configurator(self, plugin):
+        with patch.object(plugin, 'push_settings_to_configurator') as mock:
+            yield mock
 
-    def test_start_when_extra_key_is_missing(self, plugin, mfactory,
-                                             mconfigurator):
-        """
-        .start should raise an error when configurator does not have EXTRA_KEY
-        in the extra dict.
-        """
-        mconfigurator.extra = {}
-        mfactory.return_value.make_settings.return_value = [
-            sentinel.settings, sentinel.paths
-        ]
+    @fixture
+    def mcreate_settings(self, plugin):
+        with patch.object(plugin, 'create_settings') as mock:
+            yield mock
 
-        with raises(ExtraValueMissing):
-            plugin.start(mconfigurator)
+    @fixture
+    def mimport(self, plugin):
+        with patch.object(plugin, '_import') as mock:
+            yield mock
 
-        assert not mfactory.called
+    @fixture
+    def mgenerate_settings(self, plugin):
+        with patch.object(plugin, '_generate_settings') as mock:
+            yield mock
 
     def test_application(self, plugin, mapplication):
         """
@@ -66,3 +67,98 @@ class TestSettingsPlugin(PluginFixtures):
 
         assert mapplication.settings == sentinel.settings
         assert mapplication.paths == sentinel.paths
+
+    def test_create_settings(self, plugin, mstring_dict, mpaths):
+        """
+        .create_settings should create SettingsDict and PathsDict.
+        """
+        plugin.create_settings() == [
+            mstring_dict.return_value, mpaths.return_value
+        ]
+        mstring_dict.assert_called_once_with()
+        mpaths.assert_called_once_with()
+
+    def test_import(self, plugin):
+        assert plugin._import('sys') == sys
+
+    def test_start(self, plugin, mconfigurator,
+                   mgather_settings_for_startpoint,
+                   mpush_settings_to_configurator):
+        """
+        .start should gather settings for startpoint and push the data into
+        configurator.
+        """
+        plugin.start(mconfigurator)
+
+        mgather_settings_for_startpoint.assert_called_once_with(
+            mconfigurator.startpoint)
+        mpush_settings_to_configurator.assert_called_once_with(
+            mconfigurator, mgather_settings_for_startpoint.return_value)
+
+    def test_push_settings_to_configurator(self, plugin, mconfigurator):
+        """
+        .push_settings_to_configurator should set settings from the dict
+        into the configurator.
+        """
+        settings = dict(settings=sentinel.settings, paths=sentinel.paths)
+
+        plugin.push_settings_to_configurator(mconfigurator, settings)
+
+        assert mconfigurator.settings == sentinel.settings
+        assert mconfigurator.paths == sentinel.paths
+
+    def test_generate_settings(self, plugin, mcreate_settings):
+        """
+        ._generate_settings should create settings and use all functions
+        from .settings_funs on those settings
+        """
+        mcreate_settings.return_value = {'settings': sentinel.settings}
+        fun = MagicMock()
+        plugin.settings_funs = [fun]
+
+        assert plugin._generate_settings() == mcreate_settings.return_value
+
+        fun.assert_called_once_with(settings=sentinel.settings)
+
+    def test_gather_settings_for_startpoint(self, plugin, mimport,
+                                            mgenerate_settings):
+        """
+        ._gather_settings_for_startpoint should import settings function depend
+        on the startpoint and generate settings from it.
+        """
+        assert plugin._gather_settings_for_startpoint(
+            'startme') == mgenerate_settings.return_value
+
+        assert plugin.settings_funs == []
+        mimport.assert_called_once_with(self.MODULE)
+        mimport.return_value.startme.assert_called_once_with(plugin)
+
+    def test_append(self, plugin, mimport):
+        """
+        .append should import settings module and append the startpoin function
+        to the .settings_funs
+        """
+        plugin.settings_funs = []
+
+        plugin.append('somwhere.near', 'myfun')
+
+        mimport.assert_called_once_with('somwhere.near')
+
+        assert plugin.settings_funs == [mimport.return_value.myfun]
+
+    def test_append_when_on_import_error(self, plugin, mimport):
+        """
+        .append should raise ImportError when the import is wrong.
+        """
+        mimport.side_effect = ImportError()
+
+        with raises(ImportError):
+            plugin.append('wrong')
+
+    def test_append_when_on_import_error_and_silent(self, plugin, mimport):
+        """
+        .append should not raise error, when the error is sailent.
+        """
+        mimport.side_effect = ImportError()
+
+        plugin.append('wrong', silent_errors=True)
