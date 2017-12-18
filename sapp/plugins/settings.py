@@ -3,7 +3,7 @@ from os.path import dirname
 from sapp.plugin import Plugin
 
 
-class Paths(dict):
+class PrefixedStringsDict(dict):
     def __init__(self):
         self.prefix = ''
 
@@ -15,7 +15,7 @@ class Paths(dict):
 
     def __setitem__(self, key, value):
         if not isinstance(value, str):
-            raise ValueError('Paths can be set only by strings!')
+            raise ValueError('PrefixedStringsDict can be set only by strings!')
         return super().__setitem__(key, value)
 
     def set_prefix_from_module(self, module):
@@ -43,7 +43,7 @@ class SettingsPlugin(Plugin):
         application.paths = self.paths
 
     def create_settings(self):
-        return dict(settings={}, paths=Paths())
+        return dict(settings={}, paths=PrefixedStringsDict())
 
     def push_settings_to_configurator(self, configurator, settings):
         configurator.settings = settings['settings']

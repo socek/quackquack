@@ -8,7 +8,7 @@ from unittest.mock import MagicMock
 from unittest.mock import patch
 from unittest.mock import sentinel
 
-from sapp.plugins.settings import Paths
+from sapp.plugins.settings import PrefixedStringsDict
 from sapp.plugins.settings import SettingsPlugin
 from sapp.testing import PluginFixtures
 
@@ -26,7 +26,7 @@ class TestSettingsPlugin(PluginFixtures):
 
     @fixture
     def mpaths(self):
-        with patch('sapp.plugins.settings.Paths') as mock:
+        with patch('sapp.plugins.settings.PrefixedStringsDict') as mock:
             yield mock
 
     @fixture
@@ -72,7 +72,7 @@ class TestSettingsPlugin(PluginFixtures):
 
     def test_create_settings(self, plugin, mstring_dict, mpaths):
         """
-        .create_settings should create SettingsDict and PathsDict.
+        .create_settings should create SettingsDict and PrefixedStringsDictDict.
         """
         plugin.create_settings() == [mstring_dict, mpaths.return_value]
         mpaths.assert_called_once_with()
@@ -163,10 +163,10 @@ class TestSettingsPlugin(PluginFixtures):
         plugin.append('wrong', silent_errors=True)
 
 
-class TestPaths(object):
+class TestPrefixedStringsDict(object):
     @fixture
     def paths(self):
-        return Paths()
+        return PrefixedStringsDict()
 
     def test_set_prefix(self, paths):
         """
@@ -180,7 +180,7 @@ class TestPaths(object):
 
     def test_setitem_with_bad_value(self, paths):
         """
-        Paths can be set only by the str objects.
+        PrefixedStringsDict can be set only by the str objects.
         """
         paths['name'] = 'key'
 
