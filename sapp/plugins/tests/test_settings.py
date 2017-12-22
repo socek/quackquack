@@ -38,11 +38,12 @@ class TestSettingsPlugin(PluginFixtures):
         with patch.object(plugin, '_import') as mock:
             yield mock
 
-    def test_application(self, plugin, mapplication):
+    def test_application(self, plugin, mapplication, mconfigurator):
         """
         .enter should add settings and paths to the application.
         """
-        plugin.settings = sentinel.settings
+        plugin.configurator = mconfigurator
+        plugin.configurator.settings = sentinel.settings
 
         plugin.enter(mapplication)
 
@@ -62,7 +63,7 @@ class TestSettingsPlugin(PluginFixtures):
         mimport.assert_called_once_with(self.MODULE)
         mimport.return_value.myapp.assert_called_once_with()
 
-        assert plugin.settings == mimport.return_value.myapp.return_value
+        assert mconfigurator.settings == mimport.return_value.myapp.return_value
 
 
 class TestPrefixedStringsDict(object):

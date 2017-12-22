@@ -35,13 +35,14 @@ class SettingsPlugin(Plugin):
         self.modulepath = modulepath
 
     def start(self, configurator):
+        self.configurator = configurator
         startpoint = configurator.startpoint
         startpoints_module = self._import(self.modulepath)
         serttings_fun = getattr(startpoints_module, startpoint)
-        self.settings = serttings_fun()
+        self.configurator.settings = serttings_fun()
 
-    def enter(self, application):
-        application.settings = self.settings
+    def enter(self, context):
+        context.settings = self.configurator.settings
 
     def _import(self, modulepath):
         return __import__(modulepath, globals(), locals(), [''])
