@@ -9,8 +9,8 @@
 # Configuration
 
 First step in using Sapp is to make your own Configurator, which will be
-inherited from `sapp.Configurator`. There you would overwrite `append_plugins`
-method, whis is a place to append the plugins.
+inheriting from `sapp.Configurator`. There you would overwrite `append_plugins`
+method, which is a place to append the plugins.
 
 ```python
 from sapp.configurator import Configurator
@@ -28,8 +28,9 @@ extend the Configurator class, please see the [Extending Configurator](#extendin
 section below.
 
 Configurator object should be created in some module as an global object. This
-object will be used in all of the places of the application (it should not be
-created in many places!).
+object will be used in all of the places of the application. Making many
+instances of the same class is possible, but it is a waste of resources, so
+please avoid that.
 
 # Starting
 
@@ -46,10 +47,10 @@ object.
 main = MyConfigurator()
 
 def start_for_pyramid():
-    main.start('pyramid')
+    main.start(endpoint='pyramid')
 
 def start_for_celery():
-    main.start('celery')
+    main.start(endpoint='celery')
 ```
 
 # Creating Plugins
@@ -80,11 +81,6 @@ class Plugin(object):
         """
 ```
 
-All kwargs used in the `Configurator.start` method. You can used it in your
-plugin, but you need to remember of one thing: extras parameters should be used
-only for values changing depend on the way of starting the configurator. For
-other plugin's settings, you should use normal `__init__` method.
-
 # Extending Configurator
 
 If you would need to add another phase for plugins, you will need to add another
@@ -99,7 +95,7 @@ class ConfiguratorWithPyramid(Configurator):
             method(pyramid)
 
     def start_pyramid(self, *args, **kwargs):
-        self.start('pyramid')
+        self.start(endpoint='pyramid')
 
         pyramid = PyramidConfigurator(*args, **kwargs)
         self.start_pyramid_plugins(pyramid)

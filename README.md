@@ -13,7 +13,15 @@ Version: 0.1.0
 4. [Plugins](docs/plugins.md)
     * [Settings](docs/plugins.md#settings)
     * [Logging](docs/plugins.md#logging)
-5. More info
+5. [Phases](docs/phases.md)
+    * [About Phases](docs/phases.md#about-phases)
+    * [Phase 0](docs/phases.md#phase-0)
+    * [Phase 1 - creating Configurator instance](docs/phases.md#phase-1---creating-configurator-instance)
+    * [Phase 2 - starting Configurator](docs/phases.md#phase-2---starting-configurator)
+    * [Extending Phases](#extending-phases)
+    * [Application Phase Start](docs/phases.md#application-phase-start)
+    * [Application Phase End](docs/phases.md#application-phase-end)
+6. More info
     * [Changelog](docs/CHANGELOG.md)
 
 
