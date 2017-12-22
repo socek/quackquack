@@ -2,7 +2,6 @@ from alembic import context
 
 
 class AlembicEnv(object):
-
     def __init__(self, app, base_model, dbname):
         self.app = app
         self.base_model = base_model
@@ -16,10 +15,9 @@ class AlembicEnv(object):
         self._run_migration_depending_on_offline_mode()
 
     def _init_app(self):
-        if context.config.get_main_option('is_test', False):
-            self.app.run_tests()
-        else:
-            self.app.run_command()
+        startpoint = 'tests' if context.config.get_main_option(
+            'is_test', False) else 'command'
+        self.app.start(startpoint)
 
     def _run_migration_depending_on_offline_mode(self):
         if context.is_offline_mode():
@@ -42,9 +40,7 @@ class AlembicEnv(object):
         url = self.db.get_url()
 
         context.configure(
-            url=url,
-            target_metadata=self.metadata,
-            literal_binds=True)
+            url=url, target_metadata=self.metadata, literal_binds=True)
 
         self.run_migrations()
 
@@ -59,8 +55,7 @@ class AlembicEnv(object):
 
         with connectable.connect() as connection:
             context.configure(
-                connection=connection,
-                target_metadata=self.metadata)
+                connection=connection, target_metadata=self.metadata)
 
             self.run_migrations()
 
