@@ -17,9 +17,9 @@ from setuptools import find_packages
 from setuptools import setup
 
 setup(
-    name='Simple Application',
+    name='sapp',
     version='0.1',
-    description='Simple Application Mechanism',
+    description='Simple Application',
     packages=find_packages(),
     tests_require=['coverage', 'pytest', 'pytest-cov'],
     long_description=__doc__,
