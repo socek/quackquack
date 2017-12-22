@@ -50,13 +50,13 @@ class MyConfigurator(Configurator):
     def append_plugins(self):
         self.add_plugin(SettingsPlugin('path.to.settings'))
 
-main = MyConfigurator()
-main.start('application')
+application = MyConfigurator()
+application.start('application')
 
-with main as app:
-    print(app.settings)
+with application as context:
+    print(context.settings)
 
 ```
 
-`app.settings` in above example is variable made by the SettingsPlugin.
+`context.settings` in above example is variable made by the SettingsPlugin.
 If you would like to know more, please go to the [Tutorial](docs/tutorial.md)

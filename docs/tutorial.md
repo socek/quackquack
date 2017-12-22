@@ -20,7 +20,7 @@ class MyConfigurator(Configurator):
     def append_plugins(self):
         self.add_plugin(SettingsPlugin('path.to.settings'))
 
-main = MyConfigurator()
+application = MyConfigurator()
 ```
 
 There is no need to do more with the configurator at this point. If you wish to
@@ -44,7 +44,7 @@ application. This two starts can be different, but they can use one Configurator
 object.
 
 ```python
-main = MyConfigurator()
+application = MyConfigurator()
 
 def start_for_pyramid():
     main.start(endpoint='pyramid')
