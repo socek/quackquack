@@ -29,9 +29,8 @@ class Routing(object):
         'require_csrf',
     ]
 
-    def __init__(self, pyramid, paths):
+    def __init__(self, pyramid):
         self.pyramid = pyramid
-        self.paths = paths
 
     def read_from_file(self, path):
         """
@@ -68,9 +67,6 @@ class Routing(object):
         value = getattr(controller, name, None)
         if value:
             kwargs[name] = value
-
-    def make(self):
-        pass  # pragma: no cover
 
 
 class RouteYamlParser(object):

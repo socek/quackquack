@@ -21,9 +21,6 @@ setup(
     version='0.1',
     description='Simple Application Mechanism',
     packages=find_packages(),
-    install_requires=[
-        'morfdict==0.4.7',
-    ],
     tests_require=['coverage', 'pytest', 'pytest-cov'],
     long_description=__doc__,
     author='Dominik "Socek" Długajczyk',

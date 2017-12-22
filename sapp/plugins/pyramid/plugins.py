@@ -12,15 +12,15 @@ class AuthPlugin(Plugin):
         self.root_factory = root_factory
 
     def start_plugin(self, configurator):
-        self.settings = self.configurator.settings
+        self.settings = configurator.settings
 
     def start_pyramid(self, pyramid):
         authn_policy = self.authn_policy_cls(self.settings['secret'])
         authz_policy = self.authz_policy_cls()
-        self.config.set_authentication_policy(authn_policy)
-        self.config.set_authorization_policy(authz_policy)
+        pyramid.set_authentication_policy(authn_policy)
+        pyramid.set_authorization_policy(authz_policy)
         if self.root_factory:
-            self.config.set_root_factory(self.root_factory)
+            pyramid.set_root_factory(self.root_factory)
 
 
 class CsrfPlugin(Plugin):
@@ -32,7 +32,7 @@ class CsrfPlugin(Plugin):
         self.policy_cls = policy_cls
 
     def start_plugin(self, configurator):
-        self.settings = self.configurator.settings
+        self.settings = configurator.settings
 
     def start_pyramid(self, pyramid):
         pyramid.set_csrf_storage_policy(self.policy_cls())
@@ -51,10 +51,10 @@ class RoutingPlugin(Plugin):
         self.routing_cls = routing_cls
 
     def start_plugin(self, configurator):
-        self.configurator = configurator
+        self.paths = configurator.paths
 
     def start_pyramid(self, pyramid):
-        self.routing = self.routing_cls(pyramid, self.configurator.paths)
+        self.routing = self.routing_cls(pyramid, self.paths)
         self.routing.make()
 
 
@@ -67,7 +67,7 @@ class SessionPlugin(Plugin):
         self.session_factory_cls = session_factory_cls
 
     def start_plugin(self, configurator):
-        self.settings = self.configurator.settings
+        self.settings = configurator.settings
 
     def start_pyramid(self, pyramid):
         secret = self.settings['session_secret']
