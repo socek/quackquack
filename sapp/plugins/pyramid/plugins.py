@@ -11,7 +11,7 @@ class AuthPlugin(Plugin):
         self.authz_policy_cls = authz_policy_cls
         self.root_factory = root_factory
 
-    def start_plugin(self, configurator):
+    def start(self, configurator):
         self.settings = configurator.settings
 
     def start_pyramid(self, pyramid):
@@ -31,7 +31,7 @@ class CsrfPlugin(Plugin):
     def __init__(self, policy_cls):
         self.policy_cls = policy_cls
 
-    def start_plugin(self, configurator):
+    def start(self, configurator):
         self.settings = configurator.settings
 
     def start_pyramid(self, pyramid):
@@ -50,11 +50,8 @@ class RoutingPlugin(Plugin):
     def __init__(self, routing_cls):
         self.routing_cls = routing_cls
 
-    def start_plugin(self, configurator):
-        self.paths = configurator.settings['paths']
-
     def start_pyramid(self, pyramid):
-        self.routing = self.routing_cls(pyramid, self.paths)
+        self.routing = self.routing_cls(pyramid)
         self.routing.make()
 
 
@@ -66,7 +63,7 @@ class SessionPlugin(Plugin):
     def __init__(self, session_factory_cls):
         self.session_factory_cls = session_factory_cls
 
-    def start_plugin(self, configurator):
+    def start(self, configurator):
         self.settings = configurator.settings
 
     def start_pyramid(self, pyramid):
