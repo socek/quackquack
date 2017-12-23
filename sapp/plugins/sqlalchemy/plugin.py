@@ -14,16 +14,18 @@ class Database(object):
     def start(self, configurator):
         self.settings = DatabaseSetting(configurator.settings, self.name)
         self.settings.validate()
-        self.engine = self._get_engine()
+        self.engine = self.get_engine()
         self.sessionmaker = sessionmaker(
             autoflush=False, autocommit=False, bind=self.engine)
+        self._set_engines(configurator)
 
-        configurator.database = self
+    def _set_engines(self, configurator):
+        configurator.dbplugins = getattr(configurator, 'dbplugins', {})
+        configurator.dbplugins[self.name] = self
 
     def enter(self, application):
         self.dbsession = self.sessionmaker()
-        application.database = self
-        application.dbsession = self.dbsession
+        setattr(application, self.name, self.dbsession)
 
     def exit(self, application, exc_type, exc_value, traceback):
         if exc_type:
@@ -32,7 +34,7 @@ class Database(object):
             self.dbsession.commit()
         self.dbsession.close()
 
-    def _get_engine(self, default_url=False):
+    def get_engine(self, default_url=False):
         url = self.get_url(default_url)
         return create_engine(url, **self.settings.get('options', {}))
 

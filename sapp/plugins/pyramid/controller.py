@@ -39,6 +39,7 @@ class Controller(object):
         self.request = request
         self.root_factory = root_factory
         self.response = None
+        self.application = request.registry['application']
 
     def __call__(self):
         return self.run()

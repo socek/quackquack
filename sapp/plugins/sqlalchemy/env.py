@@ -7,12 +7,14 @@ class AlembicEnv(object):
         self.base_model = base_model
         self.metadata = self.base_model.metadata
         self.dbname = dbname
-        self.db = None
 
     def run(self):
         self._init_app()
-        self.db = self.app.dbs[self.dbname]
+        self.dbplugin = self._get_dbplugin()
         self._run_migration_depending_on_offline_mode()
+
+    def _get_dbplugin(self):
+        return self.app.dbplugins[self.dbname]
 
     def _init_app(self):
         startpoint = 'tests' if context.config.get_main_option(
@@ -37,7 +39,7 @@ class AlembicEnv(object):
         script output.
 
         """
-        url = self.db.get_url()
+        url = self.dbplugin.get_url()
 
         context.configure(
             url=url, target_metadata=self.metadata, literal_binds=True)
@@ -51,7 +53,7 @@ class AlembicEnv(object):
         and associate a connection with the context.
 
         """
-        connectable = self.db.get_engine()
+        connectable = self.dbplugin.get_engine()
 
         with connectable.connect() as connection:
             context.configure(
