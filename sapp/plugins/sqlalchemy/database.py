@@ -3,12 +3,6 @@ from sqlalchemy.engine.url import make_url
 from sapp.plugins.sqlalchemy.exceptions import SettingMissing
 
 
-class ConfigurationError(Exception):
-    def __init__(self, description):
-        super().__init__()
-        self.description = description
-
-
 class DatabaseSetting(object):
     """
     Settings for the database.
@@ -24,8 +18,6 @@ class DatabaseSetting(object):
     * - mandatory arguments, which wll be validated and raise an error if don't.
     """
     _PREFIX = 'db'
-    _SETTING_MISSING_FORMAT = (
-        "'{0}' key is needed for use '{1}'' database in application")
     _TO_VALIDATE = ('url', 'default_url')
 
     def __init__(self, settings, name='database'):
@@ -58,6 +50,4 @@ class DatabaseSetting(object):
     def validate_exists(self, subkey):
         key = self.get_key(subkey)
         if key not in self.settings:
-            raise SettingMissing(key,
-                                 self._SETTING_MISSING_FORMAT.format(
-                                     key, self.name))
+            raise SettingMissing(key, self.name)
