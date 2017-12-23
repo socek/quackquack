@@ -2,7 +2,7 @@ from sqlalchemy.engine import create_engine
 from sqlalchemy.engine.url import make_url
 from sqlalchemy.orm import sessionmaker
 
-from sapp.database.database import DatabaseSetting
+from sapp.plugins.sqlalchemy.database import DatabaseSetting
 
 
 class Database(object):
