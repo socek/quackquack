@@ -51,7 +51,7 @@ class RoutingPlugin(Plugin):
         self.routing_cls = routing_cls
 
     def start_plugin(self, configurator):
-        self.paths = configurator.paths
+        self.paths = configurator.settings['paths']
 
     def start_pyramid(self, pyramid):
         self.routing = self.routing_cls(pyramid, self.paths)
