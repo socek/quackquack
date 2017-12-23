@@ -37,7 +37,6 @@ class Controller(object):
 
     def __init__(self, root_factory, request):
         self.request = request
-        self.application = request.registry['application']
         self.root_factory = root_factory
         self.response = None
 
