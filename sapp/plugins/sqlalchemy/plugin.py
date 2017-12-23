@@ -11,7 +11,7 @@ class Database(object):
         self._engine = None
         self._sessionmaker = None
 
-    def start_plugin(self, configurator):
+    def start(self, configurator):
         self.settings = DatabaseSetting(configurator.settings, self.name)
         self.settings.validate()
         self.engine = self._get_engine()
