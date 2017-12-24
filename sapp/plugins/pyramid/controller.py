@@ -1,4 +1,5 @@
 from pyramid.httpexceptions import HTTPFound
+from pyramid.httpexceptions import HTTPMethodNotAllowed
 
 
 class QuitController(Exception):
@@ -116,7 +117,7 @@ class JsonController(Controller):
         self.context = {}
 
 
-class RestfulController(JsonController):
+class HttpMixin(object):
     @property
     def methods(self):
         return {
@@ -133,19 +134,27 @@ class RestfulController(JsonController):
         method()
 
     def get(self):
-        pass
+        raise HTTPMethodNotAllowed()
 
     def post(self):
-        pass
+        raise HTTPMethodNotAllowed()
 
     def put(self):
-        pass
+        raise HTTPMethodNotAllowed()
 
     def patch(self):
-        pass
+        raise HTTPMethodNotAllowed()
 
     def delete(self):
-        pass
+        raise HTTPMethodNotAllowed()
 
     def options(self):
-        pass
+        raise HTTPMethodNotAllowed()
+
+
+class HttpController(HttpMixin, Controller):
+    pass
+
+
+class RestfulController(HttpMixin, JsonController):
+    pass
