@@ -1,5 +1,7 @@
-from mock import patch
-from mock import sentinel
+from unittest.mock import patch
+from unittest.mock import sentinel
+
+from pyramid.httpexceptions import HTTPMethodNotAllowed
 from pytest import fixture
 from pytest import mark
 from pytest import raises
@@ -196,13 +198,6 @@ class TestController(FixturesMixin):
             location=mrequest.route_url.return_value,
             headers=mrequest.response.headerlist)
 
-    def test_settings(self, ctrl, mrequest):
-        """
-        .settings should be a settings object from registry.
-        """
-        mrequest.registry = dict(settings=sentinel.settings)
-        assert ctrl.settings == sentinel.settings
-
 
 class TestJsonController(FixturesMixin):
     @fixture
@@ -229,12 +224,9 @@ class TestRestfulController(FixturesMixin):
     def test_methods(self, ctrl, method, mrequest):
         """
         RestfulController has additional methods for every HTTP method used in the REST. This test is validating if
-        every method is covered.
+        every method which was not overwritten, will raise HTTPMethodNotAllowed
         """
         mrequest.method = method
 
-        ctrl.make()  # syntax check
-
-        with patch.object(ctrl, method.lower()) as mock:
+        with raises(HTTPMethodNotAllowed):
             ctrl.make()
-            mock.assert_called_once_with()

@@ -1,9 +1,9 @@
-from mock import MagicMock
-from mock import patch
-from mock import sentinel
+from unittest.mock import MagicMock
+from unittest.mock import patch
+from unittest.mock import sentinel
+
 from pytest import fixture
 from tempfile import NamedTemporaryFile
-
 from yaml import dump
 
 from sapp.plugins.pyramid.routing import RouteYamlParser
@@ -188,4 +188,3 @@ class TestRouting(object):
             route_name='something',
             renderer='myrenderer',
         )
-

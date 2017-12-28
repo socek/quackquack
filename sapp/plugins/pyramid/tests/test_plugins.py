@@ -35,11 +35,11 @@ class TestAuthPlugin(Fixtures):
     def plugin(self, mauthn_policy_cls, mauthz_policy_cls, mroot_factory):
         return AuthPlugin(mauthn_policy_cls, mauthz_policy_cls, mroot_factory)
 
-    def test_start_plugin(self, plugin, mconfigurator):
+    def test_start(self, plugin, mconfigurator):
         """
-        .start_plugin should get the settings from configurator.
+        .start should get the settings from configurator.
         """
-        plugin.start_plugin(mconfigurator)
+        plugin.start(mconfigurator)
 
         assert plugin.settings == mconfigurator.settings
 
@@ -90,11 +90,11 @@ class TestCsrfPlugin(Fixtures):
     def plugin(self, mpolicy_cls):
         return CsrfPlugin(mpolicy_cls)
 
-    def test_start_plugin(self, plugin, mconfigurator):
+    def test_start(self, plugin, mconfigurator):
         """
-        .start_plugin should get the settings from configurator.
+        .start should get the settings from configurator.
         """
-        plugin.start_plugin(mconfigurator)
+        plugin.start(mconfigurator)
 
         assert plugin.settings == mconfigurator.settings
 
@@ -126,22 +126,12 @@ class TestRoutingPlugin(Fixtures):
     def plugin(self, mrouting_cls):
         return RoutingPlugin(mrouting_cls)
 
-    def test_start_plugin(self, plugin, mconfigurator):
-        """
-        .start_plugin should get the paths from configurator.
-        """
-        plugin.start_plugin(mconfigurator)
-
-        assert plugin.paths == mconfigurator.paths
-
     def test_start_pyramid(self, plugin, mpyramid, mrouting_cls):
         """
         .start_pyramid should start routing.
         """
-        plugin.paths = sentinel.paths
-
         plugin.start_pyramid(mpyramid)
-        mrouting_cls.assert_called_once_with(mpyramid, sentinel.paths)
+        mrouting_cls.assert_called_once_with(mpyramid)
         mrouting_cls.return_value.make.assert_called_once_with()
 
 
@@ -154,11 +144,11 @@ class TestSessionPlugin(Fixtures):
     def plugin(self, msession_factory_cls):
         return SessionPlugin(msession_factory_cls)
 
-    def test_start_plugin(self, plugin, mconfigurator):
+    def test_start(self, plugin, mconfigurator):
         """
-        .start_plugin should get the settings from configurator.
+        .start should get the settings from configurator.
         """
-        plugin.start_plugin(mconfigurator)
+        plugin.start(mconfigurator)
 
         assert plugin.settings == mconfigurator.settings
 

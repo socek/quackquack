@@ -1,5 +1,7 @@
-from mock import MagicMock
-from mock import patch
+from unittest.mock import MagicMock
+from unittest.mock import patch
+from unittest.mock import sentinel
+
 from pytest import fixture
 
 from sapp.plugins.pyramid.configurator import ConfiguratorWithPyramid
@@ -32,9 +34,11 @@ class TestConfiguratorWithPyramid(object):
         """
         .start_pyramid should create wsgi application
         """
+        configurator.settings = sentinel.settings
         result = configurator.start_pyramid({'extra': 1}, 'arg', kw='arg2')
 
-        mpyramid_configurator.assert_called_once_with('arg', kw='arg2')
+        mpyramid_configurator.assert_called_once_with(
+            'arg', settings=sentinel.settings, kw='arg2')
         pyramid = mpyramid_configurator.return_value
         pyramid.make_wsgi_app.assert_called_once_with()
         assert pyramid.make_wsgi_app.return_value == result

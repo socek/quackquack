@@ -1,5 +1,6 @@
-from mock import patch
-from mock import sentinel
+from unittest.mock import patch
+from unittest.mock import sentinel
+
 from pytest import fixture
 
 from sapp.plugins.logging import LoggingPlugin
