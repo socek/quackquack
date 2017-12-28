@@ -24,14 +24,6 @@ class FinalizeController(Exception):
 
 class Controller(object):
 
-    # **************
-    # * Properties *
-    # **************
-
-    @property
-    def settings(self):
-        return self.request.registry['settings']
-
     # ********
     # * flow *
     # ********
