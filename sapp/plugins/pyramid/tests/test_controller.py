@@ -54,7 +54,7 @@ class TestController(FixturesMixin):
         mbefore_make.assert_called_once_with()
         m_make.assert_called_once_with()
         mafter_make.assert_called_once_with()
-        mget_response.assert_called_once_with()
+        mget_response.assert_called_once_with(m_make.return_value)
 
         assert not mbefore_quit.called
 
@@ -166,6 +166,16 @@ class TestController(FixturesMixin):
 
         assert ctrl._get_response() == sentinel.context
         mcreate_widgets.assert_called_once_with()
+
+    def test_get_response_when_response_returned_from_make(self, ctrl, mcreate_widgets):
+        """
+        ._get_response should return response from object returned by .make
+        """
+        ctrl.context = sentinel.context
+        result = sentinel.result
+
+        assert ctrl._get_response(result) == sentinel.result
+        assert not mcreate_widgets.called
 
     def test_get_response_when_response_ready(self, ctrl):
         """

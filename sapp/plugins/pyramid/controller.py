@@ -41,20 +41,22 @@ class Controller(object):
         try:
             self._create_context()
             self._before_make()
-            self._make()
+            result = self._make()
             self._after_make()
-            return self._get_response()
+            return self._get_response(result)
         except QuitController as end:
             self._before_quit()
             return end.response or self.response
 
     def _make(self):
         try:
-            self.make()
+            return self.make()
         except FinalizeController as finalizer:
             self.context.update(finalizer.context)
 
-    def _get_response(self):
+    def _get_response(self, result=None):
+        if result:
+            return result
         if self.response is None:
             self._create_widgets()
             return self.context
@@ -123,7 +125,7 @@ class HttpMixin(object):
 
     def make(self):
         method = self.methods[self.request.method]
-        method()
+        return method()
 
     def get(self):
         raise HTTPMethodNotAllowed()
