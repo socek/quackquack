@@ -35,7 +35,8 @@ class TestConfiguratorWithPyramid(object):
         .start_pyramid should create wsgi application
         """
         configurator.settings = sentinel.settings
-        result = configurator.start_pyramid({'extra': 1}, 'arg', kw='arg2')
+        result = configurator.start_pyramid(
+            'arg', extra={'extra': 1}, startpoint='startpoint', kw='arg2')
 
         mpyramid_configurator.assert_called_once_with(
             'arg', settings=sentinel.settings, kw='arg2')

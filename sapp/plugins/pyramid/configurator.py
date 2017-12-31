@@ -9,13 +9,14 @@ class ConfiguratorWithPyramid(Configurator):
             method = getattr(plugin, 'start_pyramid', lambda x: x)
             method(pyramid)
 
-    def start_pyramid(self, extra=None, *args, **kwargs):
+    def start_pyramid(self, *args, **kwargs):
         """
         Create application with 'uwsgi' settings and return pyramid's uwsgi
         application object.
         """
-        extra = extra or {}
-        self.start('pyramid', **extra)
+        extra = kwargs.pop('extra', {})
+        startpoint = kwargs.pop('startpoint', 'pyramid')
+        self.start(startpoint, **extra)
 
         pyramid = PyramidConfigurator(*args, settings=self.settings, **kwargs)
         pyramid.registry['application'] = self
