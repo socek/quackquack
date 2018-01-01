@@ -2,6 +2,9 @@ from unittest.mock import MagicMock
 from unittest.mock import patch
 
 from pytest import fixture
+from webtest import TestApp
+
+from sapp.plugins.sqlalchemy.testing import BaseIntegrationFixture
 
 
 class ControllerFixtureMixin(object):
@@ -65,3 +68,17 @@ class ControllerFixtureMixin(object):
     def mcreate_widgets(self, ctrl):
         with patch.object(ctrl, '_create_widgets') as mock:
             yield mock
+
+
+class BaseWebTestFixture(BaseIntegrationFixture):
+    UWSGI_KEY = 'wsgi'
+
+    @fixture(scope='module')
+    def wsgi_app(self, config):
+        if self.UWSGI_KEY not in self.SESSION_CACHE:
+            self.SESSION_CACHE[self.UWSGI_KEY] = config.start_pyramid()
+        return self.SESSION_CACHE[self.UWSGI_KEY]
+
+    @fixture
+    def fake_app(self, wsgi_app):
+        return TestApp(wsgi_app)

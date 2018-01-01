@@ -18,6 +18,7 @@ class BaseIntegrationFixture(object):
     """
     SESSION_CACHE = {}
     CONFIGURATOR_CLASS = None
+    CONFIGURATOR_KEY = 'config'
 
     def after_configurator_start(self, config):
         pass
@@ -28,13 +29,12 @@ class BaseIntegrationFixture(object):
         This fixture will create full configurator object. It can be use for
         accessing app during the tests.
         """
-        key = 'config'
-        if key not in self.SESSION_CACHE:
+        if self.CONFIGURATOR_KEY not in self.SESSION_CACHE:
             config = self.CONFIGURATOR_CLASS()
             config.start('tests')
-            self.SESSION_CACHE[key] = config
+            self.SESSION_CACHE[self.CONFIGURATOR_KEY] = config
             self.after_configurator_start(config)
-        return self.SESSION_CACHE[key]
+        return self.SESSION_CACHE[self.CONFIGURATOR_KEY]
 
     @fixture
     def app(self, config):

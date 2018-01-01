@@ -21,7 +21,7 @@ setup(
     version='0.1',
     description='Simple Application',
     packages=find_packages(),
-    tests_require=['coverage', 'pytest', 'pytest-cov'],
+    tests_require=['coverage', 'pytest', 'pytest-cov', 'WebTest'],
     long_description=__doc__,
     author='Dominik "Socek" Długajczyk',
     author_email='msocek@gmail.com',
