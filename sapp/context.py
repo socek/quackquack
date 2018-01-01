@@ -1,4 +1,4 @@
-class Application(object):
+class Context(object):
     def __init__(self, configurator):
         self.configurator = configurator
 

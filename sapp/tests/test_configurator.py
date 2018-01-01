@@ -101,6 +101,6 @@ class TestConfigurator(object):
         """
         Mocking the application objects should be simple an easy.
         """
-        with patch.object(configurator, 'create_application') as mock:
+        with patch.object(configurator, 'create_context') as mock:
             with configurator as app:
                 assert app == mock.return_value

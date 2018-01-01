@@ -1,4 +1,4 @@
-from sapp.application import Application
+from sapp.context import Context
 
 
 class ConfiguratorNotStartedError(RuntimeError):
@@ -12,10 +12,10 @@ class ExtraValueMissing(RuntimeError):
 class Configurator(object):
     def __init__(self):
         self.is_started = False
-        self.method = None
+        self.startpoint = None
         self.plugins = []
-        self.application_count = 0
-        self.application = None
+        self.context_count = 0
+        self.context = None
 
     def start(self, startpoint=None, **kwargs):
         self.startpoint = startpoint
@@ -31,23 +31,23 @@ class Configurator(object):
             plugin.start(self)
 
     def __enter__(self):
-        return self.create_application()
+        return self.create_context()
 
-    def create_application(self):
+    def create_context(self):
         if not self.is_started:
             raise ConfiguratorNotStartedError(
-                'Configurator is not started! Use Configurator.start(method)')
+                'Configurator is not started! Use Configurator.start(startpoint)')
 
-        self.application_count += 1
-        if not self.application:
-            self.application = Application(self)
-            self.application.enter()
-        return self.application
+        self.context_count += 1
+        if not self.context:
+            self.context = Context(self)
+            self.context.enter()
+        return self.context
 
     def __exit__(self, exc_type, exc_value, traceback):
-        self.application_count -= 1
-        if self.application_count == 0:
-            self.application.exit(exc_type, exc_value, traceback)
+        self.context_count -= 1
+        if self.context_count == 0:
+            self.context.exit(exc_type, exc_value, traceback)
 
     def add_plugin(self, plugin):
         self.plugins.append(plugin)
