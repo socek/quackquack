@@ -19,6 +19,9 @@ class BaseIntegrationFixture(object):
     SESSION_CACHE = {}
     CONFIGURATOR_CLASS = None
 
+    def after_configurator_start(self, config):
+        pass
+
     @fixture(scope="module")
     def config(self):
         """
@@ -30,10 +33,10 @@ class BaseIntegrationFixture(object):
             config = self.CONFIGURATOR_CLASS()
             config.start('tests')
             self.SESSION_CACHE[key] = config
+            self.after_configurator_start(config)
         return self.SESSION_CACHE[key]
 
     @fixture
     def app(self, config):
         with config as app:
             yield app
-
