@@ -24,7 +24,7 @@ class RecreateDatabases(object):
         database.
         """
         dbname = database.get_dbname()
-        engine = database.get_engine(True)
+        engine = database.get_engine(default_url=True)
         session = sessionmaker(bind=engine)()
         session.connection().connection.set_isolation_level(0)
         session.execute('DROP DATABASE IF EXISTS {}'.format(dbname))

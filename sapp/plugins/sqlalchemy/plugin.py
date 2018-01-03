@@ -17,9 +17,9 @@ class Database(object):
         self.engine = self.get_engine()
         self.sessionmaker = sessionmaker(
             autoflush=False, autocommit=False, bind=self.engine)
-        self._set_engines(configurator)
+        self._assign_to_configurator(configurator)
 
-    def _set_engines(self, configurator):
+    def _assign_to_configurator(self, configurator):
         configurator.dbplugins = getattr(configurator, 'dbplugins', {})
         configurator.dbplugins[self.name] = self
 

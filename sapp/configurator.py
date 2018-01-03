@@ -36,7 +36,8 @@ class Configurator(object):
     def create_context(self):
         if not self.is_started:
             raise ConfiguratorNotStartedError(
-                'Configurator is not started! Use Configurator.start(startpoint)')
+                'Configurator is not started! Use Configurator.start(startpoint)'
+            )
 
         self.context_count += 1
         if not self.context:
