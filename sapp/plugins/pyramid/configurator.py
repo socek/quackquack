@@ -4,7 +4,7 @@ from sapp.configurator import Configurator
 
 
 class ConfiguratorWithPyramid(Configurator):
-    def start_pyramid(self, *args, **kwargs):
+    def make_wsgi_app(self, *args, **kwargs):
         """
         Configure application for web server and return pyramid's uwsgi
         application object.
