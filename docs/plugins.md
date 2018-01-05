@@ -4,6 +4,7 @@
 1. [Settings](#settings)
     * [History](#history)
     * [Implementing settings](#implementing-settings)
+    * [Implementing paths settings](#implementing-paths-settings)
 2. [Logging](#logging)
 
 # Settings
@@ -97,5 +98,82 @@ with app as context:
 Also, the settings can be retrived from the configurator.settings. This was
 added because plugins will also need access to the settings.
 
+## Implementing paths settings
+
+If you wish to configure paths to settings, a simple dict can not be enough.
+Our proposition is to have prefixed dict, in which you specify prefix once,
+and all paths will be prefixed.
+
+Example:
+
+```python
+from sapp.plugins.settings import PrefixedStringsDict
+
+def default():
+    paths = PrefixedStringsDict('/code/')
+    paths['app.ini'] = 'app.ini'
+    assert paths['app.ini'] == '/code/app.ini'
+
+    settings = {
+        'paths': paths,
+    }
+    return settings
+```
 
 # Logging
+
+Logging is a very simple plugin. It uses `logging.config.dictConfig` from the
+standard python's library. Plugin will just get the settings['logging'] value
+and push it to the dictConfig. The logging will start when the Configurator
+instance will be started.
+
+Exapmle of the configuration:
+```python
+def logging(settings):
+    settings['logging'] = {
+        'version': 1,
+        'disable_existing_loggers': True,
+        'formatters': {
+            'generic': {
+                'format':
+                '%(asctime)s %(levelname)-5.5s [%(name)s][%(threadName)s] %(message)s',
+            },
+        },
+        'handlers': {
+            'console': {
+                'level': "DEBUG",
+                'class': 'logging.StreamHandler',
+                'formatter': 'generic',
+            },
+        },
+        'loggers': {
+            '': {
+                'level': 'DEBUG',
+                'handlers': [],
+            },
+            'sqlalchemy': {
+                'level': 'ERROR',
+                'handlers': ['console'],
+                'qualname': 'sqlalchemy.engine',
+            },
+            'alembic': {
+                'level': 'ERROR',
+                'handlers': ['console'],
+                'qualname': 'alembic',
+            },
+            'mypet': {
+                'level': 'DEBUG',
+                'handlers': ['console'],
+                'qualname': 'mypet',
+            },
+            'waitress': {
+                'level': 'ERROR',
+                'handlers': ['console'],
+            },
+            'celery': {
+                'handlers': ['console'],
+                'level': 'ERROR',
+            },
+        }
+    }
+```
