@@ -13,6 +13,8 @@ Version: 0.1.0
 4. [Plugins](docs/plugins.md)
     * [Settings](docs/plugins.md#settings)
     * [Logging](docs/plugins.md#logging)
+    * [Pyramid Plugin](docs/pyramid.md)
+    * [Sqlalchemy Plugin](docs/sqlalchemy.md)
 5. [Phases](docs/phases.md)
     * [About Phases](docs/phases.md#about-phases)
     * [Phase 0](docs/phases.md#phase-0)
