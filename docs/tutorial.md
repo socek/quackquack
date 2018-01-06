@@ -99,7 +99,7 @@ class ConfiguratorWithPyramid(Configurator):
 
         pyramid = PyramidConfigurator(*args, **kwargs)
         self.start_pyramid_plugins(pyramid)
-        return pyramid.make_wsgi_app()
+        return pyramid.make_wsgi_object()
 ```
 
 In the `start_pyramid` method we are starting normal Sapp application and after

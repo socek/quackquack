@@ -76,7 +76,7 @@ class BaseWebTestFixture(BaseIntegrationFixture):
     @fixture(scope='module')
     def wsgi_app(self, config):
         if self.UWSGI_KEY not in self.SESSION_CACHE:
-            self.SESSION_CACHE[self.UWSGI_KEY] = config.make_wsgi_app()
+            self.SESSION_CACHE[self.UWSGI_KEY] = config.make_wsgi_object()
         return self.SESSION_CACHE[self.UWSGI_KEY]
 
     @fixture

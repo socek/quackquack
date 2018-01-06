@@ -72,7 +72,7 @@ from myapp import app
 
 def wsgi(settings):
     app.start('pyramid')
-    return app.make_wsgi_app()
+    return app.make_wsgi_object()
 ```
 
 The settings argument is not used here. It is something that will be passed to
