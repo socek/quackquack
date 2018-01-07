@@ -1,6 +1,3 @@
-from yaml import load
-
-
 class Routing(object):
 
     values_to_set = [
@@ -32,14 +29,6 @@ class Routing(object):
     def __init__(self, pyramid):
         self.pyramid = pyramid
 
-    def read_from_file(self, path):
-        """
-        Read routing configuration from a .yaml file
-        """
-        parser = RouteYamlParser(path)
-        for route in parser.parse():
-            self.add(**route)
-
     def add(self, controller, route, url, *args, **kwargs):
         """
         Add routing for controller.
@@ -56,10 +45,10 @@ class Routing(object):
         Add view/controller handler.
         - controller: controller class or dotted url to it
         """
-        controller_class = self.pyramid.maybe_dotted(controller)
+        controller = self.pyramid.maybe_dotted(controller)
 
         for name in self.values_to_set:
-            self.set_controller_config(kwargs, controller_class, name)
+            self.set_controller_config(kwargs, controller, name)
 
         self.pyramid.add_view(controller, **kwargs)
 
@@ -67,28 +56,3 @@ class Routing(object):
         value = getattr(controller, name, None)
         if value:
             kwargs[name] = value
-
-
-class RouteYamlParser(object):
-    def __init__(self, path):
-        self.path = path
-
-    def parse(self):
-        self.read_yaml()
-        yield from self._parse_route_yaml(self.data)
-
-    def read_yaml(self):
-        with open(self.path, 'r') as stream:
-            self.data = load(stream)
-
-    def _parse_route_yaml(self, data, prefix=''):
-        for name, value in data.items():
-            if type(value) is dict:
-                yield from self._parse_route_yaml(value, prefix + name + '.')
-            else:
-                for element in value:
-                    yield self._convert_route_dict(prefix + name, element)
-
-    def _convert_route_dict(self, name, element):
-        element['controller'] = name + '.' + element['controller']
-        return element

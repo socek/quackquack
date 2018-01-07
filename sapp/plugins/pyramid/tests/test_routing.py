@@ -1,122 +1,9 @@
 from unittest.mock import MagicMock
 from unittest.mock import patch
-from unittest.mock import sentinel
 
 from pytest import fixture
-from tempfile import NamedTemporaryFile
-from yaml import dump
 
-from sapp.plugins.pyramid.routing import RouteYamlParser
 from sapp.plugins.pyramid.routing import Routing
-
-
-class TestRouteYamlParser(object):
-    @fixture
-    def parser(self):
-        return RouteYamlParser('/highway/to/hell')
-
-    @fixture
-    def mread_yaml(self, parser):
-        patcher = patch.object(parser, 'read_yaml')
-        with patcher as mock:
-            yield mock
-
-    @fixture
-    def mparse_route_yaml(self, parser):
-        patcher = patch.object(parser, '_parse_route_yaml')
-        with patcher as mock:
-            yield mock
-
-    def test_parse(self, parser, mread_yaml, mparse_route_yaml):
-        def example_generator(data):
-            yield 10
-
-        def side_effect():
-            parser.data = sentinel.data
-
-        mread_yaml.side_effect = side_effect
-        mparse_route_yaml.side_effect = example_generator
-
-        assert list(parser.parse()) == [10]
-        mread_yaml.assert_called_once_with()
-        mparse_route_yaml.assert_called_once_with(sentinel.data)
-
-    def test_read_yaml(self, parser):
-        tmp = NamedTemporaryFile(delete=False)
-        tmp.write(bytes(
-            dump({
-                'mydata': 15
-            }),
-            'utf8',
-        ))
-        tmp.close()
-
-        parser.path = tmp.name
-        parser.read_yaml()
-        assert parser.data == {'mydata': 15}
-
-    def test_parsing(self, parser):
-        def key_sorting(obj):
-            return obj['controller']
-
-        data = {
-            'convent': {
-                'controllers': [
-                    {
-                        'controller': 'ConventListController',
-                        'route': 'convent:list',
-                        'url': '/',
-                    },
-                    {
-                        'controller': 'ConventEditController',
-                        'route': 'convent:edit',
-                        'url': '/edit',
-                    },
-                ]
-            },
-            'game': {
-                'controllers': [
-                    {
-                        'controller': 'GameListController',
-                        'route': 'game:list',
-                        'url': '/g',
-                    },
-                    {
-                        'controller': 'GameEditController',
-                        'route': 'game:edit',
-                        'url': '/g/edit',
-                    },
-                ]
-            },
-        }
-
-        result = list(parser._parse_route_yaml(data))
-        result.sort(key=key_sorting)
-
-        assert result == sorted(
-            [
-                {
-                    'controller': 'convent.controllers.ConventListController',
-                    'route': 'convent:list',
-                    'url': '/',
-                },
-                {
-                    'controller': 'convent.controllers.ConventEditController',
-                    'route': 'convent:edit',
-                    'url': '/edit',
-                },
-                {
-                    'controller': 'game.controllers.GameListController',
-                    'route': 'game:list',
-                    'url': '/g',
-                },
-                {
-                    'controller': 'game.controllers.GameEditController',
-                    'route': 'game:edit',
-                    'url': '/g/edit',
-                },
-            ],
-            key=key_sorting)
 
 
 class ExampleController(object):
@@ -132,12 +19,6 @@ class TestRouting(object):
     @fixture
     def routing(self, mconfig):
         return Routing(mconfig)
-
-    @fixture
-    def m_route_yaml_parser(self):
-        patcher = patch('sapp.plugins.pyramid.routing.RouteYamlParser')
-        with patcher as mock:
-            yield mock
 
     @fixture
     def madd(self, routing):
@@ -156,19 +37,6 @@ class TestRouting(object):
         patcher = patch.object(routing, 'read_from_file')
         with patcher as mock:
             yield mock
-
-    def test_read_from_file(self, routing, m_route_yaml_parser, madd):
-        """
-        .read_from_file should parse yaml file and add routes from it
-        """
-        mroute = {'controller': 'something'}
-        m_route_yaml_parser.return_value.parse.return_value = [mroute]
-
-        routing.read_from_file(sentinel.pathtofile)
-
-        madd.assert_called_once_with(**mroute)
-        m_route_yaml_parser.assert_called_once_with(sentinel.pathtofile)
-        m_route_yaml_parser.return_value.parse.assert_called_once_with()
 
     def test_add(self, routing, mconfig, madd_view):
         routing.add('controller', 'route', 'url', 'arg', kw='arg')
