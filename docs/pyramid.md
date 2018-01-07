@@ -210,7 +210,69 @@ class CsrfPlugin(Plugin):
 
 # Routing Wrapper
 
-TODO
+## Why we need a router wrapper
+`sapp.plugins.pyramid.routing.Routing` was designed to simplify creating of
+routes. In normal Pyramid, the developer needs to configure the route in one
+place and the controller in another. Also, configuring is made by @view_config
+decorators which is not a good way if you want to share some values between
+many classes, you can not use polymorphism. Instead you uneed to copy these
+configuration variables across all the controllers.
+
+Another disadvantage of normal pyramid's routing is that the linking of the
+route and the controller is made by name which is not very sophisticated and it
+is very buggable.
+
+## How to implement Routing
+
+First step is to implement Routing class inherited from
+`sapp.plugins.pyramid.routing.Routing` and make a `make(self)` method.
+This is our wrapper for normal pyramid routing. It will help us, but if you want
+to use the old ways, you are free to do that. `pyramid` property from the
+`Routing` class is a [Pyramid Configurator](https://docs.pylonsproject.org/projects/pyramid/en/latest/api/config.html#pyramid.config.Configurator).
+
+The `make(self)` should add all the routes, but you can import routes from
+another module. Using import system makes this very simple and easy to read, but
+please be aware, that you should not import `Sapp Configurator` instance, because
+it will raise cross import error. Also you should not import the controllers,
+because it may raise the same error as well. You should use only dotted strings.
+
+Example:
+
+
+```python
+from sapp.plugins.pyramid.routing import Routing
+
+from myapp.home.routing import home_routing
+
+def not_home_routing(routing):
+    routing.add('mypet.not_home.controllers.NotHome', 'not_home', '/not')
+
+class MyappRouting(Routing):
+    def make(self):
+        home_routing(self)
+        not_home_routing(self)
+```
+
+Only method which is needed description here is `Routing.add`. First argument is
+dotted path to the controller (or controller class if you wish). Second is route
+name. Third is the route url. All other args and kwargs will be passed to the
+[add_route](https://docs.pylonsproject.org/projects/pyramid/en/latest/api/config.html#pyramid.config.Configurator.add_route) method. In order this route
+to work, the Routing wrapper will call the [add_view](https://docs.pylonsproject.org/projects/pyramid/en/latest/api/config.html#pyramid.config.Configurator.add_view)
+method. All the kwargs for this method will be taken from the controller class.
+
+Example controller:
+
+```python
+class Controller(object:
+    rendered = 'json'
+
+    def __init__(self, root_factory, request):
+        self.root_factory = root_factory
+        self.request = request
+
+    def __call__(self):
+        return {}
+```
 
 # Controllers
 
