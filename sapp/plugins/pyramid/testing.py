@@ -1,5 +1,4 @@
 from unittest.mock import MagicMock
-from unittest.mock import patch
 
 from pytest import fixture
 from webtest import TestApp
@@ -28,46 +27,6 @@ class ControllerFixtureMixin(object):
         obj = MagicMock()
         obj.registry = dict(application=app)
         return obj
-
-    @fixture
-    def mcreate_context(self, ctrl):
-        with patch.object(ctrl, '_create_context') as mock:
-            yield mock
-
-    @fixture
-    def mbefore_make(self, ctrl):
-        with patch.object(ctrl, '_before_make') as mock:
-            yield mock
-
-    @fixture
-    def m_make(self, ctrl):
-        with patch.object(ctrl, '_make') as mock:
-            yield mock
-
-    @fixture
-    def mmake(self, ctrl):
-        with patch.object(ctrl, 'make') as mock:
-            yield mock
-
-    @fixture
-    def mafter_make(self, ctrl):
-        with patch.object(ctrl, '_after_make') as mock:
-            yield mock
-
-    @fixture
-    def mget_response(self, ctrl):
-        with patch.object(ctrl, '_get_response') as mock:
-            yield mock
-
-    @fixture
-    def mbefore_quit(self, ctrl):
-        with patch.object(ctrl, '_before_quit') as mock:
-            yield mock
-
-    @fixture
-    def mcreate_widgets(self, ctrl):
-        with patch.object(ctrl, '_create_widgets') as mock:
-            yield mock
 
 
 class BaseWebTestFixture(BaseIntegrationFixture):
