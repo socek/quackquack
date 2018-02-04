@@ -12,7 +12,7 @@ class ConfiguratorWithPyramid(Configurator):
         pyramid = PyramidConfigurator(*args, settings=self.settings, **kwargs)
         pyramid.registry['application'] = self
         self._start_pyramid_plugins(pyramid)
-        return pyramid.make_wsgi_object()
+        return pyramid.make_wsgi_app()
 
     def _start_pyramid_plugins(self, pyramid):
         for plugin in self.plugins:
