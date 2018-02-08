@@ -42,7 +42,7 @@ class TestConfiguratorWithPyramid(object):
         mpyramid_configurator.assert_called_once_with(
             'arg', settings=sentinel.settings, kw='arg2')
         pyramid = mpyramid_configurator.return_value
-        pyramid.make_wsgi_object.assert_called_once_with()
-        assert pyramid.make_wsgi_object.return_value == wsgi
+        pyramid.make_wsgi_app.assert_called_once_with()
+        assert pyramid.make_wsgi_app.return_value == wsgi
 
         configurator.plugin1.start_pyramid.assert_called_once_with(pyramid)

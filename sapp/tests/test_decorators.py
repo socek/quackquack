@@ -1,4 +1,5 @@
 from unittest.mock import MagicMock
+from unittest.mock import sentinel
 
 from pytest import fixture
 
@@ -66,3 +67,15 @@ class TestWithContext(object):
             assert var2 == configurator.var2
 
         fun()
+
+    def test_with_values_explicitly_passed(self, configurator):
+        """
+        WithContext should not append values from context if those values are
+        passed thru as named argument specyfied.
+        """
+        @WithContext(configurator, args=['var1', 'var2'])
+        def fun(var1, var2):
+            assert var1 == sentinel.var1
+            assert var2 == configurator.var2
+
+        fun(var1=sentinel.var1)
