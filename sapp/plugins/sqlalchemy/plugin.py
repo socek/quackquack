@@ -30,8 +30,6 @@ class Database(object):
     def exit(self, application, exc_type, exc_value, traceback):
         if exc_type:
             self.dbsession.rollback()
-        else:
-            self.dbsession.commit()
         self.dbsession.close()
 
     def get_engine(self, default_url=False):
