@@ -11,7 +11,12 @@
     * [Starting uwsgi server](#starting-uwsgi-server)
     * [Creating Plugins for Pyramid](#creating-plugins-for-pyramid)
 3. [Routing Wrapper](#routing-wrapper)
+    * [Why we need a router wrapper](#why-we-need-a-router-wrapper)
+    * [How to implement Routing](#how-to-implement-routing)
 4. [Controllers](#controllers)
+    * [Base Controller](#base-controller)
+    * [JsonController](#jsoncontroller)
+    * [HttpMixin: HttpController and RestfulController](#httpmixin-httpcontroller-and-restfulcontroller)
 5. [BaseWebTestFixture](#basewebtestfixture)
 
 # About
@@ -275,6 +280,53 @@ class Controller(object:
 ```
 
 # Controllers
+
+Sapp comes with 4 class based controllers.
+
+## Base Controller
+
+Main reason to implement an controller is to create response with the data.
+The simples way to return the data is to implement `.make(self)` method and
+return a dict.
+
+```python
+from sapp.plugins.pyramid.controller import Controller
+
+
+class Home(Controller):
+    renderer = 'json'
+
+    def make(self):
+        return {'hello': 'world'}
+```
+
+The renderer property here is to configure the controler, so the framework will
+know that this controller will return json data. More info about the configuration
+properties can be found [here]((#how-to-implement-routing)).
+
+If the return value will be None, then the Controller will use
+`Controller.context`. `context` is a simple dict which holds data that will be
+passed to the template. So, if you have a template, you can implement the same
+controller in this way:
+
+```python
+from sapp.plugins.pyramid.controller import Controller
+
+
+class Home(Controller):
+    renderer = 'templates/hello.jinja2'
+
+    def make(self):
+        self.context['hello'] = 'world'
+```
+
+
+
+## JsonController
+
+TODO
+
+## HttpMixin: HttpController and RestfulController
 
 TODO
 
