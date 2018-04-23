@@ -29,30 +29,30 @@ class Routing(object):
     def __init__(self, pyramid):
         self.pyramid = pyramid
 
-    def add(self, controller, route, url, *args, **kwargs):
+    def add(self, view, route, url, *args, **kwargs):
         """
-        Add routing for controller.
-        - controller: controller class or dotted url to it
+        Add routing for view.
+        - view: view class or dotted url to it
         - route: name for the route
         - url - url pattern
         """
         self.pyramid.add_route(route, url, *args, **kwargs)
 
-        self.add_view(controller, route_name=route)
+        self.add_view(view, route_name=route)
 
-    def add_view(self, controller, **kwargs):
+    def add_view(self, view, **kwargs):
         """
-        Add view/controller handler.
-        - controller: controller class or dotted url to it
+        Add view/view handler.
+        - view: view class or dotted url to it
         """
-        controller = self.pyramid.maybe_dotted(controller)
+        view = self.pyramid.maybe_dotted(view)
 
         for name in self.values_to_set:
-            self.set_controller_config(kwargs, controller, name)
+            self.set_view_config(kwargs, view, name)
 
-        self.pyramid.add_view(controller, **kwargs)
+        self.pyramid.add_view(view, **kwargs)
 
-    def set_controller_config(self, kwargs, controller, name):
-        value = getattr(controller, name, None)
+    def set_view_config(self, kwargs, view, name):
+        value = getattr(view, name, None)
         if value:
             kwargs[name] = value

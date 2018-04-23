@@ -6,7 +6,7 @@ from pytest import fixture
 from sapp.plugins.pyramid.routing import Routing
 
 
-class ExampleController(object):
+class ExampleView(object):
     renderer = 'myrenderer'
     path_info = None
 
@@ -39,20 +39,20 @@ class TestRouting(object):
             yield mock
 
     def test_add(self, routing, mconfig, madd_view):
-        routing.add('controller', 'route', 'url', 'arg', kw='arg')
+        routing.add('view', 'route', 'url', 'arg', kw='arg')
 
         mconfig.add_route('route', 'url', 'arg', kw='arg')
-        madd_view.assert_called_once_with('controller', route_name='route')
+        madd_view.assert_called_once_with('view', route_name='route')
 
     def test_add_view(self, routing, mconfig):
-        mconfig.maybe_dotted.return_value = ExampleController
+        mconfig.maybe_dotted.return_value = ExampleView
         routing.add_view(
-            'impaf.tests.test_routing.ExampleController',
+            'impaf.tests.test_routing.ExampleView',
             route_name='something',
         )
 
         mconfig.add_view(
-            'impaf.tests.test_routing.ExampleController',
+            'impaf.tests.test_routing.ExampleView',
             route_name='something',
             renderer='myrenderer',
         )

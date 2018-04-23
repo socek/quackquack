@@ -6,12 +6,12 @@ from webtest import TestApp
 from sapp.plugins.sqlalchemy.testing import BaseIntegrationFixture
 
 
-class ControllerFixtureMixin(object):
+class ViewFixtureMixin(object):
     """
     In able to use this mixin, your test class needs to have fixture named "ctrl".
     @fixture
     def ctrl(self, mroot_factory, mrequest):
-        return Controller(mroot_factory, mrequest)
+        return View(mroot_factory, mrequest)
     """
 
     @fixture
