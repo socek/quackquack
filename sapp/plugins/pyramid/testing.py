@@ -8,9 +8,9 @@ from sapp.plugins.sqlalchemy.testing import BaseIntegrationFixture
 
 class ViewFixtureMixin(object):
     """
-    In able to use this mixin, your test class needs to have fixture named "ctrl".
+    In able to use this mixin, your test class needs to have fixture named "view".
     @fixture
-    def ctrl(self, mroot_factory, mrequest):
+    def view(self, mroot_factory, mrequest):
         return View(mroot_factory, mrequest)
     """
 

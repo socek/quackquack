@@ -5,7 +5,6 @@ class View(object):
     def __init__(self, root_factory, request):
         self.request = request
         self.root_factory = root_factory
-        self.response = None
 
     @property
     def methods(self):
