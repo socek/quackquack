@@ -27,7 +27,7 @@ setup(
     author_email='msocek@gmail.com',
     license='MIT',
     zip_safe=True,
-    url='https://github.com/socek/qapla',
+    url='https://github.com/socek/sapp',
     keywords=['application', 'settings'],
     entry_points={},
     classifiers=[
