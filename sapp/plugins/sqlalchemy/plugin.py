@@ -5,7 +5,7 @@ from sqlalchemy.orm import sessionmaker
 from sapp.plugins.sqlalchemy.database import DatabaseSetting
 
 
-class Database(object):
+class DatabasePlugin(object):
     def __init__(self, name):
         self.name = name
         self._engine = None

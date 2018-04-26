@@ -3,10 +3,10 @@ from unittest.mock import patch
 
 from pytest import fixture
 
-from sapp.plugins.sqlalchemy.plugin import Database
+from sapp.plugins.sqlalchemy.plugin import DatabasePlugin
 
 
-class TestDatabase(object):
+class TestDatabasePlugin(object):
     @fixture
     def mconfigurator(self):
         config = MagicMock()
@@ -37,7 +37,7 @@ class TestDatabase(object):
 
     @fixture
     def plugin(self):
-        return Database('dbname')
+        return DatabasePlugin('dbname')
 
     def test_start(self, plugin, mconfigurator, msessionmaker, mcreate_engine):
         """

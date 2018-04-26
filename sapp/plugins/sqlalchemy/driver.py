@@ -4,17 +4,17 @@ class Driver(object):
     def __init__(self, database):
         self.database = database
 
-    def query(self):
+    def _query(self):
         return self.database.query(self.model)
 
 
 class Query(Driver):
 
     def get_by_id(self, id):
-        return self.query().filter(self.model.id == id).one()
+        return self._query().filter(self.model.id == id).one()
 
     def list_all(self):
-        return self.query().all()
+        return self._query().all()
 
 
 class Command(Driver):

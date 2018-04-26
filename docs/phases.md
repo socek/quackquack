@@ -6,8 +6,8 @@
 3. [Phase 1 - creating Configurator instance](#phase-1---creating-configurator-instance)
 4. [Phase 2 - starting Configurator](#phase-2---starting-configurator)
 5. [Extending Phases](#extending-phases)
-6. [Application Phase Start](#application-phase-start)
-7. [Application Phase End](#application-phase-end)
+6. [Context Phase Start](#context-phase-start)
+7. [Context Phase End](#context-phase-end)
 
 # About Phases
 
@@ -54,7 +54,7 @@ have Celery and Pyramid application, you would need to have pyramid phase. This
 phase would execute tha Phase 2 at the beggining, and then run all the plugins,
 with the new phase. So now, the Celery application would not start web plugins.
 
-# Application Phase Start
+# Context Phase Start
 
 This is where the configurator will be used as the context manager. This is the
 enter step. Configurator will execute .start method on all the Plugins in order
@@ -63,7 +63,7 @@ is to add vars into the Application object.
 For example, database plugin will start the session here in paste the session
 into the application instance.
 
-# Application Phase End
+# Context Phase End
 
 This is where the configurator will be used as the context manager. This is the
 exit step. Configurator will execute .exit method on all the Plugins in REVERSED
