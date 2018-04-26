@@ -1,4 +1,4 @@
-class BaseDriver(object):
+class Driver(object):
     model = None
 
     def __init__(self, database):
@@ -8,7 +8,7 @@ class BaseDriver(object):
         return self.database.query(self.model)
 
 
-class ReadDriver(BaseDriver):
+class Query(Driver):
 
     def get_by_id(self, id):
         return self.query().filter(self.model.id == id).one()
@@ -17,7 +17,7 @@ class ReadDriver(BaseDriver):
         return self.query().all()
 
 
-class WriteDriver(BaseDriver):
+class Command(Driver):
 
     def create(self, **kwargs):
         obj = self.model()

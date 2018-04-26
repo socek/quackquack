@@ -23,11 +23,11 @@ class Database(object):
         configurator.dbplugins = getattr(configurator, 'dbplugins', {})
         configurator.dbplugins[self.name] = self
 
-    def enter(self, application):
+    def enter(self, context):
         self.dbsession = self.sessionmaker()
-        setattr(application, self.name, self.dbsession)
+        setattr(context, self.name, self.dbsession)
 
-    def exit(self, application, exc_type, exc_value, traceback):
+    def exit(self, context, exc_type, exc_value, traceback):
         if exc_type:
             self.dbsession.rollback()
         self.dbsession.close()

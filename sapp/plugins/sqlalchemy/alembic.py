@@ -1,7 +1,7 @@
 from alembic import context
 
 
-class AlembicEnv(object):
+class AlembicScript(object):
     def __init__(self, app, base_model, dbname):
         self.app = app
         self.base_model = base_model
