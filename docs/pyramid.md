@@ -14,9 +14,7 @@
     * [Why we need a router wrapper](#why-we-need-a-router-wrapper)
     * [How to implement Routing](#how-to-implement-routing)
 4. [Views](#views)
-    * [Base View](#base-view)
-    * [JsonView](#jsonview)
-    * [HttpMixin: HttpView and RestfulView](#httpmixin-httpview-and-restfulview)
+    * [RestfulView](#restfulview)
 5. [BaseWebTestFixture](#basewebtestfixture)
 
 # About
@@ -350,4 +348,16 @@ RestfulView is a View, which returns JSON.
 
 # BaseWebTestFixture
 
-TODO
+BaseWebTestFixture is a pytest's fixtures class whith WebTests. In order to use
+it you need to just use `fake_app` fixture in your test.
+
+```python
+class TestWebAuthView(BaseWebTestFixture):
+    CONFIGURATOR_CLASS = MyConfigurator
+
+    def test_homepage(self, fake_app):
+        fake_app.get('/')
+```
+
+`fake_app` is an instance of `TestApp` class. For more info, please go to the
+official WebTest documentation [here](https://docs.pylonsproject.org/projects/webtest/en/latest/)
