@@ -12,6 +12,24 @@ class ExtraValueMissing(RuntimeError):
     pass
 
 
+class FragmentContext(object):
+    def __init__(self, configurator, args):
+        self.configurator = configurator
+        self.args = args
+
+    def __enter__(self):
+        ctx = self.configurator.__enter__()
+        if len(self.args) == 0:
+            return ctx
+        elif len(self.args) == 1:
+            return getattr(ctx, self.args[0])
+        else:
+            return [getattr(ctx, arg) for arg in self.args]
+
+    def __exit__(self, *args, **kwargs):
+        ctx = self.configurator.__exit__(*args, **kwargs)
+
+
 class Configurator(object):
     def __init__(self):
         self.is_started = False
@@ -39,7 +57,7 @@ class Configurator(object):
     def create_context(self):
         if not self.is_started:
             raise ConfiguratorNotStartedError(
-                'Configurator is not started! Use Configurator.start(startpoint)'
+                "Configurator is not started! Use Configurator.start(startpoint)"
             )
 
         self.context_count += 1
@@ -58,3 +76,6 @@ class Configurator(object):
 
     def append_plugins(self):
         pass
+
+    def __call__(self, *args):
+        return FragmentContext(self, args)

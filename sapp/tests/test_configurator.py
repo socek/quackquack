@@ -1,5 +1,6 @@
 from unittest.mock import MagicMock
 from unittest.mock import patch
+from unittest.mock import sentinel
 
 from pytest import fixture
 from pytest import raises
@@ -37,18 +38,16 @@ class TestConfigurator(object):
         .start should append plugins and init them. Also proper flags should be
         set.
         """
-        configurator.start('wsgi', wsgi=1)
+        configurator.start("wsgi", wsgi=1)
 
-        assert configurator.extra == {'wsgi': 1}
-        assert configurator.startpoint == 'wsgi'
+        assert configurator.extra == {"wsgi": 1}
+        assert configurator.startpoint == "wsgi"
         assert configurator.is_started
 
         configurator.plugin1.start.assert_called_once_with(configurator)
         configurator.plugin2.start.assert_called_once_with(configurator)
 
-        assert configurator.plugins == [
-            configurator.plugin1, configurator.plugin2
-        ]
+        assert configurator.plugins == [configurator.plugin1, configurator.plugin2]
 
     def test_context_manager_many_times(self, configurator):
         """
@@ -65,10 +64,8 @@ class TestConfigurator(object):
         configurator.plugin1.start.assert_called_once_with(configurator)
         configurator.plugin2.start.assert_called_once_with(configurator)
 
-        configurator.plugin1.exit.assert_called_once_with(
-            app, None, None, None)
-        configurator.plugin2.exit.assert_called_once_with(
-            app, None, None, None)
+        configurator.plugin1.exit.assert_called_once_with(app, None, None, None)
+        configurator.plugin2.exit.assert_called_once_with(app, None, None, None)
 
     def test_context_manager_when_raised(self, configurator):
         """
@@ -101,6 +98,72 @@ class TestConfigurator(object):
         """
         Mocking the application objects should be simple an easy.
         """
-        with patch.object(configurator, 'create_context') as mock:
+        with patch.object(configurator, "create_context") as mock:
             with configurator as app:
                 assert app == mock.return_value
+
+
+class ExamplePlugin(object):
+    def start(self, configurator):
+        pass
+
+    def enter(self, context):
+        print("a")
+        context.first = sentinel.first
+
+    def exit(self, *args, **kwargs):
+        pass
+
+
+class ExampleSecondPlugin(ExamplePlugin):
+    def enter(self, context):
+        print("b")
+        context.second = sentinel.second
+
+
+class ExampleThirdPlugin(ExamplePlugin):
+    def enter(self, context):
+        print("c")
+        context.third = sentinel.third
+
+
+class ExampleSecondConfigurator(Configurator):
+    def append_plugins(self):
+        super().append_plugins()
+        self.add_plugin(ExamplePlugin())
+        self.add_plugin(ExampleSecondPlugin())
+        self.add_plugin(ExampleThirdPlugin())
+
+
+class TestFragmentContext(object):
+    @fixture
+    def configurator(self):
+        return ExampleSecondConfigurator()
+
+    def test_no_parametr(self, configurator):
+        """
+        Configuratior should be able to give normal context if no parameteres
+        gived.
+        """
+        configurator.start()
+        with configurator() as ctx:
+            assert ctx.second == sentinel.second
+
+    def test_one_parametr(self, configurator):
+        """
+        Configuratior should be able to give context only of the choosed
+        parameters as a one.
+        """
+        configurator.start()
+        with configurator("second") as second:
+            assert second == sentinel.second
+
+    def test_two_parameters(self, configurator):
+        """
+        Configuratior should be able to give context only of the choosed
+        parameters as a list.
+        """
+        configurator.start()
+        with configurator("first", "third") as (first, third):
+            assert first == sentinel.first
+            assert third == sentinel.third

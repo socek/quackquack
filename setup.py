@@ -18,7 +18,7 @@ from setuptools import setup
 
 setup(
     name='sapp',
-    version='0.1',
+    version='0.2',
     description='Simple Application',
     packages=find_packages(),
     tests_require=['coverage', 'pytest', 'pytest-cov', 'WebTest'],
@@ -37,6 +37,7 @@ setup(
         'Operating System :: OS Independent', 'Programming Language :: Python',
         'Programming Language :: Python :: 3',
         'Programming Language :: Python :: 3.6'
+        'Programming Language :: Python :: 3.7'
     ], )
 
 
