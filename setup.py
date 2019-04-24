@@ -11,6 +11,8 @@ For example, normally you would need to use two separate mechanism for settings
 in celery application and web application, because you should not use web
 application startup in the celery app. This package provide sollution for this
 problem.
+
+More info on GitHub: https://github.com/socek/sapp
 """
 
 from setuptools import find_packages
@@ -36,7 +38,7 @@ setup(
         'License :: OSI Approved :: MIT License',
         'Operating System :: OS Independent', 'Programming Language :: Python',
         'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.6'
+        'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7'
     ], )
 
