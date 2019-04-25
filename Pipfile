@@ -12,6 +12,7 @@ alembic = "*"
 sqlalchemy = "*"
 pyramid = "*"
 webtest = "*"
+redis = "*"
 
 [requires]
 python_version = "3.7"
