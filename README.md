@@ -5,18 +5,21 @@ Version: 0.1.0
 # Table of Contents
 1. [Overview](#overview)
 2. [Quick Using Guide](#quick-using-guide)
-3. [Tutorial](docs/tutorial.md)
+3. [Installation](#installation)
+4. [Tutorial](docs/tutorial.md)
     * [Configuration](docs/tutorial.md#configuration)
     * [Starting](docs/tutorial.md#starting)
     * [Using Context](docs/tutorial.md#using-context)
     * [Creating Plugins](docs/tutorial.md#creating-plugins)
     * [Extending Configurator](docs/tutorial.md#extending-configurator)
-4. [Plugins](docs/plugins.md)
+5. [Plugins](docs/plugins.md)
     * [Settings](docs/plugins.md#settings)
     * [Logging](docs/plugins.md#logging)
+    * [JSON](docs/plugins.md#json)
+    * [Redis](docs/plugins.md#redis)
     * [Pyramid Plugin](docs/pyramid.md)
     * [Sqlalchemy Plugin](docs/sqlalchemy.md)
-5. [Phases](docs/phases.md)
+6. [Phases](docs/phases.md)
     * [About Phases](docs/phases.md#about-phases)
     * [Phase 0](docs/phases.md#phase-0)
     * [Phase 1 - creating Configurator instance](docs/phases.md#phase-1---creating-configurator-instance)
@@ -24,7 +27,7 @@ Version: 0.1.0
     * [Extending Phases](#extending-phases)
     * [Application Phase Start](docs/phases.md#application-phase-start)
     * [Application Phase End](docs/phases.md#application-phase-end)
-6. More info
+7. More info
     * [Changelog](docs/CHANGELOG.md)
 
 
@@ -63,3 +66,9 @@ with application as context:
 
 `context.settings` in above example is variable made by the SettingsPlugin.
 If you would like to know more, please go to the [Tutorial](docs/tutorial.md)
+
+# Installation
+
+```bash
+pip install sapp
+```
