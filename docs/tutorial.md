@@ -3,8 +3,9 @@
 0. [Go Home](../README.md)
 1. [Configuration](#configuration)
 2. [Starting](#starting)
-3. [Creating Plugins](#creating-plugins)
-4. [Extending Configurator](#extending-configurator)
+3. [Using Context](#using-context)
+4. [Creating Plugins](#creating-plugins)
+5. [Extending Configurator](#extending-configurator)
 
 # Configuration
 
@@ -47,10 +48,50 @@ object.
 application = MyConfigurator()
 
 def start_for_pyramid():
-    main.start(endpoint='pyramid')
+    application.start(endpoint='pyramid')
 
 def start_for_celery():
-    main.start(endpoint='celery')
+    application.start(endpoint='celery')
+```
+
+# Using Context
+
+After starting the configurator, we can use it as a context manager.
+
+```python
+
+app = MyConfigurator()
+
+with app as context:
+    print(app.settings)
+```
+
+This is very simple, but it is even simpler, when you want to get only part of
+the context? The context manager will start the whole context, but you can get
+only part of it like this:
+
+```python
+app = MyConfigurator()
+
+with app('settings') as settings:
+    print(settings)
+
+with app('settings', 'db') as (settings, db):
+    print(settings, db)
+
+```
+
+Please, be aware, that you can nest the context managers. The context will be
+generated once with the first `with` statement and ended with the same statement
+ended.
+
+```python
+app = MyConfigurator()
+
+with app as c1: # this is where context is generated
+    with app as c2:
+        assert c1 == c2
+    # this is where the context is ended/stopped
 ```
 
 # Creating Plugins

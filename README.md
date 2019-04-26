@@ -8,6 +8,7 @@ Version: 0.1.0
 3. [Tutorial](docs/tutorial.md)
     * [Configuration](docs/tutorial.md#configuration)
     * [Starting](docs/tutorial.md#starting)
+    * [Using Context](docs/tutorial.md#using-context)
     * [Creating Plugins](docs/tutorial.md#creating-plugins)
     * [Extending Configurator](docs/tutorial.md#extending-configurator)
 4. [Plugins](docs/plugins.md)
