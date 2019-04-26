@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning]
 (http://semver.org/).
 
-## 0.3.0 - First Release
+## 0.3.0 - Plugins and documentation
 
 ### Added
 
@@ -12,7 +12,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - REDIS plugin
 - Add documentation for Fragment Context.
 
-## 0.2.0 - First Release
+## 0.2.0 - Fragment Context
 
 ### Added
 
