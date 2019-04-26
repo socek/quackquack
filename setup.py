@@ -20,7 +20,7 @@ from setuptools import setup
 
 setup(
     name='sapp',
-    version='0.2',
+    version='0.3',
     description='Simple Application',
     packages=find_packages(),
     tests_require=['coverage', 'pytest', 'pytest-cov', 'WebTest'],
