@@ -6,6 +6,8 @@
     * [Implementing settings](#implementing-settings)
     * [Implementing paths settings](#implementing-paths-settings)
 2. [Logging](#logging)
+3. [JSON](#json)
+4. [Redis](#redis)
 
 # Settings
 
@@ -176,4 +178,43 @@ def logging(settings):
             },
         }
     }
+```
+
+# JSON
+
+This plugin is a stub. This stub makes `JSONEncoder` able to encode uuid objects
+into json. To use it just add it to the Confiugrator:
+
+```python
+
+class MyConfigurator(Configurator):
+    def append_plugins(self):
+        self.add_plugin(JsonPlugin())
+```
+
+# Redis
+
+This plugin connects to the Redis database. In order to use it, you need to
+add these settings:
+
+```python
+settings["redis:host"] = "redis"
+settings["redis:port"] = 6379
+settings["redis:db"] = 0
+```
+
+After that, you need add the plugin:
+
+```python
+
+class MyConfigurator(Configurator):
+    def append_plugins(self):
+        self.add_plugin(RedisPlugin(ctx_key="context_key"))
+```
+
+The ctx_key is 'redis' by default. Now you can use it in your application:
+
+```python
+with app('context_key') as redis:
+    print(redis)
 ```
