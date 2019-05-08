@@ -1,3 +1,6 @@
+from decouple import config
+
+
 def logging(settings):
     settings["logging"] = {
         "version": 1,
@@ -32,9 +35,15 @@ def logging(settings):
     }
 
 
+def database(settings):
+    settings["db:dbsession:url"] = config("BACKEND_DB_URL")
+    settings["db:dbsession:default_url"] = config("BACKEND_DB_DEFAULT_URL")
+
+
 def default():
     settings = {"main": "this is example main setting"}
     logging(settings)
+    database(settings)
     return settings
 
 
