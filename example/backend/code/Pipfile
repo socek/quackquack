@@ -1,0 +1,20 @@
+[[source]]
+name = "pypi"
+url = "https://pypi.org/simple"
+verify_ssl = true
+
+[dev-packages]
+
+[packages]
+sapp = {editable = true,git = "https://github.com/socek/sapp.git"}
+pyramid = "*"
+ipython = "*"
+ipdb = "*"
+pyramid-ipython = "*"
+uwsgi = "*"
+
+[requires]
+python_version = "3.7"
+
+[pipenv]
+allow_prereleases = true

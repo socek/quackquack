@@ -1,0 +1,46 @@
+version: '3.7'
+
+services:
+  pyramid:
+    build: backend
+    image: backend
+    env_file: .env
+    command: uwsgi --ini-paste /code/app.ini --py-autoreload 1 --honour-stdin
+    volumes:
+      - ./backend/code:/code
+    ports:
+    - 8000:8000
+
+  tornado:
+    image: backend
+    env_file: .env
+    command: ./start_tornado.sh
+    volumes:
+      - ./backend/code:/code
+    # labels:
+    #   - "traefik.frontend.rule=Host:localhost;PathPrefixStrip:/gateway"
+    #   - "traefik.port=${TORNADO_PORT:-18765}"
+    #   - "traefik.enable=true"
+
+  celery:
+    image: backend
+    env_file: .env
+    command: ./start_celery.sh
+    volumes:
+      - ./backend/code:/code
+
+  mq:
+    image: rabbitmq:3-management
+    ports:
+      - "15672:15672"
+    labels:
+      - "traefik.enable=false"
+
+  postgres:
+      image: postgres:11.2
+      volumes:
+        - pgdata:/var/lib/postgresql/data
+      env_file: .env
+
+volumes:
+  pgdata:
