@@ -77,6 +77,7 @@ class TestRecreateDatabases(object):
         (session.connection.return_value.connection.set_isolation_level.
          assert_called_once_with(0))
         assert session.execute.call_args_list == [
+            call("SELECT pg_terminate_backend(pg_stat_activity.pid)\n                FROM pg_stat_activity\n                WHERE pg_stat_activity.datname = 'lenin'\n                  AND pid <> pg_backend_pid()"),
             call('DROP DATABASE IF EXISTS lenin'),
             call('CREATE DATABASE lenin')
         ]

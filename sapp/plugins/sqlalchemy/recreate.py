@@ -27,14 +27,22 @@ class RecreateDatabases(object):
         engine = database.get_engine(default_url=True)
         session = sessionmaker(bind=engine)()
         session.connection().connection.set_isolation_level(0)
-        session.execute('DROP DATABASE IF EXISTS {}'.format(dbname))
-        session.execute('CREATE DATABASE {}'.format(dbname))
+        session.execute(
+            """SELECT pg_terminate_backend(pg_stat_activity.pid)
+                FROM pg_stat_activity
+                WHERE pg_stat_activity.datname = '{}'
+                  AND pid <> pg_backend_pid()""".format(
+                dbname
+            )
+        )
+        session.execute("DROP DATABASE IF EXISTS {}".format(dbname))
+        session.execute("CREATE DATABASE {}".format(dbname))
         session.close()
 
     def _migrate(self, path_to_migrations):
         alembic_cfg = Config()
-        alembic_cfg.set_main_option('script_location', path_to_migrations)
-        alembic_cfg.set_main_option('is_test', 'true')
+        alembic_cfg.set_main_option("script_location", path_to_migrations)
+        alembic_cfg.set_main_option("is_test", "true")
         command.upgrade(alembic_cfg, "head")
 
     def get_db(self, name):
