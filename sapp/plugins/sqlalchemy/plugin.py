@@ -16,16 +16,18 @@ class DatabasePlugin(object):
         self.settings.validate()
         self.engine = self.get_engine()
         self.sessionmaker = sessionmaker(
-            autoflush=False, autocommit=False, bind=self.engine)
+            autoflush=False, autocommit=False, bind=self.engine
+        )
         self._assign_to_configurator(configurator)
 
     def _assign_to_configurator(self, configurator):
-        configurator.dbplugins = getattr(configurator, 'dbplugins', {})
+        configurator.dbplugins = getattr(configurator, "dbplugins", {})
         configurator.dbplugins[self.name] = self
 
     def enter(self, context):
         self.dbsession = self.sessionmaker()
         setattr(context, self.name, self.dbsession)
+        setattr(context, self.name + "_engine", self.engine)
 
     def exit(self, context, exc_type, exc_value, traceback):
         if exc_type:
@@ -34,7 +36,7 @@ class DatabasePlugin(object):
 
     def get_engine(self, default_url=False):
         url = self.get_url(default_url)
-        return create_engine(url, **self.settings.get('options', {}))
+        return create_engine(url, **self.settings.get("options", {}))
 
     def get_dbname(self):
         """
@@ -46,5 +48,5 @@ class DatabasePlugin(object):
         """
         Get url from settings.
         """
-        subkey = 'default_url' if default_url else 'url'
+        subkey = "default_url" if default_url else "url"
         return self.settings[subkey]
