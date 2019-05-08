@@ -174,7 +174,7 @@
         "sapp": {
             "editable": true,
             "git": "https://github.com/socek/sapp.git",
-            "ref": "c71167f85ba1fca6c6674945f82667697a4e0def"
+            "ref": "bce0acddf3046376662f7db1860f6c907594b99d"
         },
         "six": {
             "hashes": [
