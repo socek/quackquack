@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "eb7d1d20d6c14f01fc1d263fe2f1ec556f8502a74f3b60971ff0876c399f0273"
+            "sha256": "c235f1fc5be5b5ddd7353da5a599a5c60095a8386de42c0d4b845de226070eb5"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -16,12 +16,33 @@
         ]
     },
     "default": {
+        "amqp": {
+            "hashes": [
+                "sha256:043beb485774ca69718a35602089e524f87168268f0d1ae115f28b88d27f92d7",
+                "sha256:35a3b5006ca00b21aaeec8ceea07130f07b902dd61bfe42815039835f962f5f1"
+            ],
+            "version": "==2.4.2"
+        },
         "backcall": {
             "hashes": [
                 "sha256:38ecd85be2c1e78f77fd91700c76e14667dc21e2713b63876c0eb901196e01e4",
                 "sha256:bbbf4b1e5cd2bdb08f915895b51081c041bac22394fdfcfdfbe9f14b77c08bf2"
             ],
             "version": "==0.1.0"
+        },
+        "billiard": {
+            "hashes": [
+                "sha256:756bf323f250db8bf88462cd042c992ba60d8f5e07fc5636c24ba7d6f4261d84"
+            ],
+            "version": "==3.6.0.0"
+        },
+        "celery": {
+            "hashes": [
+                "sha256:4c4532aa683f170f40bd76f928b70bc06ff171a959e06e71bf35f2f9d6031ef9",
+                "sha256:528e56767ae7e43a16cfef24ee1062491f5754368d38fcfffa861cdb9ef219be"
+            ],
+            "index": "pypi",
+            "version": "==4.3.0"
         },
         "decorator": {
             "hashes": [
@@ -65,6 +86,13 @@
                 "sha256:2c6bcd9545c7d6440951b12b44d373479bf18123a401a52025cf98563fbd826c"
             ],
             "version": "==0.13.3"
+        },
+        "kombu": {
+            "hashes": [
+                "sha256:389ba09e03b15b55b1a7371a441c894fd8121d174f5583bbbca032b9ea8c9edd",
+                "sha256:7b92303af381ef02fad6899fd5f5a9a96031d781356cd8e505fa54ae5ddee181"
+            ],
+            "version": "==4.5.0"
         },
         "parso": {
             "hashes": [
@@ -171,10 +199,17 @@
             "index": "pypi",
             "version": "==3.1"
         },
+        "pytz": {
+            "hashes": [
+                "sha256:303879e36b721603cc54604edcac9d20401bdbe31e1e4fdee5b9f98d5d31dfda",
+                "sha256:d747dd3d23d77ef44c6a3526e274af6efeb0a6f1afd5a69ba4d5be4098c8e141"
+            ],
+            "version": "==2019.1"
+        },
         "sapp": {
             "editable": true,
             "git": "https://github.com/socek/sapp.git",
-            "ref": "bce0acddf3046376662f7db1860f6c907594b99d"
+            "ref": "104a1e571a8700f8881a5059c194312a785ec670"
         },
         "six": {
             "hashes": [
@@ -217,6 +252,13 @@
                 "sha256:64ec8285b80b110d0ae5db4280e90e31848a59db98db1aba4d7d46f48ce91e3e"
             ],
             "version": "==1.2.0"
+        },
+        "vine": {
+            "hashes": [
+                "sha256:72df526b66563b6e49b4072c927427fa2648040c2f11ee4e5d847b4811df73a9",
+                "sha256:971dfaa5e6039bd8fb5a96b9e4f15f792c1acfdc26fd69ef8b36149812194e32"
+            ],
+            "version": "==5.0.0a1"
         },
         "wcwidth": {
             "hashes": [

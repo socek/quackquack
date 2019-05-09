@@ -16,3 +16,6 @@ class Model(Base):
     uid = Column(UUID(as_uuid=True), default=uuid4, primary_key=True)
     key = Column(String)
     value = Column(String)
+
+    def to_dict(self):
+        return {"uid": self.uid.hex, "key": self.key, "value": self.value}

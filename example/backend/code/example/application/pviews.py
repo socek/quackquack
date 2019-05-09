@@ -4,6 +4,7 @@ from sapp.plugins.pyramid.views import RestfulView
 from example import app
 from example.application.models import Base
 from example.application.models import Model
+from example.tasks import input_value
 
 
 class SimpleView(RestfulView):
@@ -13,10 +14,9 @@ class SimpleView(RestfulView):
         List all active panels.
         """
         Base.metadata.create_all(ctx.dbsession_engine)
-        first = ctx.dbsession.query(Model)[-1]
-        key = first.key if first else None
-        value = first.value if first else None
-        return {"hello": True, "key": key, "value": value}
+        query = ctx.dbsession.query(Model)
+        models = [model.to_dict() for model in query]
+        return {"hello": True, "models": models}
 
 
 class CreateView(RestfulView):
@@ -26,8 +26,13 @@ class CreateView(RestfulView):
         List all active panels.
         """
         model = Model()
-        model.key = "mykey"
+        model.key = "pyramid"
         model.value = "myvalue"
         dbsession.add(model)
         dbsession.commit()
         return {"success": True, "uid": model.uid}
+
+
+class TaskView(RestfulView):
+    def get(self):
+        input_value.delay("pyramid")

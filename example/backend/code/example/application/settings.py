@@ -40,10 +40,15 @@ def database(settings):
     settings["db:dbsession:default_url"] = config("BACKEND_DB_DEFAULT_URL")
 
 
+def celery_specific(settings):
+    settings["celery"] = {"broker": config("BROKER_URL")}
+
+
 def default():
     settings = {"main": "this is example main setting"}
     logging(settings)
     database(settings)
+    celery_specific(settings)
     return settings
 
 
@@ -63,6 +68,10 @@ def wsgi():
     wsgi_specific(settings)
     return settings
 
+def celery():
+    settings = default()
+    wsgi_specific(settings)
+    return settings
 
 def command():
     return default()

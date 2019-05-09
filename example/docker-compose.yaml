@@ -11,21 +11,21 @@ services:
     ports:
     - 8000:8000
 
-  tornado:
-    image: backend
-    env_file: .env
-    command: ./start_tornado.sh
-    volumes:
-      - ./backend/code:/code
-    # labels:
-    #   - "traefik.frontend.rule=Host:localhost;PathPrefixStrip:/gateway"
-    #   - "traefik.port=${TORNADO_PORT:-18765}"
-    #   - "traefik.enable=true"
+  # tornado:
+  #   image: backend
+  #   env_file: .env
+  #   command: ./start_tornado.sh
+  #   volumes:
+  #     - ./backend/code:/code
+  #   # labels:
+  #   #   - "traefik.frontend.rule=Host:localhost;PathPrefixStrip:/gateway"
+  #   #   - "traefik.port=${TORNADO_PORT:-18765}"
+  #   #   - "traefik.enable=true"
 
   celery:
     image: backend
     env_file: .env
-    command: ./start_celery.sh
+    command: celery -A startcelery.cel worker --loglevel=info
     volumes:
       - ./backend/code:/code
 

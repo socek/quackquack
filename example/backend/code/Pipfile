@@ -15,6 +15,7 @@ uwsgi = "*"
 python-decouple = "*"
 sqlalchemy = "*"
 psycopg2 = "*"
+celery = "*"
 
 [requires]
 python_version = "3.7"
