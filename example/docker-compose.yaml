@@ -2,7 +2,7 @@ version: '3.7'
 
 services:
   pyramid:
-    build: backend
+    build: .
     image: backend
     env_file: .env
     command: uwsgi --ini-paste /code/app.ini --py-autoreload 1 --honour-stdin
