@@ -3,9 +3,10 @@
 0. [Go Home](../README.md)
 1. [Configuration](#configuration)
 2. [Starting](#starting)
-3. [Using Context](#using-context)
-4. [Creating Plugins](#creating-plugins)
-5. [Extending Configurator](#extending-configurator)
+3. [Using ContextManager](#using-contextmanager)
+4. [Using Decorator](#using-decorator)
+5. [Creating Plugins](#creating-plugins)
+6. [Extending Configurator](#extending-configurator)
 
 # Configuration
 
@@ -54,16 +55,17 @@ def start_for_celery():
     application.start(endpoint='celery')
 ```
 
-# Using Context
+# Using ContextManager
 
 After starting the configurator, we can use it as a context manager.
 
 ```python
+from sapp import ContextManager
 
 app = MyConfigurator()
 
-with app as context:
-    print(app.settings)
+with ContextManager(app) as ctx:
+    print(ctx.settings)
 ```
 
 This is very simple, but it is even simpler, when you want to get only part of
@@ -71,12 +73,14 @@ the context? The context manager will start the whole context, but you can get
 only part of it like this:
 
 ```python
+from sapp import ContextManager
+
 app = MyConfigurator()
 
-with app('settings') as settings:
+with ContextManager(app, 'settings') as settings:
     print(settings)
 
-with app('settings', 'db') as (settings, db):
+with ContextManager(app, ('settings', 'db')) as (settings, db):
     print(settings, db)
 
 ```
@@ -88,10 +92,34 @@ ended.
 ```python
 app = MyConfigurator()
 
-with app as c1: # this is where context is generated
+with ContextManager(app) as c1: # this is where context is generated
     with app as c2:
         assert c1 == c2
     # this is where the context is ended/stopped
+```
+
+# Using Decorator
+
+You can also pass the context using decorator:
+
+```python
+
+from sapp import Decorator
+
+app = MyConfigurator()
+
+@Decorator(app, "settings")
+def fun(something, settings):
+    print(settings)
+
+fun("something")
+```
+
+The advantage here is that you can very simple use dependency injection here:
+
+```python
+# Remember to use keyword arguments here or else it will fail !!!
+fun("something", settings=Mock())
 ```
 
 # Creating Plugins

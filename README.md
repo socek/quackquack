@@ -1,6 +1,6 @@
 # Simple Application
 
-Version: 0.1.0
+Version: 0.4.0
 
 # Table of Contents
 1. [Overview](#overview)
@@ -50,7 +50,7 @@ in which you need to add some plugins. After configuring, you need to "start"
 the application. After that you can use the configurator as context manager.
 
 ```python
-from sapp.configurator import Configurator
+from sapp import Configurator, ContextManager
 from sapp.plugins import SettingsPlugin
 
 class MyConfigurator(Configurator):
@@ -60,8 +60,8 @@ class MyConfigurator(Configurator):
 application = MyConfigurator()
 application.start('application')
 
-with application as context:
-    print(context.settings)
+with ContextManager(application) as ctx:
+    print(ctx.settings)
 
 ```
 

@@ -93,7 +93,7 @@ def tests():
 For getting values from settings, you can get if from the context:
 
 ```python
-with app as context:
+with ContextManager(app) as context:
     context.settings
 ```
 
@@ -215,6 +215,6 @@ class MyConfigurator(Configurator):
 The ctx_key is 'redis' by default. Now you can use it in your application:
 
 ```python
-with app('context_key') as redis:
+with ContextManager(app, 'context_key') as redis:
     print(redis)
 ```
