@@ -9,4 +9,4 @@ class CeleryPlugin(Plugin):
 
     def start(self, configurator):
         settings = configurator.settings[self.SETTINGS_KEY]
-        self.celeryapp.update(settings)
+        self.celeryapp.conf.update(settings)
