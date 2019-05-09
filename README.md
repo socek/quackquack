@@ -29,6 +29,7 @@ Version: 0.1.0
     * [Application Phase End](docs/phases.md#application-phase-end)
 7. More info
     * [Changelog](docs/CHANGELOG.md)
+8. [Example](example/readme.md)
 
 
 # Overview
