@@ -41,7 +41,8 @@ def database(settings):
 
 
 def celery_specific(settings):
-    settings["celery"] = {"broker": config("BROKER_URL")}
+    settings["celery"] = {"broker_url": config("BROKER_URL")}
+    print("elo celery?")
 
 
 def default():

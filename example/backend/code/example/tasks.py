@@ -10,6 +10,6 @@ from example.application.models import Model
 def input_value(value, dbsession):
     model = Model()
     model.key = "celery"
-    model.value = "myvalue"
+    model.value = value
     dbsession.add(model)
     dbsession.commit()

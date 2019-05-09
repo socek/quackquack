@@ -209,7 +209,7 @@
         "sapp": {
             "editable": true,
             "git": "https://github.com/socek/sapp.git",
-            "ref": "104a1e571a8700f8881a5059c194312a785ec670"
+            "ref": "9cad24b6bc77f82ab4a35f58ea691938fe8a9ab1"
         },
         "six": {
             "hashes": [
