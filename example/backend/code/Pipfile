@@ -16,6 +16,7 @@ python-decouple = "*"
 sqlalchemy = "*"
 psycopg2 = "*"
 celery = "*"
+tornado = "*"
 
 [requires]
 python_version = "3.7"

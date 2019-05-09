@@ -24,15 +24,14 @@ def logging(settings):
                 "handlers": ["console"],
                 "qualname": "sqlalchemy.engine",
             },
-            "alembic": {
-                "level": "ERROR",
-                "handlers": ["console"],
-                "qualname": "alembic",
-            },
-            "iep": {"level": "DEBUG", "handlers": ["console"], "qualname": "iep"},
+            "example": {"level": "DEBUG", "handlers": ["console"], "qualname": "example"},
             "celery": {"handlers": ["console"], "level": "ERROR"},
         },
     }
+
+
+def tornado(settings):
+    settings["tornado_port"] = 8001
 
 
 def database(settings):
@@ -40,16 +39,16 @@ def database(settings):
     settings["db:dbsession:default_url"] = config("BACKEND_DB_DEFAULT_URL")
 
 
-def celery_specific(settings):
+def celery(settings):
     settings["celery"] = {"broker_url": config("BROKER_URL")}
-    print("elo celery?")
 
 
 def default():
-    settings = {"main": "this is example main setting"}
+    settings = {"main": "this is example main setting", "debug": True}
     logging(settings)
     database(settings)
-    celery_specific(settings)
+    celery(settings)
+    tornado(settings)
     return settings
 
 
@@ -62,20 +61,6 @@ def tests_specific(settings):
 
 
 # --- Start points
-
-
-def wsgi():
-    settings = default()
-    wsgi_specific(settings)
-    return settings
-
-def celery():
-    settings = default()
-    wsgi_specific(settings)
-    return settings
-
-def command():
-    return default()
 
 
 def tests():
