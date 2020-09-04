@@ -164,3 +164,14 @@ class TestContextManager(object):
             assert example == sentinel.injection
 
         method(example=sentinel.injection)
+
+    def test_lazy_starting(self, configurator):
+        """
+        Decorator should not start an context if it's not needed.
+        """
+
+        method = Decorator(configurator, "example")(lambda example: example)
+        with raises(ConfiguratorNotStartedError):
+            method()
+
+        assert method(example=sentinel.injection) is sentinel.injection

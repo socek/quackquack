@@ -7,6 +7,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ## 0.5.0 - (TODO)
 
 - Switch from pipfile into poetry and from setup.py into pyproject.toml
+- Decorator should not start an context if it's not needed.
 
 ## 0.4.0 - Split Context Manager and Decorator for Configurator
 

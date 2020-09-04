@@ -1,32 +1,40 @@
 from collections.abc import Iterable
+from inspect import signature
+
+from sapp.context_manager import LazyContextManager
 
 
 class Decorator(object):
-    def __init__(self, application, values=[]):
+    def __init__(self, application, values=None):
         self.application = application
         self.values = values
-        self.context = None
+
+    def get_unified_kwargs(self, fun, args, kwargs):
+        return signature(fun).bind_partial(*args, **kwargs).arguments
 
     def __call__(self, fun):
         def wrapper(*args, **kwargs):
-            ctx = self.application._enter_context()
-            kwargs = dict(kwargs)
-            try:
-                if self.values == []:
+            kwargs = self.get_unified_kwargs(fun, args, kwargs)
+            with LazyContextManager(self.application) as lazy_context:
+                if not self.values:
+                    # If no values passed to the decorator, it means we want to
+                    # inject whole context
                     if "ctx" not in kwargs:
-                        kwargs["ctx"] = ctx
+                        kwargs["ctx"] = lazy_context.context
                 elif isinstance(self.values, str):
-                    if self.values not in kwargs:
-                        kwargs[self.values] = getattr(ctx, self.values)
+                    # If values passed to the decorator is a string, this mean
+                    # we want to inject only one parametr from the context
+                    parameter = self.values
+                    if parameter not in kwargs:
+                        kwargs[parameter] = lazy_context.get(parameter)
                 elif isinstance(self.values, Iterable):
-                    for key in self.values:
-                        if key not in kwargs:
-                            kwargs[key] = getattr(ctx, key)
+                    # If values passed to the decorator is a list, this mean
+                    # we want to inject many parameteres from the context
+                    for parameter in self.values:
+                        if parameter not in kwargs:
+                            kwargs[parameter] = lazy_context.get(parameter)
                 else:
-                    raise AttributeError("Wrong argument type!")
-                return fun(*args, **kwargs)
-            finally:
-                # TODO: we probably need to pass here something
-                self.application._exit_context(None, None, None)
+                    raise AttributeError(f"Wrong argument type: {self.values}!")
+                return fun(**kwargs)
 
         return wrapper
