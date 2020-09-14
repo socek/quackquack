@@ -1,5 +1,7 @@
 from alembic import context
 
+# TODO: change this/fix this
+
 
 class AlembicScript(object):
     def __init__(self, app, base_model, dbname):
@@ -17,8 +19,11 @@ class AlembicScript(object):
         return self.app.dbplugins[self.dbname]
 
     def _init_app(self):
-        startpoint = 'tests' if context.config.get_main_option(
-            'is_test', False) else 'command'
+        startpoint = (
+            "tests"
+            if context.config.get_main_option("is_test", False)
+            else "command"
+        )
         self.app.start(startpoint)
 
     def _run_migration_depending_on_offline_mode(self):
@@ -42,7 +47,8 @@ class AlembicScript(object):
         url = self.dbplugin.get_url()
 
         context.configure(
-            url=url, target_metadata=self.metadata, literal_binds=True)
+            url=url, target_metadata=self.metadata, literal_binds=True
+        )
 
         self.run_migrations()
 
@@ -57,7 +63,8 @@ class AlembicScript(object):
 
         with connectable.connect() as connection:
             context.configure(
-                connection=connection, target_metadata=self.metadata)
+                connection=connection, target_metadata=self.metadata
+            )
 
             self.run_migrations()
 

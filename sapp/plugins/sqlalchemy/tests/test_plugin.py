@@ -2,7 +2,9 @@ from unittest.mock import MagicMock
 from unittest.mock import patch
 
 from pytest import fixture
+from pytest import raises
 
+from sapp.plugins.sqlalchemy.exceptions import SettingMissing
 from sapp.plugins.sqlalchemy.plugin import DatabasePlugin
 
 
@@ -11,10 +13,11 @@ class TestDatabasePlugin(object):
     def mconfigurator(self):
         config = MagicMock()
         config.settings = {
-            'db:dbname:url': 'sqlite:///tmp.first.db',
-            'db:dbname:default_url': 'sqlite:///tmp.second.db',
-            'db:dbname:options': {
-                'optionkey': 'option value'
+            "databases": {
+                "dbname": {
+                    "url": "sqlite:///tmp.first.db",
+                    "options": {"optionkey": "option value"},
+                }
             }
         }
         config.dbplugins = {}
@@ -22,22 +25,26 @@ class TestDatabasePlugin(object):
 
     @fixture
     def mcreate_engine(self):
-        with patch('sapp.plugins.sqlalchemy.plugin.create_engine') as mock:
+        with patch("sapp.plugins.sqlalchemy.plugin.create_engine") as mock:
             yield mock
 
     @fixture
     def mmake_url(self):
-        with patch('sapp.plugins.sqlalchemy.plugin.make_url') as mock:
+        with patch("sapp.plugins.sqlalchemy.plugin.make_url") as mock:
             yield mock
 
     @fixture
     def msessionmaker(self):
-        with patch('sapp.plugins.sqlalchemy.plugin.sessionmaker') as mock:
+        with patch("sapp.plugins.sqlalchemy.plugin.sessionmaker") as mock:
             yield mock
 
     @fixture
     def plugin(self):
-        return DatabasePlugin('dbname')
+        return DatabasePlugin("dbname")
+
+    @fixture
+    def metadata(self):
+        return MagicMock()
 
     def test_start(self, plugin, mconfigurator, msessionmaker, mcreate_engine):
         """
@@ -46,14 +53,14 @@ class TestDatabasePlugin(object):
         plugin.start(mconfigurator)
 
         mcreate_engine.assert_called_once_with(
-            'sqlite:///tmp.first.db', optionkey='option value')
+            "sqlite:///tmp.first.db", optionkey="option value"
+        )
 
         assert plugin.sessionmaker == msessionmaker.return_value
         msessionmaker.assert_called_once_with(
-            autoflush=False,
-            autocommit=False,
-            bind=mcreate_engine.return_value)
-        assert mconfigurator.dbplugins['dbname'] == plugin
+            autoflush=False, autocommit=False, bind=mcreate_engine.return_value
+        )
+        assert mconfigurator.dbplugins["dbname"] == plugin
 
     def test_enter(self, plugin):
         """
@@ -61,6 +68,7 @@ class TestDatabasePlugin(object):
         """
         plugin.sessionmaker = MagicMock()
         mcontext = MagicMock()
+        plugin.engine = MagicMock()
 
         plugin.enter(mcontext)
 
@@ -90,10 +98,29 @@ class TestDatabasePlugin(object):
         plugin.dbsession.rollback.assert_called_once_with()
         plugin.dbsession.close.assert_called_once_with()
 
-    def test_get_dbname(self, plugin, mconfigurator, msessionmaker, mcreate_engine):
+    def test_dbname(self, plugin, mconfigurator, msessionmaker, mcreate_engine):
         """
-        .get_dbname should return name of the database made from the db url
+        .dbname should return name of the database made from the db url
         """
         plugin.start(mconfigurator)
 
-        assert plugin.get_dbname() == 'tmp.first.db'
+        assert plugin.dbname == "tmp.first.db"
+
+    def test_validate_settings(self, plugin, mconfigurator):
+        """
+        Starting plugin should raise an error when settings are not properly
+        configured (missing url)
+        """
+        del mconfigurator.settings["databases"]["dbname"]["url"]
+        with raises(SettingMissing):
+            plugin.start(mconfigurator)
+
+    def test_recreate(self, plugin, metadata, mcreate_engine, mconfigurator):
+        """
+        .recreate should drop all and create all tables using provided metadata.
+        """
+        plugin.start(mconfigurator)
+        plugin.recreate(metadata)
+
+        metadata.drop_all.assert_called_once_with(mcreate_engine.return_value)
+        metadata.create_all.assert_called_once_with(mcreate_engine.return_value)

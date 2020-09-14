@@ -2,19 +2,31 @@ from sqlalchemy.engine import create_engine
 from sqlalchemy.engine.url import make_url
 from sqlalchemy.orm import sessionmaker
 
-from sapp.plugins.sqlalchemy.database import DatabaseSetting
+from sapp.plugins.sqlalchemy.exceptions import SettingMissing
 
 
 class DatabasePlugin(object):
+    URL_KEY = "url"
+
     def __init__(self, name):
         self.name = name
-        self._engine = None
-        self._sessionmaker = None
+
+    @property
+    def url(self):
+        """
+        Get url from settings.
+        """
+        return self.settings[self.URL_KEY]
+
+    @property
+    def dbname(self):
+        return make_url(self.url).database
 
     def start(self, configurator):
-        self.settings = DatabaseSetting(configurator.settings, self.name)
-        self.settings.validate()
-        self.engine = self.get_engine()
+        alldbsettings = configurator.settings.setdefault("databases", {})
+        self.settings = alldbsettings.get(self.name, {})
+        self._validate_settings()
+        self.engine = self.create_engine()
         self.sessionmaker = sessionmaker(
             autoflush=False, autocommit=False, bind=self.engine
         )
@@ -34,19 +46,15 @@ class DatabasePlugin(object):
             self.dbsession.rollback()
         self.dbsession.close()
 
-    def get_engine(self, default_url=False):
-        url = self.get_url(default_url)
-        return create_engine(url, **self.settings.get("options", {}))
+    def create_engine(self):
+        return create_engine(self.url, **self.settings.get("options", {}))
 
-    def get_dbname(self):
-        """
-        Get database name.
-        """
-        return make_url(self.get_url()).database
+    def recreate(self, metadata):
+        engine = self.create_engine()
+        metadata.drop_all(engine)
+        metadata.create_all(engine)
 
-    def get_url(self, default_url=False):
-        """
-        Get url from settings.
-        """
-        subkey = "default_url" if default_url else "url"
-        return self.settings[subkey]
+    def _validate_settings(self):
+        if self.URL_KEY not in self.settings:
+            raise SettingMissing(self.URL_KEY, self.name)
+        make_url(self.settings[self.URL_KEY])
