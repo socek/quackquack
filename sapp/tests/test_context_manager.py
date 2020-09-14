@@ -42,6 +42,15 @@ class TestContextManager(object):
             with ContextManager(configurator):
                 pass
 
+    def test_context_names(self, configurator):
+        """
+        context.names() should return list of all vars in the context.
+        """
+        configurator.start()
+
+        with ContextManager(configurator) as context:
+            assert context.names() == ["configurator", "example", "example2"]
+
     def test_many_times(self, configurator):
         """
         Using configurator as context manager should enter and exit plugins only
@@ -49,13 +58,17 @@ class TestContextManager(object):
         """
         configurator.start()
 
-        with ContextManager(configurator) as app:
-            with ContextManager(configurator) as app:
-                configurator.plugin1.enter.assert_called_once_with(app)
-                configurator.plugin2.enter.assert_called_once_with(app)
+        with ContextManager(configurator) as context:
+            with ContextManager(configurator) as context:
+                configurator.plugin1.enter.assert_called_once_with(context)
+                configurator.plugin2.enter.assert_called_once_with(context)
 
-        configurator.plugin1.exit.assert_called_once_with(app, None, None, None)
-        configurator.plugin2.exit.assert_called_once_with(app, None, None, None)
+        configurator.plugin1.exit.assert_called_once_with(
+            context, None, None, None
+        )
+        configurator.plugin2.exit.assert_called_once_with(
+            context, None, None, None
+        )
 
     def test_when_error_raised(self, configurator):
         """
@@ -66,20 +79,20 @@ class TestContextManager(object):
         error = RuntimeError()
 
         with raises(RuntimeError):
-            with ContextManager(configurator) as app:
+            with ContextManager(configurator) as context:
                 raise error
 
         configurator.plugin1.start.assert_called_once_with(configurator)
         configurator.plugin2.start.assert_called_once_with(configurator)
 
         call = configurator.plugin1.exit.call_args_list[0][0]
-        assert call[0] == app
+        assert call[0] == context
         assert call[1] == RuntimeError
         assert call[2] == error
         assert call[3] is not None
 
         call = configurator.plugin2.exit.call_args_list[0][0]
-        assert call[0] == app
+        assert call[0] == context
         assert call[1] == RuntimeError
         assert call[2] == error
         assert call[3] is not None
