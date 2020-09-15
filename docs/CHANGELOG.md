@@ -12,6 +12,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - Add recreate for DatabasePlugin and remove old recreate mechanism, including using "default url".
 - Removed old "driver" support for DatabasePlugin. Preparing code for CQRS instead, like "command" and "query" wrappers.
 - Fixed problem with starting context again
+- Cleaned up dependecies
 
 ## 0.4.0 - Split Context Manager and Decorator for Configurator
 
