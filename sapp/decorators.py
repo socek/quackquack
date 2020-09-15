@@ -1,5 +1,5 @@
 from collections.abc import Iterable
-from inspect import signature
+from functools import wraps
 
 from sapp.context_manager import LazyContextManager
 
@@ -9,12 +9,9 @@ class Decorator(object):
         self.application = application
         self.values = values
 
-    def get_unified_kwargs(self, fun, args, kwargs):
-        return signature(fun).bind_partial(*args, **kwargs).arguments
-
     def __call__(self, fun):
+        @wraps(fun)
         def wrapper(*args, **kwargs):
-            kwargs = self.get_unified_kwargs(fun, args, kwargs)
             with LazyContextManager(self.application) as lazy_context:
                 if not self.values:
                     # If no values passed to the decorator, it means we want to
@@ -35,6 +32,6 @@ class Decorator(object):
                             kwargs[parameter] = lazy_context.get(parameter)
                 else:
                     raise AttributeError(f"Wrong argument type: {self.values}!")
-                return fun(**kwargs)
+                return fun(*args, **kwargs)
 
         return wrapper

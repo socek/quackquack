@@ -1,6 +1,7 @@
 from unittest.mock import patch
 
 from sapp.decorators import Decorator
+from sapp.plugins.sqlalchemy.consts import DATABASES_KEY
 
 
 class SqlQuery:
@@ -14,11 +15,9 @@ class SqlQuery:
 
 class SqlCommand:
     class CommitContext:
-        def __init__(self, name, args, kwargs):
-            self.args = args
-            self.kwargs = kwargs
+        def __init__(self, name, kwargs):
             self.session = kwargs[name]
-            self._commit = self.kwargs.pop("commit", True)
+            self._commit = kwargs.pop("commit", True)
 
         def __enter__(self):
             pass
@@ -38,9 +37,9 @@ class SqlCommand:
         def __exit__(self, type: type, value: Exception, traceback):
             self._patcher.stop()
             if value:
-                self.name.rollback()
+                self.session.rollback()
             elif self._commit:
-                self.name.flush()
+                self.session.flush()
 
     def __init__(self, application, name):
         self.application = application
@@ -49,12 +48,10 @@ class SqlCommand:
     def __call__(self, fun):
         @Decorator(self.application, "settings")
         def wrapper(*args, settings=None, **kwargs):
-            ctx = (
-                self.MockCommitContext
-                if settings["db"][self.name].get("tests", False)
-                else self.CommitContext
-            )
-            with ctx(self.name, args, kwargs):
+            print("wrapper", kwargs)
+            is_tests = settings[DATABASES_KEY][self.name].get("tests", False)
+            ctx = self.MockCommitContext if is_tests else self.CommitContext
+            with ctx(self.name, kwargs):
                 return fun(*args, **kwargs)
 
         return Decorator(self.application, self.name)(wrapper)

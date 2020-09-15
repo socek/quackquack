@@ -2,12 +2,12 @@ from sqlalchemy.engine import create_engine
 from sqlalchemy.engine.url import make_url
 from sqlalchemy.orm import sessionmaker
 
+from sapp.plugins.sqlalchemy.consts import DATABASES_KEY
+from sapp.plugins.sqlalchemy.consts import URL_KEY
 from sapp.plugins.sqlalchemy.exceptions import SettingMissing
 
 
 class DatabasePlugin(object):
-    URL_KEY = "url"
-
     def __init__(self, name):
         self.name = name
 
@@ -16,14 +16,14 @@ class DatabasePlugin(object):
         """
         Get url from settings.
         """
-        return self.settings[self.URL_KEY]
+        return self.settings[URL_KEY]
 
     @property
     def dbname(self):
         return make_url(self.url).database
 
     def start(self, configurator):
-        alldbsettings = configurator.settings.setdefault("databases", {})
+        alldbsettings = configurator.settings.setdefault(DATABASES_KEY, {})
         self.settings = alldbsettings.get(self.name, {})
         self._validate_settings()
         self.engine = self.create_engine()
@@ -55,6 +55,6 @@ class DatabasePlugin(object):
         metadata.create_all(engine)
 
     def _validate_settings(self):
-        if self.URL_KEY not in self.settings:
-            raise SettingMissing(self.URL_KEY, self.name)
-        make_url(self.settings[self.URL_KEY])
+        if URL_KEY not in self.settings:
+            raise SettingMissing(URL_KEY, self.name)
+        make_url(self.settings[URL_KEY])

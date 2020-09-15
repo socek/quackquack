@@ -4,6 +4,7 @@ from unittest.mock import patch
 from pytest import fixture
 from pytest import raises
 
+from sapp.plugins.sqlalchemy.consts import DATABASES_KEY
 from sapp.plugins.sqlalchemy.exceptions import SettingMissing
 from sapp.plugins.sqlalchemy.plugin import DatabasePlugin
 
@@ -13,7 +14,7 @@ class TestDatabasePlugin(object):
     def mconfigurator(self):
         config = MagicMock()
         config.settings = {
-            "databases": {
+            DATABASES_KEY: {
                 "dbname": {
                     "url": "sqlite:///tmp.first.db",
                     "options": {"optionkey": "option value"},
@@ -111,7 +112,7 @@ class TestDatabasePlugin(object):
         Starting plugin should raise an error when settings are not properly
         configured (missing url)
         """
-        del mconfigurator.settings["databases"]["dbname"]["url"]
+        del mconfigurator.settings[DATABASES_KEY]["dbname"]["url"]
         with raises(SettingMissing):
             plugin.start(mconfigurator)
 

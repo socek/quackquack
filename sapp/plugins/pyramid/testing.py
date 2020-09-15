@@ -2,10 +2,8 @@ from unittest.mock import MagicMock
 
 from pytest import fixture
 
-from sapp.plugins.sqlalchemy.testing import BaseIntegrationFixture
 
-
-class ViewFixtureMixin(object):
+class ViewFixtureMixin:
     """
     In able to use this mixin, your test class needs to have fixture named "view".
     @fixture
