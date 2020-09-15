@@ -13,6 +13,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - Removed old "driver" support for DatabasePlugin. Preparing code for CQRS instead, like "command" and "query" wrappers.
 - Fixed problem with starting context again
 - Cleaned up dependecies
+- Changed and improved alembic migration scripts. Now it allows to start the app by the developer instead of the code.
 
 ## 0.4.0 - Split Context Manager and Decorator for Configurator
 
