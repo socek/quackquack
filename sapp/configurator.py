@@ -51,3 +51,4 @@ class Configurator(object):
         self.context_count -= 1
         if self.context_count == 0:
             self.context.exit(exc_type, exc_value, traceback)
+            self.context = None
