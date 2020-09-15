@@ -15,6 +15,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - Cleaned up dependecies
 - Changed and improved alembic migration scripts. Now it allows to start the app by the developer instead of the code.
 - Added Object Finder.
+- Added JsonHack.
 
 ## 0.4.0 - Split Context Manager and Decorator for Configurator
 

@@ -1,0 +1,2 @@
+class UnknownObjectError(RuntimeError):
+    pass
