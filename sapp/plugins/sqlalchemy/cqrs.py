@@ -48,7 +48,6 @@ class SqlCommand:
     def __call__(self, fun):
         @Decorator(self.application, "settings")
         def wrapper(*args, settings=None, **kwargs):
-            print("wrapper", kwargs)
             is_tests = settings[DATABASES_KEY][self.name].get("tests", False)
             ctx = self.MockCommitContext if is_tests else self.CommitContext
             with ctx(self.name, kwargs):

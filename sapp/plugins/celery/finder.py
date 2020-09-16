@@ -13,7 +13,7 @@ class TaskFinder(ObjectFinder):
         cache_key: str = None,
         celery_app: Celery = None,
     ):
-        super().__init(parent, ignore_list, cache_key)
+        super().__init__(parent, ignore_list, cache_key)
         self.celery_app = celery_app
 
     def is_collectable(self, element: object):
