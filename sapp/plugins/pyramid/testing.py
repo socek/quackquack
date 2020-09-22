@@ -3,13 +3,15 @@ from unittest.mock import MagicMock
 from pytest import fixture
 
 
-class ViewFixtureMixin:
+class ViewFixture:
     """
     In able to use this mixin, your test class needs to have fixture named "view".
     @fixture
     def view(self, mroot_factory, mrequest):
         return View(mroot_factory, mrequest)
     """
+
+    _view = None
 
     @fixture
     def app(self):
@@ -21,6 +23,17 @@ class ViewFixtureMixin:
 
     @fixture
     def mrequest(self, app):
-        obj = MagicMock()
-        obj.registry = dict(application=app)
-        return obj
+        request = MagicMock()
+        request.registry = dict(application=app)
+        request._cache = {}
+        request.GET = {}
+        request.matchdict = {}
+        return request
+
+    @fixture
+    def matchdict(self, mrequest):
+        return mrequest.matchdict
+
+    @fixture
+    def view(self, mroot_factory, mrequest):
+        return self._view(mroot_factory, mrequest)

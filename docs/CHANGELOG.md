@@ -17,6 +17,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - Added Object Finder.
 - Added JsonHack.
 - New encoder: Decimal and new way of adding encoders (sapp.plugins.jsonhack.models.add_encoder).
+- Change View class so all of the ednpoint will get the request as a param.
 
 ## 0.4.0 - Split Context Manager and Decorator for Configurator
 
