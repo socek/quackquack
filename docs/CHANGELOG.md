@@ -16,6 +16,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - Changed and improved alembic migration scripts. Now it allows to start the app by the developer instead of the code.
 - Added Object Finder.
 - Added JsonHack.
+- New encoder: Decimal and new way of adding encoders (sapp.plugins.jsonhack.models.add_encoder).
 
 ## 0.4.0 - Split Context Manager and Decorator for Configurator
 

@@ -2,6 +2,7 @@ from abc import ABC
 from abc import abstractmethod
 from datetime import date
 from datetime import datetime
+from decimal import Decimal
 from typing import List
 from uuid import UUID
 
@@ -95,3 +96,14 @@ def encoder_for(dataclasses: List[object]):
             TYPE = dataclass
 
         yield Encoder()
+
+
+class DecimalEncoder(Encoder):
+    TYPENAME = "decimal"
+    TYPE = Decimal
+
+    def _encode(self, value):
+        return str(value)
+
+    def _decode(self, value):
+        return Decimal(value)

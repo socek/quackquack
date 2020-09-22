@@ -9,7 +9,7 @@ from sapp.plugins.jsonhack.errors import UnknownObjectError
 
 logger = getLogger(__name__)
 
-ENCODERS_CACHE = []
+ENCODERS_CACHE = set()
 
 
 def get_encoders():
@@ -31,13 +31,14 @@ def init_encoders(finder):
         element = getattr(encoders, name)
         try:
             if is_encoder(element):
-                ENCODERS_CACHE.append(element())
+                add_encoder(element())
         except TypeError:
             continue
 
     if finder:
         # search for all dataclasses and generate encoder
-        ENCODERS_CACHE.extend(encoders.encoder_for(finder.find()))
+        for encoder in encoders.encoder_for(finder.find()):
+            add_encoder(encoder)
 
 
 def object_hook(obj):
@@ -48,3 +49,7 @@ def object_hook(obj):
         if encoder.is_decodable(obj):
             return encoder.decode(obj)
     raise UnknownObjectError(obj)
+
+
+def add_encoder(encoder):
+    ENCODERS_CACHE.add(encoder)
