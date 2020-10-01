@@ -17,7 +17,13 @@ class Configurator(object):
         self.context_count = 0
         self.context = None
 
-    def start(self, startpoint=None, **kwargs):
+    def start(self, startpoint: str = None, **kwargs) -> bool:
+        """
+        Start application. Return True if started. Return False if already
+        started before.
+        """
+        if self.is_started:
+            return False
         self.startpoint = startpoint
         self.extra = kwargs
 
@@ -25,6 +31,7 @@ class Configurator(object):
         self._start_plugins()
 
         self.is_started = True
+        return True
 
     def _start_plugins(self):
         for plugin in self.plugins:
