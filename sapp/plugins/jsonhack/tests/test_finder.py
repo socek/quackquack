@@ -3,8 +3,8 @@ from unittest.mock import MagicMock
 
 from pytest import fixture
 
-from sapp.plugins.jsonhack.finder import DataclassFinder
-from sapp.plugins.jsonhack.finder import ObjectFinder
+from sapp.finder import DataclassFinder
+from sapp.finder import ObjectFinder
 
 
 @dataclass
@@ -81,20 +81,44 @@ class TestObjectFinder:
         assert finder.find() == "something"
         assert not mfind.called
 
-    def test_find_raw_when_ok(self, finder, mwalk_packages, mimport_module, mfind_in_package, mmodule, melement):
+    def test_find_raw_when_ok(
+        self,
+        finder,
+        mwalk_packages,
+        mimport_module,
+        mfind_in_package,
+        mmodule,
+        melement,
+    ):
         """
         ._find should walk thru all packages and find all elements in those packages
         """
         assert finder._find() == [melement]
 
-    def test_find_raw_when_not_ok(self, finder, mwalk_packages, mimport_module, mfind_in_package, mmodule, melement):
+    def test_find_raw_when_not_ok(
+        self,
+        finder,
+        mwalk_packages,
+        mimport_module,
+        mfind_in_package,
+        mmodule,
+        melement,
+    ):
         """
         ._find should ignore package which can not be imported
         """
         mimport_module.side_effect = RuntimeError()
         assert finder._find() == []
 
-    def test_find_raw_when_ignored(self, finder, mwalk_packages, mimport_module, mfind_in_package, mmodule, melement):
+    def test_find_raw_when_ignored(
+        self,
+        finder,
+        mwalk_packages,
+        mimport_module,
+        mfind_in_package,
+        mmodule,
+        melement,
+    ):
         """
         ._find should ignore package which are in ignored list
         """
@@ -105,7 +129,10 @@ class TestObjectFinder:
         package = MagicMock()
         package.__name__ = "something"
         package.two = "something2"
-        assert list(finder._find_in_package(package)) == ["something", "something2"]
+        assert list(finder._find_in_package(package)) == [
+            "something",
+            "something2",
+        ]
 
 
 class TestDataclassFinder:
@@ -113,5 +140,7 @@ class TestDataclassFinder:
         """
         DataclassFinder.is_collectable should return True only if element is an dataclass
         """
-        assert DataclassFinder("something").is_collectable(SimpleDataclass) is True
+        assert (
+            DataclassFinder("something").is_collectable(SimpleDataclass) is True
+        )
         assert DataclassFinder("something").is_collectable("str") is False

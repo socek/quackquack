@@ -11,8 +11,6 @@ from marshmallow_dataclass import class_schema
 
 
 class Encoder(ABC):
-    _TYPENAME_PREFIX = "Appnexus"
-
     @property
     @abstractmethod
     def TYPE(self):
@@ -20,7 +18,7 @@ class Encoder(ABC):
 
     @property
     def TYPENAME(self):
-        return self._TYPENAME_PREFIX + self.TYPE.__name__
+        return getattr(self.TYPE, "ENCODED_TYPENAME", None) or self.TYPE.__name__
 
     def is_encodable(self, value):
         return type(value) == self.TYPE

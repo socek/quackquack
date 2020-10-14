@@ -5,7 +5,7 @@ from uuid import uuid4
 
 from pytest import fixture
 
-from sapp.plugins.json import JsonPlugin
+from sapp.plugins.jsonhack.plugin import JsonPlugin
 
 
 class TestJsonPlugin(object):

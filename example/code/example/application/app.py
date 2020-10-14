@@ -1,5 +1,8 @@
+from example.application.capp import cel
+from example.application.routing import ExampleRouting
+
 from sapp.plugins.celery.plugin import CeleryPlugin
-from sapp.plugins.json import JsonPlugin
+from sapp.plugins.jsonhack import JsonPlugin
 from sapp.plugins.logging import LoggingPlugin
 from sapp.plugins.pyramid.configurator import ConfiguratorWithPyramid
 from sapp.plugins.pyramid.plugins import RoutingPlugin
@@ -7,9 +10,6 @@ from sapp.plugins.settings import SettingsPlugin
 from sapp.plugins.sqlalchemy.plugin import DatabasePlugin
 from sapp.plugins.tornado.configurator import TornadoConfigurator
 from sapp.plugins.tornado.plugin import TornadoPlugin
-
-from example.application.capp import cel
-from example.application.routing import ExampleRouting
 
 
 class ExampleConfigurator(ConfiguratorWithPyramid, TornadoConfigurator):
