@@ -27,7 +27,9 @@ class ViewFixture:
         request.registry = dict(application=app)
         request._cache = {}
         request.GET = {}
+        request.POST = {}
         request.matchdict = {}
+        request.headers = {}
         return request
 
     @fixture
