@@ -44,15 +44,21 @@ class ObjectFinder(ABC):
     def _find(self):
         elements = []
         for parent in self.parents:
-            logger.info(
-                f"{self.cache_key}: Searching for all objects in {parent}"
-            )
+            info = f"{self.cache_key}: Searching for all objects in {parent}"
+            logger.info(info)
             for package in self._get_all_packages(parent):
                 elements += list(self._find_in_package(package))
         return elements
 
     def _get_all_packages(self, parent: str):
-        for module in walk_packages([parent], f"{parent}."):
+        try:
+            parentpkg = import_module(parent)
+        except Exception:
+            logger.error(f"Can not import parent module: {parent}")
+            return
+
+        prefix = f"{parentpkg.__name__}."
+        for module in walk_packages(parentpkg.__path__, prefix):
             if module.name in self.ignore_list:
                 continue
 

@@ -24,7 +24,10 @@ class TestObjectFinder:
 
     @fixture
     def mmodule(self):
-        return MagicMock()
+        mmodule = MagicMock()
+        mmodule.__name__ = "something"
+        mmodule.__path__ = ["/somewhere/something"]
+        return mmodule
 
     @fixture
     def melement(self):
@@ -37,8 +40,10 @@ class TestObjectFinder:
         return mock
 
     @fixture
-    def mimport_module(self, mocker):
-        return mocker.patch("sapp.finder.import_module")
+    def mimport_module(self, mocker, mmodule):
+        mimport_module = mocker.patch("sapp.finder.import_module")
+        mimport_module.return_value = mmodule
+        return mimport_module
 
     @fixture
     def mis_defined_in(self, mocker):
@@ -141,6 +146,7 @@ class TestDataclassFinder:
         DataclassFinder.is_collectable should return True only if element is an dataclass
         """
         assert (
-            DataclassFinder("something").is_collectable(SimpleDataclass) is True
+            DataclassFinder(["something"]).is_collectable(SimpleDataclass)
+            is True
         )
-        assert DataclassFinder("something").is_collectable("str") is False
+        assert DataclassFinder(["something"]).is_collectable("str") is False
