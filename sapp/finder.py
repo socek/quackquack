@@ -23,9 +23,12 @@ class ObjectFinder(ABC):
     process_cache = {}
 
     def __init__(
-        self, parent: str, ignore_list: List[str] = None, cache_key: str = None
+        self,
+        parents: List[str],
+        ignore_list: List[str] = None,
+        cache_key: str = None,
     ):
-        self.parent = parent
+        self.parents = parents
         self._cache_key = cache_key
         self.ignore_list = ignore_list or []
 
@@ -39,16 +42,17 @@ class ObjectFinder(ABC):
         return self.process_cache[self.cache_key]
 
     def _find(self):
-        logger.info(
-            f"{self.cache_key}: Searching for all objects in {self.parent}"
-        )
         elements = []
-        for package in self._get_all_packages():
-            elements += list(self._find_in_package(package))
+        for parent in self.parents:
+            logger.info(
+                f"{self.cache_key}: Searching for all objects in {parent}"
+            )
+            for package in self._get_all_packages(parent):
+                elements += list(self._find_in_package(package))
         return elements
 
-    def _get_all_packages(self):
-        for module in walk_packages([self.parent], f"{self.parent}."):
+    def _get_all_packages(self, parent: str):
+        for module in walk_packages([parent], f"{parent}."):
             if module.name in self.ignore_list:
                 continue
 

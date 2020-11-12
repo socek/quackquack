@@ -20,7 +20,7 @@ class FakeFinder(ObjectFinder):
 class TestObjectFinder:
     @fixture
     def finder(self):
-        return FakeFinder("something")
+        return FakeFinder(["something"])
 
     @fixture
     def mmodule(self):
@@ -32,17 +32,17 @@ class TestObjectFinder:
 
     @fixture
     def mwalk_packages(self, mocker, mmodule):
-        mock = mocker.patch("sapp.plugins.jsonhack.finder.walk_packages")
+        mock = mocker.patch("sapp.finder.walk_packages")
         mock.return_value = [mmodule]
         return mock
 
     @fixture
     def mimport_module(self, mocker):
-        return mocker.patch("sapp.plugins.jsonhack.finder.import_module")
+        return mocker.patch("sapp.finder.import_module")
 
     @fixture
     def mis_defined_in(self, mocker):
-        return mocker.patch("sapp.plugins.jsonhack.finder.is_defined_in")
+        return mocker.patch("sapp.finder.is_defined_in")
 
     @fixture
     def mfind(self, mocker, finder):
