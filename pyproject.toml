@@ -37,7 +37,7 @@ developer = [
 [tool.isort]
 line_length = 80
 known_first_party = [ "sapp" ]
-multi_line_output=3
+multi_line_output = 3
 sections = [ "FUTURE", "STDLIB", "DJANGO", "THIRDPARTY", "FIRSTPARTY", "LOCALFOLDER"]
 force_single_line = true
 
@@ -50,4 +50,23 @@ ignore = [ "W503", "W504" ]
 requires = ["poetry>=0.12"]
 build-backend = "poetry.masonry.api"
 
+[tool.pytest.ini_options]
+addopts = "--cov --cov-report term:skip-covered --cov-report html -vv --ff -x sapp"
+norecursedirs = [ ".cache", ".git", ".idea", "bin", "*migrations*", "spa", "static", "var", "docker" ]
+filterwarnings = [ "error::RuntimeWarning", "ignore:.*the imp module is deprecated.*:DeprecationWarning" ]
 
+[tool.coverage.run]
+branch = true
+omit = [
+    "*/tests/*",
+    "*/test_*/*",
+    "*/versions/*",
+    "*/testing.py",
+    "*/settings/*",
+    "*/app/*",
+    "*/admin.py",
+    "*/.cache/*",
+    "/home/user/*",
+    "/home/circleci/.cache/*",
+    "conftest.py",
+]
