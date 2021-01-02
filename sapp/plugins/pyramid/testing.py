@@ -29,6 +29,7 @@ class ViewFixture:
         request.GET = {}
         request.POST = {}
         request.matchdict = {}
+        request.json_body = {}
         request.headers = {}
         return request
 

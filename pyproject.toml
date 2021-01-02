@@ -51,7 +51,7 @@ requires = ["poetry>=0.12"]
 build-backend = "poetry.masonry.api"
 
 [tool.pytest.ini_options]
-addopts = "--cov --cov-report term:skip-covered --cov-report html -vv --ff -x sapp"
+addopts = "--cov --cov-report term:skip-covered --cov-report html --no-cov-on-fail -vv --ff -x sapp"
 norecursedirs = [ ".cache", ".git", ".idea", "bin", "*migrations*", "spa", "static", "var", "docker" ]
 filterwarnings = [ "error::RuntimeWarning", "ignore:.*the imp module is deprecated.*:DeprecationWarning" ]
 

@@ -16,6 +16,7 @@ class Configurator:
         self.plugins = []
         self.context_count = 0
         self.context = None
+        self.extra = {}
 
     def start(self, startpoint: str = None, **kwargs) -> bool:
         """

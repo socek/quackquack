@@ -48,3 +48,15 @@ class TestConfigurator:
             configurator.plugin2,
             configurator.plugin3,
         ]
+
+    def test_start_when_started(self, configurator):
+        """
+        .start should do nothing if configurator already started
+        """
+        configurator.is_started = True
+
+        assert configurator.start("wsgi", wsgi=1) is False
+
+        assert configurator.extra == {}
+        assert configurator.startpoint is None
+        assert configurator.plugins == []
