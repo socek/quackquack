@@ -8,7 +8,7 @@ from pytest import fixture
 from sapp.plugins.jsonhack.plugin import JsonPlugin
 
 
-class TestJsonPlugin(object):
+class TestJsonPlugin:
     @fixture
     def configurator(self):
         return MagicMock()

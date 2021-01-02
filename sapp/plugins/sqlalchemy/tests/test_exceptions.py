@@ -1,7 +1,7 @@
 from sapp.plugins.sqlalchemy.exceptions import SettingMissing
 
 
-class TestSettingMissing(object):
+class TestSettingMissing:
     def test_stringify(self):
         """
         SettingMissing should be able to format proper message.

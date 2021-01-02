@@ -1,4 +1,4 @@
-class Plugin(object):
+class Plugin:
     def start(self, configurator):
         """
         This method will be called at the start of the Configurator. It will be

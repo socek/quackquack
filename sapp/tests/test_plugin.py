@@ -1,7 +1,7 @@
 from sapp.plugin import Plugin
 
 
-class TestPlugin(object):
+class TestPlugin:
     """
     Plugin does not do anything by itself. This is only a sanity check.
     """

@@ -129,7 +129,7 @@ thing you need to do is inherit from `sapp.Plugin`. This class should be self
 explantory:
 
 ```python
-class Plugin(object):
+class Plugin:
     def start(self, configurator):
         """
         This method will be called at the start of the Configurator. It will be

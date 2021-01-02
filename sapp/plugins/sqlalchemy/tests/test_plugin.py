@@ -9,7 +9,7 @@ from sapp.plugins.sqlalchemy.exceptions import SettingMissing
 from sapp.plugins.sqlalchemy.plugin import DatabasePlugin
 
 
-class TestDatabasePlugin(object):
+class TestDatabasePlugin:
     @fixture
     def mconfigurator(self):
         config = MagicMock()

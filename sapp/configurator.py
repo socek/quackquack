@@ -9,7 +9,7 @@ class ExtraValueMissing(RuntimeError):
     pass
 
 
-class Configurator(object):
+class Configurator:
     def __init__(self):
         self.is_started = False
         self.startpoint = None

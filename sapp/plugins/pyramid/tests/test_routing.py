@@ -6,12 +6,12 @@ from pytest import fixture
 from sapp.plugins.pyramid.routing import Routing
 
 
-class ExampleView(object):
+class ExampleView:
     renderer = 'myrenderer'
     path_info = None
 
 
-class TestRouting(object):
+class TestRouting:
     @fixture
     def mconfig(self):
         return MagicMock()

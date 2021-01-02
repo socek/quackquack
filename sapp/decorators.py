@@ -4,7 +4,7 @@ from functools import wraps
 from sapp.context_manager import LazyContextManager
 
 
-class Decorator(object):
+class Decorator:
     def __init__(self, application, values=None):
         self.application = application
         self.values = values

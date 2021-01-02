@@ -2,11 +2,8 @@ from unittest.mock import MagicMock
 from unittest.mock import sentinel
 
 from pytest import fixture
-from pytest import raises
 
 from sapp.configurator import Configurator
-from sapp.configurator import ConfiguratorNotStartedError
-from sapp.context_manager import ContextManager
 from sapp.plugin import Plugin
 
 
@@ -27,7 +24,7 @@ class ExampleConfigurator(Configurator):
         self.add_plugin(self.plugin3)
 
 
-class TestConfigurator(object):
+class TestConfigurator:
     @fixture
     def configurator(self):
         return ExampleConfigurator()

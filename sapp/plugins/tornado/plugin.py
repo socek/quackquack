@@ -3,7 +3,7 @@ from tornado.log import enable_pretty_logging
 from tornado.web import Application as Tornado
 
 
-class TornadoPlugin(object):
+class TornadoPlugin:
     def start(self, configurator):
         debug = configurator.settings["debug"]
         enable_pretty_logging()

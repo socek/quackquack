@@ -28,7 +28,7 @@ class ExampleConfigurator(Configurator):
         self.add_plugin(self.plugin3)
 
 
-class TestContextManager(object):
+class TestContextManager:
     @fixture
     def configurator(self):
         return ExampleConfigurator()

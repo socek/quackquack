@@ -7,7 +7,7 @@ from pytest import fixture
 from sapp.plugins.redis import RedisPlugin
 
 
-class TestRedisPlugin(object):
+class TestRedisPlugin:
     @fixture
     def plugin(self):
         return RedisPlugin()

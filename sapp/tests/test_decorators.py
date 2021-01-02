@@ -25,20 +25,21 @@ class MockedPlugin(Plugin):
 
 class SampleConfigurator(Configurator):
     def append_plugins(self):
-        self.add_plugin(MockedPlugin(['var1', 'var2']))
+        self.add_plugin(MockedPlugin(["var1", "var2"]))
 
 
-class TestDecorator(object):
+class TestDecorator:
     @fixture
     def configurator(self):
         conf = SampleConfigurator()
-        conf.start('tests')
+        conf.start("tests")
         return conf
 
     def test_normal_context(self, configurator):
         """
         Decorator should append 'ctx' to the fun's arguments
         """
+
         @Decorator(configurator)
         def fun(ctx):
             assert ctx.var1 == configurator.var1
@@ -50,7 +51,8 @@ class TestDecorator(object):
         """
         Decorator should append values from ctx if specyfied.
         """
-        @Decorator(configurator, ['var1', 'var2'])
+
+        @Decorator(configurator, ["var1", "var2"])
         def fun(var1, var2):
             assert var1 == configurator.var1
             assert var2 == configurator.var2
@@ -62,7 +64,8 @@ class TestDecorator(object):
         Decorator should not append values from ctx if those values are
         passed thru as named argument specyfied.
         """
-        @Decorator(configurator, ['var1', 'var2'])
+
+        @Decorator(configurator, ["var1", "var2"])
         def fun(var1, var2):
             assert var1 == sentinel.var1
             assert var2 == configurator.var2

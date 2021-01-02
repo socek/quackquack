@@ -18,7 +18,7 @@ class ExampleConfigurator(ConfiguratorWithPyramid):
         self.add_plugin(self.plugin2)
 
 
-class TestConfiguratorWithPyramid(object):
+class TestConfiguratorWithPyramid:
     @fixture
     def configurator(self):
         return ExampleConfigurator()

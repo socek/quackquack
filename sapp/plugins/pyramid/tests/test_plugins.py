@@ -1,6 +1,7 @@
-from pytest import fixture
 from unittest.mock import MagicMock
 from unittest.mock import sentinel
+
+from pytest import fixture
 
 from sapp.plugins.pyramid.plugins import AuthPlugin
 from sapp.plugins.pyramid.plugins import CsrfPlugin
@@ -8,7 +9,7 @@ from sapp.plugins.pyramid.plugins import RoutingPlugin
 from sapp.plugins.pyramid.plugins import SessionPlugin
 
 
-class Fixtures(object):
+class Fixtures:
     @fixture
     def mconfigurator(self):
         return MagicMock()

@@ -1,4 +1,4 @@
-class Routing(object):
+class Routing:
 
     values_to_set = [
         'permission',

@@ -3,7 +3,7 @@ from unittest.mock import MagicMock
 from pytest import fixture
 
 
-class PluginFixtures(object):
+class PluginFixtures:
     @fixture
     def mconfigurator(self):
         return MagicMock()

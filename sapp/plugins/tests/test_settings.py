@@ -1,12 +1,11 @@
 import os
-
 from os.path import dirname
-
-from pytest import fixture
-from pytest import raises
 from unittest.mock import MagicMock
 from unittest.mock import patch
 from unittest.mock import sentinel
+
+from pytest import fixture
+from pytest import raises
 
 from sapp.plugins.settings import PrefixedStringsDict
 from sapp.plugins.settings import SettingsPlugin
@@ -26,7 +25,7 @@ class TestSettingsPlugin(PluginFixtures):
 
     @fixture
     def mpaths(self):
-        with patch('sapp.plugins.settings.PrefixedStringsDict') as mock:
+        with patch("sapp.plugins.settings.PrefixedStringsDict") as mock:
             yield mock
 
     @fixture
@@ -35,7 +34,7 @@ class TestSettingsPlugin(PluginFixtures):
 
     @fixture
     def mimport(self, plugin):
-        with patch.object(plugin, '_import') as mock:
+        with patch.object(plugin, "_import") as mock:
             yield mock
 
     def test_application(self, plugin, mapplication, mconfigurator):
@@ -50,14 +49,14 @@ class TestSettingsPlugin(PluginFixtures):
         assert mapplication.settings == sentinel.settings
 
     def test_import(self, plugin):
-        assert plugin._import('os') == os
+        assert plugin._import("os") == os
 
     def test_start(self, plugin, mconfigurator, mimport):
         """
         .start should gather settings for startpoint and push the data into
         configurator.
         """
-        mconfigurator.startpoint = 'myapp'
+        mconfigurator.startpoint = "myapp"
         plugin.start(mconfigurator)
 
         mimport.assert_called_once_with(self.MODULE)
@@ -66,7 +65,7 @@ class TestSettingsPlugin(PluginFixtures):
         assert mconfigurator.settings == mimport.return_value.myapp.return_value
 
 
-class TestPrefixedStringsDict(object):
+class TestPrefixedStringsDict:
     @fixture
     def paths(self):
         return PrefixedStringsDict()
@@ -75,20 +74,20 @@ class TestPrefixedStringsDict(object):
         """
         .set_prefix should set prefix on the paths.
         """
-        paths['name'] = 'come'
-        assert paths['name'] == 'come'
+        paths["name"] = "come"
+        assert paths["name"] == "come"
 
-        paths.set_prefix('myprefix/')
-        assert paths['name'] == 'myprefix/come'
+        paths.set_prefix("myprefix/")
+        assert paths["name"] == "myprefix/come"
 
     def test_setitem_with_bad_value(self, paths):
         """
         PrefixedStringsDict can be set only by the str objects.
         """
-        paths['name'] = 'key'
+        paths["name"] = "key"
 
         with raises(ValueError):
-            paths['name'] = 12
+            paths["name"] = 12
 
     def test_set_prefix_from_module(self, paths):
         """

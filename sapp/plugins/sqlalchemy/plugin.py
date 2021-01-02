@@ -7,7 +7,7 @@ from sapp.plugins.sqlalchemy.consts import URL_KEY
 from sapp.plugins.sqlalchemy.exceptions import SettingMissing
 
 
-class DatabasePlugin(object):
+class DatabasePlugin:
     def __init__(self, name):
         self.name = name
 
