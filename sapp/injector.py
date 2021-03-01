@@ -1,69 +1,49 @@
+import sys
 from functools import wraps
-from inspect import BoundArguments
-from inspect import Signature
 from inspect import signature
-from typing import Any
 from typing import Callable
-from typing import ContextManager as ContextManagerType
+from typing import Dict
+from typing import Iterable
+from typing import List
+from typing import Tuple
 
-from sapp.configurator import Configurator
-from sapp.context_manager import ContextManager
-
-
-class ArgsInjector:
-    def __init__(self, name: str, getvalue: Callable[[], Any]):
-        self.name = name
-        self.getvalue = getvalue
-
-    def _is_argument_not_set(self, sig: Signature, bound_args: BoundArguments):
-        default_value = sig.parameters[self.name].default
-        value = bound_args.arguments.get(self.name)
-        return default_value == value
-
-    def __call__(self, method):
-        @wraps(method)
-        def wrapper(*args, **kwargs):
-            sig = signature(method)
-            bound_args = sig.bind_partial(*args, **kwargs)
-            if self._is_argument_not_set(sig, bound_args):
-                return self.run_method(method, args, kwargs)
-            return method(*args, **kwargs)
-
-        return wrapper
-
-    def run_method(self, method, args, kwargs):
-        kwargs[self.name] = self.getvalue()
-        return method(*args, **kwargs)
+from sapp.context import Context
 
 
-class ContextArgsInjector(ArgsInjector):
-    def __init__(
-        self,
-        name: str,
-        getvalue: Callable[[Any], Any],
-        context: ContextManagerType,
-    ):
-        super().__init__(name, getvalue)
-        self.context = context
+def injectors(
+    method: Callable, args: List, kwargs: Dict
+) -> Iterable[Tuple[str, Callable]]:
+    sig = signature(method)
+    bound_args = sig.bind_partial(*args, **kwargs)
 
-    def run_method(self, method, args, kwargs):
-        with self.context as context:
-            kwargs[self.name] = self.getvalue(context)
-        return method(*args, **kwargs)
+    for name, value in sig._parameters.items():
+        if getattr(value._default, "_injectable", False):
+            if name not in bound_args.arguments:
+                yield name, value._default
 
 
-class ApplicationArgsInjector(ArgsInjector):
-    def __init__(
-        self,
-        name: str,
-        application: Configurator,
-        getvalue: Callable[[Any], Any] = None,
-    ):
-        getvalue = getvalue or (lambda ctx: getattr(ctx, name))
-        super().__init__(name, getvalue)
-        self.application = application
+def InitalizeInjectors(method: Callable):
+    @wraps(method)
+    def wrapper(*args, **kwargs):
+        contexts = []
+        for name, injector in injectors(method, args, kwargs):
+            context = Context(injector._appliication).start()
+            kwargs[name] = injector(context)
+            contexts.append(context)
+        try:
+            method(*args, **kwargs)
+        finally:
+            for context in contexts:
+                context.exit(*sys.exc_info())
 
-    def run_method(self, method, args, kwargs):
-        with ContextManager(self.application) as context:
-            kwargs[self.name] = self.getvalue(context)
-        return method(*args, **kwargs)
+    return wrapper
+
+
+def Injector(method: Callable):
+    @wraps(method)
+    def wrapper(appliication):
+        method._appliication = appliication
+        method._injectable = True
+        return method
+
+    return wrapper

@@ -1,4 +1,8 @@
 class Plugin:
+    @property
+    def name(self):
+        return self.__class__.__name__
+
     def start(self, configurator):
         """
         This method will be called at the start of the Configurator. It will be
