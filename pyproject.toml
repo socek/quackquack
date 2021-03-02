@@ -1,7 +1,7 @@
 [tool.poetry]
-name = "sapp"
-version = "0.5.0"
-description = "Simple Application"
+name = "qq"
+version = "1.0.0"
+description = "Quack Quack: A simple application framework"
 authors = ["Dominik Dlugajczyk <msocek@gmail.com>"]
 license = "MIT"
 
@@ -36,14 +36,14 @@ developer = [
 
 [tool.isort]
 line_length = 80
-known_first_party = [ "sapp" ]
+known_first_party = [ "qq" ]
 multi_line_output = 3
 sections = [ "FUTURE", "STDLIB", "DJANGO", "THIRDPARTY", "FIRSTPARTY", "LOCALFOLDER"]
 force_single_line = true
 
 [tool.black]
 line_length = 80
-target-version = [ 'py38' ]
+target-version = [ "py38", "py39" ]
 ignore = [ "W503", "W504" ]
 
 [build-system]
@@ -51,7 +51,7 @@ requires = ["poetry>=0.12"]
 build-backend = "poetry.masonry.api"
 
 [tool.pytest.ini_options]
-addopts = "--cov --cov-report term:skip-covered --cov-report html --no-cov-on-fail -vv --ff -x sapp"
+addopts = "--cov --cov-report term:skip-covered --cov-report html --no-cov-on-fail -vv --ff -x qq"
 norecursedirs = [ ".cache", ".git", ".idea", "bin", "*migrations*", "spa", "static", "var", "docker" ]
 filterwarnings = [ "error::RuntimeWarning", "ignore:.*the imp module is deprecated.*:DeprecationWarning" ]
 

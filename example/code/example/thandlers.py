@@ -1,9 +1,9 @@
-from sapp import Decorator
-from tornado.web import RequestHandler
-
 from example import app
 from example.application.models import Model
 from example.tasks import input_value
+from tornado.web import RequestHandler
+
+from qq import Decorator
 
 
 class MainHandler(RequestHandler):

@@ -109,7 +109,7 @@ and all paths will be prefixed.
 Example:
 
 ```python
-from sapp.plugins.settings import PrefixedStringsDict
+from qq.plugins.settings import PrefixedStringsDict
 
 def default():
     paths = PrefixedStringsDict('/code/')

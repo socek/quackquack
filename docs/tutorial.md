@@ -15,8 +15,8 @@ inheriting from `sapp.Configurator`. There you would overwrite `append_plugins`
 method, which is a place to append the plugins.
 
 ```python
-from sapp.configurator import Configurator
-from sapp.plugins import SettingsPlugin
+from qq.configurator import Configurator
+from qq.plugins import SettingsPlugin
 
 class MyConfigurator(Configurator):
     def append_plugins(self):
@@ -60,7 +60,7 @@ def start_for_celery():
 After starting the configurator, we can use it as a context manager.
 
 ```python
-from sapp import ContextManager
+from qq import ContextManager
 
 app = MyConfigurator()
 
@@ -73,7 +73,7 @@ the context? The context manager will start the whole context, but you can get
 only part of it like this:
 
 ```python
-from sapp import ContextManager
+from qq import ContextManager
 
 app = MyConfigurator()
 
@@ -104,7 +104,7 @@ You can also pass the context using decorator:
 
 ```python
 
-from sapp import Decorator
+from qq import Decorator
 
 app = MyConfigurator()
 

@@ -48,8 +48,8 @@ For example, we will add SettingsPlugin fro Sapp and RoutingPlugin from Sapp's
 Pyramid Plugin.
 
 ```python
-from sapp.plugins.pyramid.configurator import ConfiguratorWithPyramid
-from sapp.plugins.pyramid.plugins import RoutingPlugin
+from qq.plugins.pyramid.configurator import ConfiguratorWithPyramid
+from qq.plugins.pyramid.plugins import RoutingPlugin
 
 from myapp.application.routing import MyappRouting
 
@@ -243,7 +243,7 @@ Example:
 
 
 ```python
-from sapp.plugins.pyramid.routing import Routing
+from qq.plugins.pyramid.routing import Routing
 
 from myapp.home.routing import home_routing
 
@@ -286,7 +286,7 @@ The simples way to return the data is to implement `.get(self)` method and
 return a dict.
 
 ```python
-from sapp.plugins.pyramid.view import View
+from qq.plugins.pyramid.view import View
 
 
 class Home(View):
@@ -304,7 +304,7 @@ If you want to create a view which return template, you can implement it in this
 way:
 
 ```python
-from sapp.plugins.pyramid.view import View
+from qq.plugins.pyramid.view import View
 
 
 class Home(View):

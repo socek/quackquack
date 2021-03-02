@@ -18,9 +18,9 @@ In order to use the plugin, you need to add the plugin to the Configurator.
 Database plugins needs the SettingsPlugin as well.
 
 ```python
-from sapp.configurator import Configurator
-from sapp.plugins.settings import SettingsPlugin
-from sapp.plugins.sqlalchemy.plugin import DatabasePlugin
+from qq.configurator import Configurator
+from qq.plugins.settings import SettingsPlugin
+from qq.plugins.sqlalchemy.plugin import DatabasePlugin
 
 class MyConfigurator(Configurator):
     def append_plugins(self):
@@ -73,7 +73,7 @@ changes. This folder contains "env.py" file, which we need to change like this:
 
 ```python
 # flake8: noqa
-from sapp.plugins.sqlalchemy.alembic import AlembicScript
+from qq.plugins.sqlalchemy.alembic import AlembicScript
 
 from myapp import app
 from myapp.application.model import Model
@@ -100,8 +100,8 @@ For this puprose, you can use `sapp.plugins.sqlalchemy.driver.Query` and
 `sapp.plugins.sqlalchemy.driver.Command` classes.
 
 ```python
-from sapp.plugins.sqlalchemy.driver import Query
-from sapp.plugins.sqlalchemy.driver import Command
+from qq.plugins.sqlalchemy.driver import Query
+from qq.plugins.sqlalchemy.driver import Command
 
 from myapp.auth.models import User
 

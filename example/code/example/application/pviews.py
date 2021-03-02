@@ -1,10 +1,10 @@
-from sapp import Decorator
-from sapp.plugins.pyramid.views import RestfulView
-
 from example import app
 from example.application.models import Base
 from example.application.models import Model
 from example.tasks import input_value
+
+from qq import Decorator
+from qq.plugins.pyramid.views import RestfulView
 
 
 class SimpleView(RestfulView):

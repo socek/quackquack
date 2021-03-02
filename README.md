@@ -50,8 +50,8 @@ in which you need to add some plugins. After configuring, you need to "start"
 the application. After that you can use the configurator as context manager.
 
 ```python
-from sapp import Configurator, ContextManager
-from sapp.plugins import SettingsPlugin
+from qq import Configurator, ContextManager
+from qq.plugins import SettingsPlugin
 
 class MyConfigurator(Configurator):
     def append_plugins(self):
