@@ -14,7 +14,7 @@ class ConfiguratorWithPyramid(Configurator):
         self._start_pyramid_plugins(pyramid)
         return pyramid.make_wsgi_app()
 
-    def _start_pyramid_plugins(self, pyramid):
+    def _start_pyramid_plugins(self, pyramid: PyramidConfigurator):
         for plugin in self.plugins:
             method = getattr(plugin, 'start_pyramid', lambda x: x)
             method(pyramid)

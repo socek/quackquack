@@ -1,13 +1,16 @@
 from logging.config import dictConfig
 
-from sapp.plugin import Plugin
+from sapp.application import Application
+from sapp.plugins.settings import SettingsBasedPlugin
 
 
-class LoggingPlugin(Plugin):
+class LoggingPlugin(SettingsBasedPlugin):
     """
     Add logging configuration. Needs 'logging' value in settings.
     https://docs.python.org/3.6/library/logging.config.html#logging.config.dictConfig
     """
 
-    def start(self, configurator):
-        dictConfig(configurator.settings['logging'])
+    DEFAULT_KEY = "logging"
+
+    def start(self, application: Application):
+        dictConfig(self.get_my_settings(application))

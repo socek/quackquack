@@ -10,7 +10,7 @@ from typing import Tuple
 from sapp.context import Context
 
 
-def injectors(
+def _injectors(
     method: Callable, args: List, kwargs: Dict
 ) -> Iterable[Tuple[str, Callable]]:
     sig = signature(method)
@@ -26,14 +26,14 @@ def InitalizeInjectors(method: Callable):
     @wraps(method)
     def wrapper(*args, **kwargs):
         contexts = []
-        for name, injector in injectors(method, args, kwargs):
+        for name, injector in _injectors(method, args, kwargs):
             context = Context(injector._appliication).start()
             kwargs[name] = injector(context)
             contexts.append(context)
         try:
             method(*args, **kwargs)
         finally:
-            for context in contexts:
+            for context in reversed(contexts):
                 context.exit(*sys.exc_info())
 
     return wrapper

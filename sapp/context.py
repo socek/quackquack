@@ -16,7 +16,7 @@ class Context:
         try:
             return self.application.context.get()
         except LookupError:
-            # I'm the first context, so I can return self.
+            # I'm the first context, so I can return myself.
             self.token = self.application.context.set(self)
             return self
 

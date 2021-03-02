@@ -2,16 +2,24 @@ from tornado.httpserver import HTTPServer
 from tornado.log import enable_pretty_logging
 from tornado.web import Application as Tornado
 
+from sapp.application import Application
+from sapp.plugins.settings import SettingsBasedPlugin
 
-class TornadoPlugin:
-    def start(self, configurator):
-        debug = configurator.settings["debug"]
+DEBUG_KEY = "debug"
+SERVE_TRACEBACK_KEY = "serve_traceback"
+
+
+class TornadoPlugin(SettingsBasedPlugin):
+    DEFAULT_KEY = "tornado"
+
+    def start(self, application: Application):
+        settings = self.get_my_settings(application)
+        debug = settings.get(DEBUG_KEY, False)
+        serve_traceback = settings.get(SERVE_TRACEBACK_KEY, False)
         enable_pretty_logging()
-        configurator.tornado = Tornado(debug=debug, serve_traceback=True)
-        configurator._http_server = HTTPServer(configurator.tornado)
+        tornado = Tornado(debug=debug, serve_traceback=serve_traceback)
 
-    def enter(self, context):
-        pass
-
-    def exit(self, *args, **kwargs):
-        pass
+        return {
+            "tornado": tornado,
+            "http_server": HTTPServer(tornado),
+        }

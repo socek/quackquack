@@ -1,7 +1,13 @@
 from os.path import dirname
 
+from sapp.application import Application
+from sapp.context import Context
 from sapp.injector import Injector
 from sapp.plugin import Plugin
+
+
+def _import(modulepath):
+    return __import__(modulepath, globals(), locals(), [""])
 
 
 class PrefixedStringsDict(dict):
@@ -32,28 +38,44 @@ class SettingsPlugin(Plugin):
     a function which will create proper settings and push them to configurator.
     """
 
-    def __init__(self, modulepath: str, name: str = "settings"):
+    DEFAULT_KEY = "settings"
+
+    def __init__(self, modulepath: str, key: str = None):
+        super().__init__(key)
         self.modulepath = modulepath
-        self.name = name
 
-    def start(self, configurator):
-        self.configurator = configurator
-        startpoint = configurator.startpoint or "default"
-        startpoints_module = self._import(self.modulepath)
-        serttings_fun = getattr(startpoints_module, startpoint)
-        self.configurator.extra[self.name] = serttings_fun()
+    def start(self, application: Application):
+        startpoints_module = _import(self.modulepath)
+        settings = getattr(startpoints_module, application.startpoint)
+        self.application = application
+        self.application.extra[self.key] = settings()
 
-    def enter(self, context):
-        print(f"Entering Settings {self.name}|{id(context)}")
-        return self.configurator.extra[self.name]
-
-    def exit(self, *args, **kwargs):
-        print(f"Exiting Settings")
-
-    def _import(self, modulepath):
-        return __import__(modulepath, globals(), locals(), [""])
+    def enter(self, context: Context):
+        return self.application.extra[self.key]
 
 
 @Injector
-def SettingsInjector(context):
-    return context["settings"]
+def SettingsInjector(
+    context: Context, settings_key: str = SettingsPlugin.DEFAULT_KEY
+):
+    return context[settings_key]
+
+
+class SettingsBasedPlugin(Plugin):
+    def __init__(
+        self, key: str = None, settings_key: str = SettingsPlugin.DEFAULT_KEY
+    ):
+        super().__init__(key)
+        self.settings_key = settings_key
+
+    def get_my_settings(
+        self, application: Application = None, context: Context = None
+    ):
+        if application:
+            return application.extra[self.settings_key][self.key]
+        elif context:
+            return context[self.settings_key][self.key]
+        else:
+            raise TypeError(
+                "get_my_settings(application, context) missing 1 required argument: application or context!"
+            )
