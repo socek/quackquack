@@ -1,7 +1,11 @@
 from qq.plugin import Plugin
 
 
-class AuthPlugin(Plugin):
+class BasePyramidPlugin(Plugin):
+    pass
+
+
+class AuthPlugin(BasePyramidPlugin):
     """
     Add authorization to the pyramid app.
     """
@@ -11,11 +15,8 @@ class AuthPlugin(Plugin):
         self.authz_policy_cls = authz_policy_cls
         self.root_factory = root_factory
 
-    def start(self, configurator):
-        self.settings = configurator.settings
-
     def start_pyramid(self, pyramid):
-        authn_policy = self.authn_policy_cls(self.settings['secret'])
+        authn_policy = self.authn_policy_cls(self.settings["secret"])
         authz_policy = self.authz_policy_cls()
         pyramid.set_authentication_policy(authn_policy)
         pyramid.set_authorization_policy(authz_policy)
@@ -23,7 +24,7 @@ class AuthPlugin(Plugin):
             pyramid.set_root_factory(self.root_factory)
 
 
-class CsrfPlugin(Plugin):
+class CsrfPlugin(BasePyramidPlugin):
     """
     Add csrf mechanism to the pyramid app.
     """
@@ -31,15 +32,13 @@ class CsrfPlugin(Plugin):
     def __init__(self, policy_cls):
         self.policy_cls = policy_cls
 
-    def start(self, configurator):
-        self.settings = configurator.settings
-
     def start_pyramid(self, pyramid):
         pyramid.set_csrf_storage_policy(self.policy_cls())
         pyramid.set_default_csrf_options(
             require_csrf=True,
-            token=self.settings['csrf_token_key'],
-            header=self.settings['csrf_header_key'])
+            token=self.settings["csrf_token_key"],
+            header=self.settings["csrf_header_key"],
+        )
 
 
 class RoutingPlugin(Plugin):
@@ -55,7 +54,7 @@ class RoutingPlugin(Plugin):
         self.routing.make()
 
 
-class SessionPlugin(Plugin):
+class SessionPlugin(BasePyramidPlugin):
     """
     Add session mechanism to the pyramid app.
     """
@@ -63,10 +62,7 @@ class SessionPlugin(Plugin):
     def __init__(self, session_factory_cls):
         self.session_factory_cls = session_factory_cls
 
-    def start(self, configurator):
-        self.settings = configurator.settings
-
     def start_pyramid(self, pyramid):
-        secret = self.settings['session_secret']
+        secret = self.settings["session_secret"]
         session_factory = self.session_factory_cls(secret)
         pyramid.set_session_factory(session_factory)

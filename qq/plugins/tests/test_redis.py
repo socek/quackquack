@@ -4,37 +4,44 @@ from unittest.mock import sentinel
 
 from pytest import fixture
 
+from qq.plugins.redis import SETTINGS_DB_KEY
+from qq.plugins.redis import SETTINGS_HOST_KEY
+from qq.plugins.redis import SETTINGS_PORT_KEY
 from qq.plugins.redis import RedisPlugin
 
 
 class TestRedisPlugin:
     @fixture
     def plugin(self):
-        return RedisPlugin()
+        plugin = RedisPlugin()
+        plugin._set_key("redis")
+        return plugin
 
     @fixture
     def configurator(self):
         mock = MagicMock()
-        mock.settings = {
-            "redis": {
-                RedisPlugin.SETTINGS_HOST_KEY: sentinel.host,
-                RedisPlugin.SETTINGS_PORT_KEY: sentinel.port,
-                RedisPlugin.SETTINGS_DB_KEY: sentinel.dbkey,
+        mock.extra = {
+            "settings": {
+                "redis": {
+                    SETTINGS_HOST_KEY: sentinel.host,
+                    SETTINGS_PORT_KEY: sentinel.port,
+                    SETTINGS_DB_KEY: sentinel.dbkey,
+                }
             }
         }
         return mock
 
     @fixture
     def context(self):
-        mock = MagicMock()
-        mock.settings = {
-            "redis": {
-                RedisPlugin.SETTINGS_HOST_KEY: sentinel.host,
-                RedisPlugin.SETTINGS_PORT_KEY: sentinel.port,
-                RedisPlugin.SETTINGS_DB_KEY: sentinel.dbkey,
+        return {
+            "settings": {
+                "redis": {
+                    SETTINGS_HOST_KEY: sentinel.host,
+                    SETTINGS_PORT_KEY: sentinel.port,
+                    SETTINGS_DB_KEY: sentinel.dbkey,
+                }
             }
         }
-        return mock
 
     @fixture
     def mredis(self):
@@ -46,9 +53,8 @@ class TestRedisPlugin:
         Plugin should start redis connection when creating context.
         """
         plugin.start(configurator)
-        plugin.enter(context)
+        assert plugin.enter(context) == mredis.return_value
 
-        assert context.redis == mredis.return_value
         mredis.assert_called_once_with(
             host=sentinel.host, port=sentinel.port, db=sentinel.dbkey
         )

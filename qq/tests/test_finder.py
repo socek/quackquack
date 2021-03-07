@@ -3,18 +3,18 @@ from unittest.mock import call
 
 from pytest import fixture
 
-from qq import configurator
-from qq.configurator import Configurator
+from qq import application
+from qq.application import Application
 from qq.finder import ObjectFinder
 from qq.finder import is_defined_in
 
 
 class TestIsDefinedIn:
     def test_when_true(self):
-        assert is_defined_in(Configurator, configurator)
+        assert is_defined_in(Application, application)
 
     def test_when_false(self):
-        assert is_defined_in(is_defined_in, configurator) is False
+        assert is_defined_in(is_defined_in, application) is False
 
 
 class SampleFinder(ObjectFinder):
@@ -93,7 +93,9 @@ class TestObjectFinder:
 
         list(finder._get_all_packages("parent"))
 
-        mimport_module.assert_called_once_with("parent",)
+        mimport_module.assert_called_once_with(
+            "parent",
+        )
         assert not mwalk_packages.called
 
     def test_get_all_packages_when_module_in_ignore_list(
@@ -108,7 +110,9 @@ class TestObjectFinder:
 
         list(finder._get_all_packages("parent"))
 
-        mimport_module.assert_called_once_with("parent",)
+        mimport_module.assert_called_once_with(
+            "parent",
+        )
         mwalk_packages.assert_called_once_with("prefixpkg", "prefixpkg.")
 
     def test_get_all_packages_when_module_import_failed(

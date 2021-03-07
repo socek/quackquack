@@ -4,11 +4,17 @@ from contextvars import ContextVar
 from qq.plugin import Plugin
 
 
+class PluginContainer(OrderedDict):
+    def __setitem__(self, key: str, plugin: Plugin):
+        plugin._set_key(key)
+        super().__setitem__(key, plugin)
+
+
 class Application:
     def __init__(self):
         self.is_started = False
         self.startpoint = None
-        self.plugins = OrderedDict()
+        self.plugins = PluginContainer()
         self.extra = {}
         self.context = ContextVar(self.context_var_key())
 
@@ -35,9 +41,6 @@ class Application:
         for plugin in self.plugins.values():
             result = plugin.start(self)
             self.extra[plugin.key] = result
-
-    def add_plugin(self, plugin: Plugin):
-        self.plugins[plugin.key] = plugin
 
     def append_plugins(self):
         pass

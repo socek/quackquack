@@ -55,5 +55,5 @@ class DatabasePlugin(SettingsBasedPlugin):
 
     def _validate_settings(self):
         if URL_KEY not in self._settings:
-            raise SettingMissing(URL_KEY, self.name)
+            raise SettingMissing(URL_KEY, self.key)
         make_url(self._settings[URL_KEY])

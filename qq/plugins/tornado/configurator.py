@@ -2,12 +2,12 @@ from logging import getLogger
 
 from tornado.ioloop import IOLoop
 
-from qq.configurator import Configurator
+from qq.application import Application
 
 log = getLogger(__name__)
 
 
-class TornadoConfigurator(Configurator):
+class TornadoApplication(Application):
     def __init__(self):
         super().__init__()
         self.io_loop = IOLoop.instance()

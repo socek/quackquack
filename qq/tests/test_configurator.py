@@ -3,60 +3,58 @@ from unittest.mock import sentinel
 
 from pytest import fixture
 
-from qq.configurator import Configurator
+from qq.application import Application
 from qq.plugin import Plugin
 
 
 class ExamplePlugin(Plugin):
     def enter(self, context):
-        context.example = sentinel.example
+        context["example"] = sentinel.example
 
 
-class ExampleConfigurator(Configurator):
+class ExampleApplication(Application):
     def append_plugins(self):
         super().append_plugins()
-        self.plugin1 = MagicMock()
-        self.plugin2 = MagicMock()
-        self.plugin3 = ExamplePlugin()
-
-        self.add_plugin(self.plugin1)
-        self.add_plugin(self.plugin2)
-        self.add_plugin(self.plugin3)
+        self.plugins["plugin1"] = MagicMock()
+        self.plugins["plugin2"] = MagicMock()
+        self.plugins["plugin3"] = ExamplePlugin()
 
 
-class TestConfigurator:
+class TestApplication:
     @fixture
-    def configurator(self):
-        return ExampleConfigurator()
+    def app(self):
+        return ExampleApplication()
 
-    def test_start(self, configurator):
+    def test_start(self, app):
         """
         .start should append plugins and init them. Also proper flags should be
         set.
         """
-        configurator.start("wsgi", wsgi=1)
+        app.start("wsgi", wsgi=1)
 
-        assert configurator.extra == {"wsgi": 1}
-        assert configurator.startpoint == "wsgi"
-        assert configurator.is_started
+        plugin1 = app.plugins["plugin1"]
+        plugin2 = app.plugins["plugin2"]
 
-        configurator.plugin1.start.assert_called_once_with(configurator)
-        configurator.plugin2.start.assert_called_once_with(configurator)
+        assert app.extra == {
+            "wsgi": 1,
+            "plugin3": None,
+            plugin1.key: plugin1.start.return_value,
+            plugin2.key: plugin2.start.return_value,
+        }
+        assert app.startpoint == "wsgi"
+        assert app.is_started
 
-        assert configurator.plugins == [
-            configurator.plugin1,
-            configurator.plugin2,
-            configurator.plugin3,
-        ]
+        plugin1.start.assert_called_once_with(app)
+        plugin2.start.assert_called_once_with(app)
 
-    def test_start_when_started(self, configurator):
+    def test_start_when_started(self, app):
         """
-        .start should do nothing if configurator already started
+        .start should do nothing if app already started
         """
-        configurator.is_started = True
+        app.is_started = True
 
-        assert configurator.start("wsgi", wsgi=1) is False
+        assert app.start("wsgi", wsgi=1) is False
 
-        assert configurator.extra == {}
-        assert configurator.startpoint is None
-        assert configurator.plugins == []
+        assert app.extra == {}
+        assert app.startpoint is None
+        assert app.plugins == {}

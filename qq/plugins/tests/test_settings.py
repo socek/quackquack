@@ -9,7 +9,10 @@ from pytest import raises
 
 from qq.plugins.settings import PrefixedStringsDict
 from qq.plugins.settings import SettingsPlugin
+from qq.plugins.settings import _import
 from qq.testing import PluginFixtures
+
+PREFIX = "qq.plugins.settings"
 
 
 class TestSettingsPlugin(PluginFixtures):
@@ -17,7 +20,9 @@ class TestSettingsPlugin(PluginFixtures):
 
     @fixture
     def plugin(self):
-        return SettingsPlugin(self.MODULE)
+        plugin = SettingsPlugin(self.MODULE)
+        plugin._set_key("settings")
+        return plugin
 
     @fixture
     def mstring_dict(self):
@@ -25,44 +30,42 @@ class TestSettingsPlugin(PluginFixtures):
 
     @fixture
     def mpaths(self):
-        with patch("qq.plugins.settings.PrefixedStringsDict") as mock:
+        with patch(f"{PREFIX}.PrefixedStringsDict") as mock:
             yield mock
 
     @fixture
-    def mconfigurator(self):
+    def mapp(self):
         return MagicMock()
 
     @fixture
-    def mimport(self, plugin):
-        with patch.object(plugin, "_import") as mock:
+    def mimport(self):
+        with patch(f"{PREFIX}._import") as mock:
             yield mock
 
-    def test_application(self, plugin, mapplication, mconfigurator):
+    def test_application(self, plugin, mapplication, mapp):
         """
         .enter should add settings and paths to the application.
         """
-        plugin.configurator = mconfigurator
-        plugin.configurator.settings = sentinel.settings
-
-        plugin.enter(mapplication)
-
-        assert mapplication.settings == sentinel.settings
+        plugin._settings = {"settings": sentinel.settings}
+        assert plugin.enter(None) == {"settings": sentinel.settings}
 
     def test_import(self, plugin):
-        assert plugin._import("os") == os
+        assert _import("os") == os
 
-    def test_start(self, plugin, mconfigurator, mimport):
+    def test_start(self, plugin, mapp, mimport):
         """
         .start should gather settings for startpoint and push the data into
         configurator.
         """
-        mconfigurator.startpoint = "myapp"
-        plugin.start(mconfigurator)
+        mapp.startpoint = "myapp"
+        mapp.extra = {}
+
+        plugin.start(mapp)
 
         mimport.assert_called_once_with(self.MODULE)
         mimport.return_value.myapp.assert_called_once_with()
 
-        assert mconfigurator.settings == mimport.return_value.myapp.return_value
+        assert mapp.extra["settings"] == mimport.return_value.myapp.return_value
 
 
 class TestPrefixedStringsDict:

@@ -40,18 +40,19 @@ class SettingsPlugin(Plugin):
 
     DEFAULT_KEY = "settings"
 
-    def __init__(self, modulepath: str, key: str = None):
-        super().__init__(key)
+    def __init__(self, modulepath: str):
+        super().__init__()
         self.modulepath = modulepath
+        self._settings = None
 
     def start(self, application: Application):
         startpoints_module = _import(self.modulepath)
         settings = getattr(startpoints_module, application.startpoint)
-        self.application = application
-        self.application.extra[self.key] = settings()
+        self._settings = settings()
+        application.extra[self.key] = self._settings
 
     def enter(self, context: Context):
-        return self.application.extra[self.key]
+        return self._settings
 
 
 @Injector
@@ -63,9 +64,9 @@ def SettingsInjector(
 
 class SettingsBasedPlugin(Plugin):
     def __init__(
-        self, key: str = None, settings_key: str = SettingsPlugin.DEFAULT_KEY
+        self, settings_key: str = SettingsPlugin.DEFAULT_KEY
     ):
-        super().__init__(key)
+        super().__init__()
         self.settings_key = settings_key
 
     def get_my_settings(

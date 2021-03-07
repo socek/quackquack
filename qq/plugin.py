@@ -1,8 +1,6 @@
 class Plugin:
-    DEFAULT_KEY = None
-
-    def __init__(self, key: str = None):
-        self.key = key or self.DEFAULT_KEY or self.__class__.__name__
+    def _set_key(self, key: str):
+        self.key = key
 
     def start(self, configurator):
         """

@@ -4,25 +4,23 @@ from unittest.mock import patch
 from pytest import fixture
 from pytest import raises
 
-from qq.plugins.sqlalchemy.consts import DATABASES_KEY
 from qq.plugins.sqlalchemy.exceptions import SettingMissing
 from qq.plugins.sqlalchemy.plugin import DatabasePlugin
 
 
 class TestDatabasePlugin:
     @fixture
-    def mconfigurator(self):
-        config = MagicMock()
-        config.settings = {
-            DATABASES_KEY: {
+    def mapp(self):
+        app = MagicMock()
+        app.extra = {
+            "settings": {
                 "dbname": {
                     "url": "sqlite:///tmp.first.db",
                     "options": {"optionkey": "option value"},
                 }
             }
         }
-        config.dbplugins = {}
-        return config
+        return app
 
     @fixture
     def mcreate_engine(self):
@@ -41,17 +39,19 @@ class TestDatabasePlugin:
 
     @fixture
     def plugin(self):
-        return DatabasePlugin("dbname")
+        plugin = DatabasePlugin()
+        plugin._set_key("dbname")
+        return plugin
 
     @fixture
     def metadata(self):
         return MagicMock()
 
-    def test_start(self, plugin, mconfigurator, msessionmaker, mcreate_engine):
+    def test_start(self, plugin, mapp, msessionmaker, mcreate_engine):
         """
         .start should create proper sqlalchemy engine.
         """
-        plugin.start(mconfigurator)
+        plugin.start(mapp)
 
         mcreate_engine.assert_called_once_with(
             "sqlite:///tmp.first.db", optionkey="option value"
@@ -61,7 +61,6 @@ class TestDatabasePlugin:
         msessionmaker.assert_called_once_with(
             autoflush=False, autocommit=False, bind=mcreate_engine.return_value
         )
-        assert mconfigurator.dbplugins["dbname"] == plugin
 
     def test_enter(self, plugin):
         """
@@ -71,9 +70,8 @@ class TestDatabasePlugin:
         mcontext = MagicMock()
         plugin.engine = MagicMock()
 
-        plugin.enter(mcontext)
+        assert plugin.enter(mcontext) == plugin.sessionmaker.return_value
 
-        assert mcontext.dbname == plugin.sessionmaker.return_value
         plugin.sessionmaker.assert_called_once_with()
 
     def test_exit(self, plugin):
@@ -99,28 +97,29 @@ class TestDatabasePlugin:
         plugin.dbsession.rollback.assert_called_once_with()
         plugin.dbsession.close.assert_called_once_with()
 
-    def test_dbname(self, plugin, mconfigurator, msessionmaker, mcreate_engine):
+    def test_dbname(self, plugin, mapp, msessionmaker, mcreate_engine):
         """
         .dbname should return name of the database made from the db url
         """
-        plugin.start(mconfigurator)
+        plugin.start(mapp)
 
         assert plugin.dbname == "tmp.first.db"
 
-    def test_validate_settings(self, plugin, mconfigurator):
+    def test_validate_settings(self, plugin, mapp):
         """
         Starting plugin should raise an error when settings are not properly
         configured (missing url)
         """
-        del mconfigurator.settings[DATABASES_KEY]["dbname"]["url"]
+        del mapp.extra["settings"]["dbname"]["url"]
         with raises(SettingMissing):
-            plugin.start(mconfigurator)
+            plugin.start(mapp)
 
-    def test_recreate(self, plugin, metadata, mcreate_engine, mconfigurator):
+    def test_recreate(self, plugin, metadata, mcreate_engine, mapp):
         """
         .recreate should drop all and create all tables using provided metadata.
         """
-        plugin.start(mconfigurator)
+
+        plugin.start(mapp)
         plugin.recreate(metadata)
 
         metadata.drop_all.assert_called_once_with(mcreate_engine.return_value)

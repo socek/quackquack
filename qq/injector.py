@@ -22,13 +22,13 @@ def _injectors(
                 yield name, value._default
 
 
-def InitalizeInjectors(method: Callable):
+def InjectApplicationContext(method: Callable):
     @wraps(method)
     def wrapper(*args, **kwargs):
         contexts = []
         for name, injector in _injectors(method, args, kwargs):
-            context = Context(injector._appliication).start()
-            kwargs[name] = injector(context)
+            context = Context(injector._appliication)
+            kwargs[name] = injector(context.enter())
             contexts.append(context)
         try:
             method(*args, **kwargs)

@@ -1,16 +1,19 @@
-class ConfiguratorNotStartedError(RuntimeError):
+from qq import Application
+
+
+class ApplicationNotStartedError(RuntimeError):
     pass
 
 
 class Context:
-    def __init__(self, application):
+    def __init__(self, application: Application):
         self.application = application
         self.values = {}
         self.token = None
 
     def enter(self):
         if not self.application.is_started:
-            raise ConfiguratorNotStartedError(
+            raise ApplicationNotStartedError(
                 "Application is not started! Use Application.start(startpoint)"
             )
         try:
@@ -27,7 +30,7 @@ class Context:
                     plugin.exit(self, exc_type, exc_value, traceback)
             self.application.context.reset(self.token)
 
-    def __getitem__(self, key):
+    def __getitem__(self, key: str):
         if key not in self.values:
             self.values[key] = self.application.plugins[key].enter(self)
         return self.values[key]

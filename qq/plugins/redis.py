@@ -9,8 +9,6 @@ SETTINGS_DB_KEY = "db"
 
 
 class RedisPlugin(SettingsBasedPlugin):
-    DEFAULT_KEY = "redis"
-
     def enter(self, context: Context):
         settings = self.get_my_settings(context=context)
         params = dict(

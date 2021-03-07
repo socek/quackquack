@@ -22,9 +22,8 @@ class JsonPlugin(Plugin):
         self,
         stubs: List[EncoderStub],
         finder: DataclassFinder = None,
-        key: str = None,
     ):
-        super().__init__(key)
+        super().__init__()
         self.stubs = stubs
         self.finder = finder
 

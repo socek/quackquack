@@ -14,14 +14,15 @@ class TestLoggingPlugin(PluginFixtures):
 
     @fixture
     def mdict_config(self):
-        with patch('qq.plugins.logging.dictConfig') as mock:
+        with patch("qq.plugins.logging.dictConfig") as mock:
             yield mock
 
     def test_start(self, plugin, mconfigurator, mdict_config):
         """
         .start should configure logging using settings
         """
-        mconfigurator.settings = {'logging': sentinel.logging}
+        plugin._set_key("logging")
+        mconfigurator.extra = {"settings": {"logging": sentinel.logging}}
         plugin.start(mconfigurator)
 
         mdict_config.assert_called_once_with(sentinel.logging)
