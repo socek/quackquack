@@ -10,7 +10,7 @@ SETTINGS_DB_KEY = "db"
 
 class RedisPlugin(SettingsBasedPlugin):
     def enter(self, context: Context):
-        settings = self.get_my_settings(context=context)
+        settings = self.get_my_settings(context)
         params = dict(
             host=settings[SETTINGS_HOST_KEY],
             port=settings[SETTINGS_PORT_KEY],

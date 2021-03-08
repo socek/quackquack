@@ -4,12 +4,9 @@ from qq.application import Application
 from qq.plugins.settings import SettingsPlugin
 
 
-class ConfiguratorWithPyramid(Application):
+class PyramidApplication(Application):
     PYRAMID_SETTINGS_KEY = "pyramid"
     _SETTINGS_KEY = SettingsPlugin.DEFAULT_KEY
-
-    def pyramid_settings(self):
-        return self.extra[self._SETTINGS_KEY][self.PYRAMID_SETTINGS_KEY]
 
     def make_wsgi_object(self, *args, **kwargs):
         """

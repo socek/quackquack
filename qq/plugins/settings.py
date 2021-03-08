@@ -1,4 +1,5 @@
 from os.path import dirname
+from typing import Any
 
 from qq.application import Application
 from qq.context import Context
@@ -55,27 +56,24 @@ class SettingsPlugin(Plugin):
         return self._settings
 
 
-@Injector
-def SettingsInjector(
-    context: Context, settings_key: str = SettingsPlugin.DEFAULT_KEY
-):
-    return context[settings_key]
+def is_application(obj):
+    return isinstance(obj, Application)
+
+
+def is_context(obj):
+    return isinstance(obj, Context)
 
 
 class SettingsBasedPlugin(Plugin):
-    def __init__(
-        self, settings_key: str = SettingsPlugin.DEFAULT_KEY
-    ):
+    def __init__(self, settings_key: str = SettingsPlugin.DEFAULT_KEY):
         super().__init__()
         self.settings_key = settings_key
 
-    def get_my_settings(
-        self, application: Application = None, context: Context = None
-    ):
-        if application:
-            return application.extra[self.settings_key][self.key]
-        elif context:
-            return context[self.settings_key][self.key]
+    def get_my_settings(self, obj: Any):
+        if is_application(obj):
+            return obj.extra[self.settings_key][self.key]
+        elif is_context(obj):
+            return obj[self.settings_key][self.key]
         else:
             raise TypeError(
                 "get_my_settings(application, context) missing 1 required argument: application or context!"

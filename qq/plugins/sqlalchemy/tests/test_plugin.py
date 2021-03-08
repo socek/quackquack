@@ -1,5 +1,4 @@
 from unittest.mock import MagicMock
-from unittest.mock import patch
 
 from pytest import fixture
 from pytest import raises
@@ -7,35 +6,25 @@ from pytest import raises
 from qq.plugins.sqlalchemy.exceptions import SettingMissing
 from qq.plugins.sqlalchemy.plugin import DatabasePlugin
 
+PREFIX = "qq.plugins.sqlalchemy.plugin"
+
 
 class TestDatabasePlugin:
     @fixture
     def mapp(self):
-        app = MagicMock()
-        app.extra = {
-            "settings": {
-                "dbname": {
-                    "url": "sqlite:///tmp.first.db",
-                    "options": {"optionkey": "option value"},
-                }
-            }
-        }
-        return app
+        return MagicMock()
 
     @fixture
-    def mcreate_engine(self):
-        with patch("qq.plugins.sqlalchemy.plugin.create_engine") as mock:
-            yield mock
+    def mcreate_engine(self, mocker):
+        return mocker.patch(f"{PREFIX}.create_engine")
 
     @fixture
-    def mmake_url(self):
-        with patch("qq.plugins.sqlalchemy.plugin.make_url") as mock:
-            yield mock
+    def mmake_url(self, mocker):
+        return mocker.patch(f"{PREFIX}.make_url")
 
     @fixture
-    def msessionmaker(self):
-        with patch("qq.plugins.sqlalchemy.plugin.sessionmaker") as mock:
-            yield mock
+    def msessionmaker(self, mocker):
+        return mocker.patch(f"{PREFIX}.sessionmaker")
 
     @fixture
     def plugin(self):
@@ -44,10 +33,21 @@ class TestDatabasePlugin:
         return plugin
 
     @fixture
+    def mget_my_settings(self, mocker, plugin):
+        mock = mocker.patch.object(plugin, "get_my_settings")
+        mock.return_value = {
+            "url": "sqlite:///tmp.first.db",
+            "options": {"optionkey": "option value"},
+        }
+        return mock
+
+    @fixture
     def metadata(self):
         return MagicMock()
 
-    def test_start(self, plugin, mapp, msessionmaker, mcreate_engine):
+    def test_start(
+        self, plugin, mapp, msessionmaker, mcreate_engine, mget_my_settings
+    ):
         """
         .start should create proper sqlalchemy engine.
         """
@@ -97,7 +97,7 @@ class TestDatabasePlugin:
         plugin.dbsession.rollback.assert_called_once_with()
         plugin.dbsession.close.assert_called_once_with()
 
-    def test_dbname(self, plugin, mapp, msessionmaker, mcreate_engine):
+    def test_dbname(self, plugin, mapp, msessionmaker, mcreate_engine, mget_my_settings):
         """
         .dbname should return name of the database made from the db url
         """
@@ -105,16 +105,16 @@ class TestDatabasePlugin:
 
         assert plugin.dbname == "tmp.first.db"
 
-    def test_validate_settings(self, plugin, mapp):
+    def test_validate_settings(self, plugin, mapp, mget_my_settings):
         """
         Starting plugin should raise an error when settings are not properly
         configured (missing url)
         """
-        del mapp.extra["settings"]["dbname"]["url"]
+        del mget_my_settings.return_value["url"]
         with raises(SettingMissing):
             plugin.start(mapp)
 
-    def test_recreate(self, plugin, metadata, mcreate_engine, mapp):
+    def test_recreate(self, plugin, metadata, mcreate_engine, mapp, mget_my_settings):
         """
         .recreate should drop all and create all tables using provided metadata.
         """

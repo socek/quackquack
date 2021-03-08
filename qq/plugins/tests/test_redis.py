@@ -1,5 +1,4 @@
 from unittest.mock import MagicMock
-from unittest.mock import patch
 from unittest.mock import sentinel
 
 from pytest import fixture
@@ -8,6 +7,8 @@ from qq.plugins.redis import SETTINGS_DB_KEY
 from qq.plugins.redis import SETTINGS_HOST_KEY
 from qq.plugins.redis import SETTINGS_PORT_KEY
 from qq.plugins.redis import RedisPlugin
+
+PREFIX = "qq.plugins.redis"
 
 
 class TestRedisPlugin:
@@ -18,41 +19,27 @@ class TestRedisPlugin:
         return plugin
 
     @fixture
-    def configurator(self):
-        mock = MagicMock()
-        mock.extra = {
-            "settings": {
-                "redis": {
-                    SETTINGS_HOST_KEY: sentinel.host,
-                    SETTINGS_PORT_KEY: sentinel.port,
-                    SETTINGS_DB_KEY: sentinel.dbkey,
-                }
-            }
+    def context(self):
+        return MagicMock()
+
+    @fixture
+    def mget_my_settings(self, mocker, plugin):
+        mock = mocker.patch.object(plugin, "get_my_settings")
+        mock.return_value = {
+            SETTINGS_HOST_KEY: sentinel.host,
+            SETTINGS_PORT_KEY: sentinel.port,
+            SETTINGS_DB_KEY: sentinel.dbkey,
         }
         return mock
 
     @fixture
-    def context(self):
-        return {
-            "settings": {
-                "redis": {
-                    SETTINGS_HOST_KEY: sentinel.host,
-                    SETTINGS_PORT_KEY: sentinel.port,
-                    SETTINGS_DB_KEY: sentinel.dbkey,
-                }
-            }
-        }
+    def mredis(self, mocker):
+        return mocker.patch(f"{PREFIX}.Redis")
 
-    @fixture
-    def mredis(self):
-        with patch("qq.plugins.redis.Redis") as mock:
-            yield mock
-
-    def test_connection(self, plugin, configurator, mredis, context):
+    def test_connection(self, plugin, mredis, context, mget_my_settings):
         """
         Plugin should start redis connection when creating context.
         """
-        plugin.start(configurator)
         assert plugin.enter(context) == mredis.return_value
 
         mredis.assert_called_once_with(

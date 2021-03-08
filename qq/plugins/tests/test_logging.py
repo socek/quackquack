@@ -1,4 +1,3 @@
-from unittest.mock import patch
 from unittest.mock import sentinel
 
 from pytest import fixture
@@ -6,23 +5,30 @@ from pytest import fixture
 from qq.plugins.logging import LoggingPlugin
 from qq.testing import PluginFixtures
 
+PREFIX = "qq.plugins.logging"
+
 
 class TestLoggingPlugin(PluginFixtures):
     @fixture
     def plugin(self):
-        return LoggingPlugin()
+        plugin = LoggingPlugin()
+        plugin._set_key("logging")
+        return plugin
 
     @fixture
-    def mdict_config(self):
-        with patch("qq.plugins.logging.dictConfig") as mock:
-            yield mock
+    def mdict_config(self, mocker):
+        return mocker.patch(f"{PREFIX}.dictConfig")
 
-    def test_start(self, plugin, mconfigurator, mdict_config):
+    @fixture
+    def mget_my_settings(self, mocker, plugin):
+        mock = mocker.patch.object(plugin, "get_my_settings")
+        mock.return_value = sentinel.logging
+        return mock
+
+    def test_start(self, plugin, mconfigurator, mdict_config, mget_my_settings):
         """
         .start should configure logging using settings
         """
-        plugin._set_key("logging")
-        mconfigurator.extra = {"settings": {"logging": sentinel.logging}}
         plugin.start(mconfigurator)
 
         mdict_config.assert_called_once_with(sentinel.logging)

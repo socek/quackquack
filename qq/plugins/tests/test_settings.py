@@ -7,9 +7,14 @@ from unittest.mock import sentinel
 from pytest import fixture
 from pytest import raises
 
+from qq import Application
+from qq import Context
 from qq.plugins.settings import PrefixedStringsDict
+from qq.plugins.settings import SettingsBasedPlugin
 from qq.plugins.settings import SettingsPlugin
 from qq.plugins.settings import _import
+from qq.plugins.settings import is_application
+from qq.plugins.settings import is_context
 from qq.testing import PluginFixtures
 
 PREFIX = "qq.plugins.settings"
@@ -107,3 +112,51 @@ class TestPrefixedStringsDict:
         paths = PrefixedStringsDict(module=os)
 
         assert paths.prefix == dirname(os.__file__)
+
+
+class TestIsApplication:
+    def test_true(self):
+        assert is_application(Application()) is True
+
+    def test_false(self):
+        assert is_application(Context(Application())) is False
+
+
+class TestIsContext:
+    def test_true(self):
+        assert is_context(Context(Application())) is True
+
+    def test_false(self):
+        assert is_context(Application()) is False
+
+
+class TestSettingsBasedPlugin:
+    PLUGINKEY = "ksdyuwyta"
+
+    @fixture
+    def app(self):
+        app = Application()
+        app.extra["settings"] = {self.PLUGINKEY: sentinel.settings}
+        return app
+
+    @fixture
+    def context(self, app):
+        context = Context(app)
+        context.values["settings"] = {self.PLUGINKEY: sentinel.settings}
+        return context
+
+    @fixture
+    def plugin(self):
+        plugin = SettingsBasedPlugin()
+        plugin._set_key(self.PLUGINKEY)
+        return plugin
+
+    def test_get_my_settings_when_application(self, app, plugin):
+        assert plugin.get_my_settings(app) == sentinel.settings
+
+    def test_get_my_settings_when_context(self, context, plugin):
+        assert plugin.get_my_settings(context) == sentinel.settings
+
+    def test_get_my_settings_when_error(self, plugin):
+        with raises(TypeError):
+            plugin.get_my_settings(None)

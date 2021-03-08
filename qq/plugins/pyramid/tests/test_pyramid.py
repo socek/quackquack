@@ -4,12 +4,12 @@ from unittest.mock import sentinel
 
 from pytest import fixture
 
-from qq.plugins.pyramid.configurator import ConfiguratorWithPyramid
+from qq.plugins.pyramid.configurator import PyramidApplication
 
 PREFIX = "qq.plugins.pyramid.configurator"
 
 
-class ExampleConfigurator(ConfiguratorWithPyramid):
+class ExampleConfigurator(PyramidApplication):
     def append_plugins(self):
         super().append_plugins()
         self.plugins["plugin1"] = MagicMock()
@@ -17,7 +17,7 @@ class ExampleConfigurator(ConfiguratorWithPyramid):
         del self.plugins["plugin2"].start_pyramid
 
 
-class TestConfiguratorWithPyramid:
+class TestPyramidApplication:
     @fixture
     def configurator(self):
         return ExampleConfigurator()
