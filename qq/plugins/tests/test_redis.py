@@ -15,7 +15,7 @@ class TestRedisPlugin:
     @fixture
     def plugin(self):
         plugin = RedisPlugin()
-        plugin._set_key("redis")
+        plugin.init("redis")
         return plugin
 
     @fixture

@@ -13,7 +13,7 @@ from qq.plugins.tornado.plugin import TornadoPlugin
 
 
 class ExampleConfigurator(ConfiguratorWithPyramid, TornadoConfigurator):
-    def append_plugins(self):
+    def create_plugins(self):
         self.add_plugin(SettingsPlugin("example.application.settings"))
         self.add_plugin(LoggingPlugin())
         self.add_plugin(JsonPlugin())

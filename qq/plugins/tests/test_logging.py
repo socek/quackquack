@@ -12,7 +12,7 @@ class TestLoggingPlugin(PluginFixtures):
     @fixture
     def plugin(self):
         plugin = LoggingPlugin()
-        plugin._set_key("logging")
+        plugin.init("logging")
         return plugin
 
     @fixture

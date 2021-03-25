@@ -1,7 +1,9 @@
 import sys
+from contextlib import suppress
 from functools import wraps
 from inspect import BoundArguments
 from inspect import signature
+from types import GeneratorType
 from typing import Any
 from typing import Callable
 from typing import Dict
@@ -35,17 +37,26 @@ def InjectApplicationContext(method: Callable):
     @wraps(method)
     def wrapper(*args, **kwargs):
         contexts = []
+        generators = []
         for name, injector in injectors(method, args, kwargs):
             context = Context(injector._injector["application"])
-            kwargs[name] = injector(
+            injectorObj = injector(
                 context.enter(),
                 *injector._injector["args"],
                 **injector._injector["kwargs"],
             )
+            if isinstance(injectorObj, GeneratorType):
+                generators.append(injectorObj)
+                kwargs[name] = injectorObj.__next__()
+            else:
+                kwargs[name] = injectorObj
             contexts.append(context)
         try:
             return method(*args, **kwargs)
         finally:
+            for injector in reversed(generators):
+                with suppress(StopIteration):
+                    injector.__next__()
             for context in reversed(contexts):
                 context.exit(*sys.exc_info())
 

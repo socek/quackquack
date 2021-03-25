@@ -54,7 +54,7 @@ from qq.plugins.pyramid.plugins import RoutingPlugin
 from myapp.application.routing import MyappRouting
 
 class MyappConfigurator(ConfiguratorWithPyramid):
-    def append_plugins(self):
+    def create_plugins(self):
         self.add_plugin(SettingsPlugin('myapp.application.settings'))
         self.add_plugin(RoutingPlugin(MyappRouting))
 ```

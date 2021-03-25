@@ -11,6 +11,14 @@ class Context:
         self.values = {}
         self.token = None
 
+    @property
+    def globals(self):
+        return self.application.globals
+
+    @property
+    def extra(self):
+        return self.application.extra
+
     def enter(self):
         if not self.application.is_started:
             raise ApplicationNotStartedError(

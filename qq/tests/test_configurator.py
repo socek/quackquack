@@ -2,7 +2,9 @@ from unittest.mock import MagicMock
 from unittest.mock import sentinel
 
 from pytest import fixture
+from pytest import raises
 
+from qq.application import AlreadyStartedError
 from qq.application import Application
 from qq.plugin import Plugin
 
@@ -13,8 +15,8 @@ class ExamplePlugin(Plugin):
 
 
 class ExampleApplication(Application):
-    def append_plugins(self):
-        super().append_plugins()
+    def create_plugins(self):
+        super().create_plugins()
         self.plugins["plugin1"] = MagicMock()
         self.plugins["plugin2"] = MagicMock()
         self.plugins["plugin3"] = ExamplePlugin()
@@ -35,11 +37,11 @@ class TestApplication:
         plugin1 = app.plugins["plugin1"]
         plugin2 = app.plugins["plugin2"]
 
-        assert app.extra == {
-            "wsgi": 1,
+        assert app.extra == {"wsgi": 1}
+        assert app.globals == {
+            "plugin1": plugin1.start.return_value,
+            "plugin2": plugin2.start.return_value,
             "plugin3": None,
-            plugin1.key: plugin1.start.return_value,
-            plugin2.key: plugin2.start.return_value,
         }
         assert app.startpoint == "wsgi"
         assert app.is_started
@@ -53,8 +55,9 @@ class TestApplication:
         """
         app.is_started = True
 
-        assert app.start("wsgi", wsgi=1) is False
+        with raises(AlreadyStartedError):
+            assert app.start("wsgi", wsgi=1)
 
-        assert app.extra == {}
+        assert app.globals == {}
         assert app.startpoint is None
         assert app.plugins == {}

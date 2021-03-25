@@ -29,7 +29,7 @@ class TestDatabasePlugin:
     @fixture
     def plugin(self):
         plugin = DatabasePlugin()
-        plugin._set_key("dbname")
+        plugin.init("dbname")
         return plugin
 
     @fixture

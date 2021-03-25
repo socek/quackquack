@@ -16,8 +16,8 @@ class ExamplePlugin(Plugin):
 
 
 class ExampleApplication(Application):
-    def append_plugins(self):
-        super().append_plugins()
+    def create_plugins(self):
+        super().create_plugins()
         self.plugins["plugin1"] = MagicMock()
         self.plugins["plugin2"] = MagicMock()
         self.plugins["plugin3"] = ExamplePlugin()
@@ -97,3 +97,9 @@ class TestContext:
         assert call[3] is not None
 
         assert not app.plugins["plugin2"].exit.called
+
+    def test_extra(self, app):
+        app.start(kw=1)
+
+        with Context(app) as ctx:
+            assert ctx.extra == {"kw": 1}

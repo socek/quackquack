@@ -88,7 +88,7 @@ def default_settings():
 
 
 class ExampleApplication(Application):
-    def append_plugins(self):
+    def create_plugins(self):
         self.plugins["settings"] = SettingsPlugin("qq.tests.test_injector")
 
 

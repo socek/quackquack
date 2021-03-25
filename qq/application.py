@@ -1,25 +1,19 @@
 from collections import OrderedDict
 from contextvars import ContextVar
 
-from qq.plugin import Plugin
 
-
-class PluginContainer(OrderedDict):
-    def __setitem__(self, key: str, plugin: Plugin):
-        plugin._set_key(key)
-        super().__setitem__(key, plugin)
+class AlreadyStartedError(RuntimeError):
+    pass
 
 
 class Application:
     def __init__(self):
         self.is_started = False
         self.startpoint = None
-        self.plugins = PluginContainer()
+        self.plugins = OrderedDict()
         self.extra = {}
-        self.context = ContextVar(self.context_var_key())
-
-    def context_var_key(self):
-        return f"{self.__class__.__name__}_{id(self)}"
+        self.globals = {}
+        self.context = ContextVar(self.context_var_key)
 
     def start(self, startpoint: str = "default", **kwargs) -> bool:
         """
@@ -27,20 +21,25 @@ class Application:
         started before.
         """
         if self.is_started:
-            return False
+            raise AlreadyStartedError()
+
         self.startpoint = startpoint
         self.extra = kwargs
 
-        self.append_plugins()
+        self.create_plugins()
         self._start_plugins()
 
         self.is_started = True
         return True
 
     def _start_plugins(self):
-        for plugin in self.plugins.values():
-            result = plugin.start(self)
-            self.extra[plugin.key] = result
+        for key, plugin in self.plugins.items():
+            plugin.init(key)
+            self.globals[key] = plugin.start(self)
 
-    def append_plugins(self):
+    def create_plugins(self):
         pass
+
+    @property
+    def context_var_key(self):
+        return f"{self.__class__.__name__}_{id(self)}"

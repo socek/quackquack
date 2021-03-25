@@ -70,7 +70,7 @@ to the configurator.
 
 ```python
 class MyappConfigurator(Configurator):
-    def append_plugins(self):
+    def create_plugins(self):
         self.add_plugin(SettingsPlugin('myapp.application.settings'))
 ```
 
@@ -188,7 +188,7 @@ into json. To use it just add it to the Confiugrator:
 ```python
 
 class MyConfigurator(Configurator):
-    def append_plugins(self):
+    def create_plugins(self):
         self.add_plugin(JsonPlugin())
 ```
 
@@ -208,7 +208,7 @@ After that, you need add the plugin:
 ```python
 
 class MyConfigurator(Configurator):
-    def append_plugins(self):
+    def create_plugins(self):
         self.add_plugin(RedisPlugin(ctx_key="context_key"))
 ```
 

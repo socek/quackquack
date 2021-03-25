@@ -4,7 +4,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning]
 (http://semver.org/).
 
-## 0.5.0 - (TODO)
+## 1.0.0
+
+- Changed name from sapp to Quack Quack
+- Change behavoiur of the application and contexts: removex ContextManager and LazyContextManager in favor of always lazy Context.
+- Remove decorator injecting dependencies in favor of injectors
+
+## 0.5.0 - (Not released)
 
 - Switch from pipfile into poetry and from setup.py into pyproject.toml
 - Decorator should not start an context if it's not needed.

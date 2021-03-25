@@ -23,7 +23,7 @@ from qq.plugins.settings import SettingsPlugin
 from qq.plugins.sqlalchemy.plugin import DatabasePlugin
 
 class MyConfigurator(Configurator):
-    def append_plugins(self):
+    def create_plugins(self):
         self.add_plugin(SettingsPlugin('myapp.application.settings'))
         self.add_plugin(DatabasePlugin('dbsession'))
 ```

@@ -9,9 +9,9 @@ from qq.plugins.pyramid.configurator import PyramidApplication
 PREFIX = "qq.plugins.pyramid.configurator"
 
 
-class ExampleConfigurator(PyramidApplication):
-    def append_plugins(self):
-        super().append_plugins()
+class ExampleApplication(PyramidApplication):
+    def create_plugins(self):
+        super().create_plugins()
         self.plugins["plugin1"] = MagicMock()
         self.plugins["plugin2"] = MagicMock()
         del self.plugins["plugin2"].start_pyramid
@@ -20,7 +20,7 @@ class ExampleConfigurator(PyramidApplication):
 class TestPyramidApplication:
     @fixture
     def configurator(self):
-        return ExampleConfigurator()
+        return ExampleApplication()
 
     @fixture
     def mpyramid_configurator(self):
