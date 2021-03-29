@@ -33,30 +33,44 @@ def injectors(
             yield name, parameter._default
 
 
+def is_context_manager(obj):
+    try:
+        issub = issubclass(obj, ContextManagerInjector)
+    except TypeError:
+        issub = False
+
+    return issub or isinstance(obj, ContextManagerInjector)
+
+
 def InjectApplicationContext(method: Callable):
     @wraps(method)
     def wrapper(*args, **kwargs):
         contexts = []
-        generators = []
+        injectorsObjs = []
         for name, injector in injectors(method, args, kwargs):
             context = Context(injector._injector["application"])
-            injectorObj = injector(
-                context.enter(),
-                *injector._injector["args"],
-                **injector._injector["kwargs"],
-            )
+            iArgs = injector._injector["args"]
+            iKwargs = injector._injector["kwargs"]
+            entered = context.enter()
+            injectorObj = injector(entered, *iArgs, **iKwargs)
             if isinstance(injectorObj, GeneratorType):
-                generators.append(injectorObj)
+                injectorsObjs.append(injectorObj)
                 kwargs[name] = injectorObj.__next__()
+            elif is_context_manager(injectorObj):
+                injectorsObjs.append(injectorObj)
+                kwargs[name] = injectorObj.__enter__()
             else:
                 kwargs[name] = injectorObj
             contexts.append(context)
         try:
             return method(*args, **kwargs)
         finally:
-            for injector in reversed(generators):
-                with suppress(StopIteration):
-                    injector.__next__()
+            for injector in reversed(injectorsObjs):
+                if is_context_manager(injector):
+                    injector.__exit__(*sys.exc_info())
+                else:
+                    with suppress(StopIteration):
+                        injector.__next__()
             for context in reversed(contexts):
                 context.exit(*sys.exc_info())
 
@@ -74,6 +88,40 @@ def Injector(method: Callable):
         return method
 
     return wrapper
+
+
+class ContextManagerInjector:
+    def __init__(self, appliication, *args, **kwargs):
+        self._injector = {
+            "application": appliication,
+            "args": args,
+            "kwargs": kwargs,
+        }
+
+    def __call__(self, context, *args, **kwargs):
+        self.context = context
+        return self
+
+    def __enter__(self):
+        return self.enter(
+            self.context, *self._injector["args"], **self._injector["kwargs"]
+        )
+
+    def __exit__(self, exc_type, exc_value, traceback):
+        self.exit(
+            exc_type,
+            exc_value,
+            traceback,
+            self.context,
+            *self._injector["args"],
+            **self._injector["kwargs"],
+        )
+
+    def enter(self, context):
+        pass  # pragma: no cover
+
+    def exit(self, exc_type, exc_value, traceback, context):
+        pass  # pragma: no cover
 
 
 @Injector

@@ -5,6 +5,8 @@ from sqlalchemy.orm import sessionmaker
 from qq.application import Application
 from qq.context import Context
 from qq.plugins.settings import SettingsBasedPlugin
+from qq.plugins.sqlalchemy.consts import ENGINE_KEY
+from qq.plugins.sqlalchemy.consts import SESSIONMAKER_KEY
 from qq.plugins.sqlalchemy.exceptions import SettingMissing
 
 URL_KEY = "url"
@@ -12,8 +14,6 @@ OPTIONS_KEY = "options"
 
 
 class DatabasePlugin(SettingsBasedPlugin):
-    DEFAULT_KEY = "db"
-
     @property
     def url(self):
         """
@@ -33,8 +33,8 @@ class DatabasePlugin(SettingsBasedPlugin):
             autoflush=False, autocommit=False, bind=self.engine
         )
         return {
-            "engine": self.engine,
-            "sessionmaker": self.sessionmaker,
+            ENGINE_KEY: self.engine,
+            SESSIONMAKER_KEY: self.sessionmaker,
         }
 
     def enter(self, context: Context):
