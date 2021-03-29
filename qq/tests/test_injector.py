@@ -9,28 +9,10 @@ from qq import Context
 from qq import InjectApplicationContext
 from qq import SimpleInjector
 from qq.application import Application
+from qq.injector import Injector
 from qq.injector import injectors
 from qq.injector import is_injector_ready
 from qq.plugins import SettingsPlugin
-
-
-class TestSimpleInjector:
-    RANDOM_KEY = "asduiwiuehiwuehq"
-
-    @fixture
-    def examplefun(self):
-        @SimpleInjector
-        def fun(settings):
-            return settings
-
-        return fun
-
-    @fixture
-    def mctx(self):
-        return {self.RANDOM_KEY: sentinel.settings}
-
-    def test_normal(self, examplefun, mctx):
-        assert examplefun(mctx, self.RANDOM_KEY) == sentinel.settings
 
 
 class TestIsInjectorReady:
@@ -45,17 +27,18 @@ class TestIsInjectorReady:
         return args
 
     def test_when_parameter_is_not_an_injector(self, mparameter, mbound_args):
-        mparameter._default = None
-
         assert is_injector_ready(mparameter, "key", mbound_args) is False
 
     def test_when_parameter_is_already_provided(self, mparameter, mbound_args):
         mbound_args.arguments["key"] = 1
+        mparameter._default = Injector(None)
 
         assert is_injector_ready(mparameter, "key", mbound_args) is False
 
     def test_when_parameter_is_not_provided(self, mparameter, mbound_args):
-        assert is_injector_ready(mparameter, "key", mbound_args) is True
+        mparameter._default = Injector(None)
+        result = is_injector_ready(mparameter, "key", mbound_args)
+        assert result is True
 
 
 app = Application()
@@ -80,7 +63,7 @@ class TestInjectors:
         name, value = list(injectors(example_fun, [1, 2], {}))[0]
 
         assert name == "third"
-        assert value(context, "key") == 333
+        assert value(context, "key") == value
 
 
 def default_settings():

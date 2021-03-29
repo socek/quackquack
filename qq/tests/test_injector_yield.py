@@ -24,6 +24,30 @@ class Fixtures:
         return app
 
 
+class TestReturnInjector(Fixtures):
+    @fixture
+    def exampleinjector(self, data):
+        @Injector
+        def fun(context, key):
+            data[key] = 1
+            return context[key]
+
+        return fun
+
+    @fixture
+    def examplefun(self, exampleinjector, app, data):
+        def fun(obj=exampleinjector(app, "name")):
+            assert data["name"] == 1
+            return obj
+
+        return InjectApplicationContext(fun)
+
+    def test_yielding(self, data, examplefun):
+        assert data["name"] == 0
+        assert examplefun() == sentinel.name
+        assert data["name"] == 1
+
+
 class TestYieldInjector(Fixtures):
     @fixture
     def exampleinjector(self, data):
@@ -53,11 +77,11 @@ class TestContextManagerInjector(Fixtures):
     @fixture
     def exampleinjector(self, data):
         class cls(ContextManagerInjector):
-            def enter(self, context, key):
+            def __enter__(self, context, key):
                 data[key] = 1
                 return context[key]
 
-            def exit(self, exc_type, exc_value, traceback, context, key):
+            def __exit__(self, exc_type, exc_value, traceback, context, key):
                 data[key] = 2
 
         return cls
