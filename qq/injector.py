@@ -22,9 +22,12 @@ def is_injector_ready(parameter: Any, name: str, bound_args: BoundArguments):
     return is_injector and name not in bound_args.arguments
 
 
-def injectors(
+def get_injectors_from_function(
     method: Callable, args: List, kwargs: Dict
 ) -> Iterable[Tuple[str, Callable]]:
+    """
+    Generate list of iterators that was not overwrited by function's call args.
+    """
     sig = signature(method)
     bound_args = sig.bind_partial(*args, **kwargs)
 
@@ -34,9 +37,12 @@ def injectors(
 
 
 def InjectApplicationContext(method: Callable):
+    """
+    If function has injectors in the defaults of arguments, then start them.
+    """
     @wraps(method)
     def wrapper(*args, **kwargs):
-        injector_list = list(injectors(method, args, kwargs))
+        injector_list = list(get_injectors_from_function(method, args, kwargs))
         for name, injector in injector_list:
             kwargs[name] = injector.start()
 
@@ -60,20 +66,19 @@ class Injector:
         return self
 
     def start(self):
-        context = Context(self.application).enter()
-        self.result = self.fun(context, *self.args, **self.kwargs)
-        if self._is_generator(self.result):
+        self.context = Context(self.application)
+        self.entered = self.context.__enter__()
+        self.result = self.fun(self.entered, *self.args, **self.kwargs)
+        if _is_generator(self.result):
             return self.result.__next__()
         else:
             return self.result
 
     def end(self):
-        if self._is_generator(self.result):
+        if _is_generator(self.result):
             with suppress(StopIteration):
                 self.result.__next__()
-
-    def _is_generator(self, obj):
-        return isinstance(obj, GeneratorType)
+        self.context.__exit__(*sys.exc_info())
 
 
 class ContextManagerInjector(Injector):
@@ -82,18 +87,24 @@ class ContextManagerInjector(Injector):
         self.__call__(application, *args, **kwargs)
 
     def start(self):
-        self.context = Context(self.application).enter()
-        return self.__enter__(self.context, *self.args, **self.kwargs)
+        self.context = Context(self.application)
+        self.entered = self.context.__enter__()
+        return self.__enter__(self.entered, *self.args, **self.kwargs)
 
     def end(self):
-        return self.__exit__(
+        self.__exit__(
             *sys.exc_info(),
-            self.context,
+            self.entered,
             *self.args,
             **self.kwargs,
         )
+        self.context.__exit__(*sys.exc_info())
 
 
 @Injector
 def SimpleInjector(context: Context, key: str):
     return context[key]
+
+
+def _is_generator(obj):
+    return isinstance(obj, GeneratorType)

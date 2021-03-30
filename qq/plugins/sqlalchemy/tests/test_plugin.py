@@ -78,24 +78,24 @@ class TestDatabasePlugin:
         """
         .exit should close the database session.
         """
-        plugin.dbsession = MagicMock()
+        plugin.session = MagicMock()
 
         plugin.exit(None, None, None, None)
 
-        assert not plugin.dbsession.rollback.called
-        plugin.dbsession.close.assert_called_once_with()
+        assert not plugin.session.rollback.called
+        plugin.session.close.assert_called_once_with()
 
     def test_exit_with_traceback(self, plugin):
         """
         .exit should rollback and close the database session when exception
         occured.
         """
-        plugin.dbsession = MagicMock()
+        plugin.session = MagicMock()
 
         plugin.exit(None, True, None, None)
 
-        plugin.dbsession.rollback.assert_called_once_with()
-        plugin.dbsession.close.assert_called_once_with()
+        plugin.session.rollback.assert_called_once_with()
+        plugin.session.close.assert_called_once_with()
 
     def test_dbname(self, plugin, mapp, msessionmaker, mcreate_engine, mget_my_settings):
         """

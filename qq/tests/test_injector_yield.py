@@ -1,8 +1,10 @@
+from contextvars import ContextVar
 from unittest.mock import MagicMock
 from unittest.mock import sentinel
 
 from pytest import fixture
 
+from qq.context import Context
 from qq.injector import ContextManagerInjector
 from qq.injector import InjectApplicationContext
 from qq.injector import Injector
@@ -10,18 +12,30 @@ from qq.injector import Injector
 
 class Fixtures:
     @fixture
+    def mplugin(self):
+        mock = MagicMock()
+        mock.enter.return_value = sentinel.name
+        return mock
+
+    @fixture
+    def mapp(self, mplugin):
+        mock = MagicMock()
+        mock.is_started = True
+        mock.context = ContextVar("testing")
+        mock.plugins = {
+            "name": mplugin,
+        }
+        return mock
+
+    @fixture
     def data(self):
         return {
             "name": 0,
         }
 
     @fixture
-    def app(self):
-        app = MagicMock()
-        app.context.get.return_value = {
-            "name": sentinel.name,
-        }
-        return app
+    def context(self, mapp):
+        return Context(mapp)
 
 
 class TestReturnInjector(Fixtures):
@@ -35,8 +49,8 @@ class TestReturnInjector(Fixtures):
         return fun
 
     @fixture
-    def examplefun(self, exampleinjector, app, data):
-        def fun(obj=exampleinjector(app, "name")):
+    def examplefun(self, exampleinjector, mapp, data):
+        def fun(obj=exampleinjector(mapp, "name")):
             assert data["name"] == 1
             return obj
 
@@ -60,8 +74,8 @@ class TestYieldInjector(Fixtures):
         return fun
 
     @fixture
-    def examplefun(self, exampleinjector, app, data):
-        def fun(obj=exampleinjector(app, "name")):
+    def examplefun(self, exampleinjector, mapp, data):
+        def fun(obj=exampleinjector(mapp, "name")):
             assert data["name"] == 1
             return obj
 
@@ -87,8 +101,8 @@ class TestContextManagerInjector(Fixtures):
         return cls
 
     @fixture
-    def examplefun(self, exampleinjector, app, data):
-        def fun(obj=exampleinjector(app, "name")):
+    def examplefun(self, exampleinjector, mapp, data):
+        def fun(obj=exampleinjector(mapp, "name")):
             assert data["name"] == 1
             return obj
 

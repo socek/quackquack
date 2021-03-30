@@ -19,7 +19,7 @@ class Context:
     def extra(self):
         return self.application.extra
 
-    def enter(self):
+    def __enter__(self):
         if not self.application.is_started:
             raise ApplicationNotStartedError(
                 "Application is not started! Use Application.start(startpoint)"
@@ -31,7 +31,7 @@ class Context:
             self.token = self.application.context.set(self)
             return self
 
-    def exit(self, exc_type, exc_value, traceback):
+    def __exit__(self, exc_type, exc_value, traceback):
         if self.token:
             for key, plugin in reversed(self.application.plugins.items()):
                 if key in self.values:
@@ -42,9 +42,3 @@ class Context:
         if key not in self.values:
             self.values[key] = self.application.plugins[key].enter(self)
         return self.values[key]
-
-    def __enter__(self):
-        return self.enter()
-
-    def __exit__(self, exc_type, exc_value, traceback):
-        return self.exit(exc_type, exc_value, traceback)

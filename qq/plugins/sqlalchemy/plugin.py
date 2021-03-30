@@ -38,12 +38,13 @@ class DatabasePlugin(SettingsBasedPlugin):
         }
 
     def enter(self, context: Context):
-        return self.sessionmaker()
+        self.session = self.sessionmaker()
+        return self.session
 
     def exit(self, context, exc_type, exc_value, traceback):
         if exc_type:
-            self.dbsession.rollback()
-        self.dbsession.close()
+            self.session.rollback()
+        self.session.close()
 
     def create_engine(self):
         return create_engine(self.url, **self._settings.get(OPTIONS_KEY, {}))

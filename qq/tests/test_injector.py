@@ -1,5 +1,4 @@
 from unittest.mock import MagicMock
-from unittest.mock import sentinel
 
 from pytest import fixture
 from pytest import raises
@@ -10,7 +9,7 @@ from qq import InjectApplicationContext
 from qq import SimpleInjector
 from qq.application import Application
 from qq.injector import Injector
-from qq.injector import injectors
+from qq.injector import get_injectors_from_function
 from qq.injector import is_injector_ready
 from qq.plugins import SettingsPlugin
 
@@ -50,7 +49,7 @@ def example_fun(first, second, third=SimpleInjector(app, "key")):
 
 class TestInjectors:
     def test_when_arguments_provided(self):
-        assert list(injectors(example_fun, [1, 2, 3], {})) == []
+        assert list(get_injectors_from_function(example_fun, [1, 2, 3], {})) == []
 
     def test_when_arguments_not_provided(self):
         """
@@ -60,7 +59,7 @@ class TestInjectors:
         context = Context(Application())
         context.values["key"] = 333
 
-        name, value = list(injectors(example_fun, [1, 2], {}))[0]
+        name, value = list(get_injectors_from_function(example_fun, [1, 2], {}))[0]
 
         assert name == "third"
         assert value(context, "key") == value
