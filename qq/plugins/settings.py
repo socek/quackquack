@@ -47,11 +47,10 @@ class SettingsPlugin(Plugin):
     def start(self, application: Application):
         startpoints_module = _import(self.modulepath)
         settings = getattr(startpoints_module, application.startpoint)
-        self._settings = settings()
-        application.extra[self.key] = self._settings
+        return settings()
 
     def enter(self, context: Context):
-        return self._settings
+        return context.globals[self.key]
 
 
 class SettingsBasedPlugin(Plugin):

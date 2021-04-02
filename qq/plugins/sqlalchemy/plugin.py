@@ -13,7 +13,7 @@ URL_KEY = "url"
 OPTIONS_KEY = "options"
 
 
-class DatabasePlugin(SettingsBasedPlugin):
+class SqlAlchemyPlugin(SettingsBasedPlugin):
     @property
     def url(self):
         """
@@ -42,7 +42,7 @@ class DatabasePlugin(SettingsBasedPlugin):
         return self.session
 
     def exit(self, context, exc_type, exc_value, traceback):
-        if exc_type:
+        if exc_type or self._settings.get("tests", False):
             self.session.rollback()
         self.session.close()
 

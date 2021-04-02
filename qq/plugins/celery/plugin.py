@@ -11,10 +11,9 @@ class CeleryPlugin(SettingsBasedPlugin):
     def __init__(
         self,
         celeryapp: Celery,
-        key: str = None,
         settings_key: str = SettingsPlugin.DEFAULT_KEY,
     ):
-        super().__init__(key, settings_key)
+        super().__init__(settings_key)
         self.celeryapp = celeryapp
 
     def start(self, application: Application):

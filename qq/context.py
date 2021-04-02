@@ -37,6 +37,7 @@ class Context:
                 if key in self.values:
                     plugin.exit(self, exc_type, exc_value, traceback)
             self.application.context.reset(self.token)
+            self.token = None
 
     def __getitem__(self, key: str):
         if key not in self.values:

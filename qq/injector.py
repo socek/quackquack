@@ -40,6 +40,7 @@ def InjectApplicationContext(method: Callable):
     """
     If function has injectors in the defaults of arguments, then start them.
     """
+
     @wraps(method)
     def wrapper(*args, **kwargs):
         injector_list = list(get_injectors_from_function(method, args, kwargs))
@@ -60,6 +61,9 @@ class Injector:
         self.fun = fun
 
     def __call__(self, application, *args, **kwargs):
+        return self.__class__(self.fun).init(application, *args, **kwargs)
+
+    def init(self, application, *args, **kwargs):
         self.application = application
         self.args = args
         self.kwargs = kwargs
@@ -84,7 +88,13 @@ class Injector:
 class ContextManagerInjector(Injector):
     def __init__(self, application, *args, **kwargs):
         super().__init__(None)
-        self.__call__(application, *args, **kwargs)
+        self.init(application, *args, **kwargs)
+
+    def __call__(self, application, *args, **kwargs):
+        # self.application = application
+        # self.args = args
+        # self.kwargs = kwargs
+        return self
 
     def start(self):
         self.context = Context(self.application)

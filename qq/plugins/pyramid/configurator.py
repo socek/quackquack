@@ -13,7 +13,7 @@ class PyramidApplication(Application):
         Configure application for web server and return pyramid's uwsgi
         application object.
         """
-        pyramid = Configurator(*args, settings=self.extra[self._SETTINGS_KEY], **kwargs)
+        pyramid = Configurator(*args, settings=self.globals[self._SETTINGS_KEY], **kwargs)
         pyramid.registry["application"] = self
         self._start_pyramid_plugins(pyramid)
         return pyramid.make_wsgi_app()
