@@ -5,6 +5,7 @@ from unittest.mock import sentinel
 from pytest import fixture
 
 from qq.plugins.pyramid.configurator import PyramidApplication
+from qq.plugins.settings import SettingsPlugin
 
 PREFIX = "qq.plugins.pyramid.configurator"
 
@@ -35,7 +36,7 @@ class TestPyramidApplication:
         """
         configurator.start("pyramid")
 
-        configurator.settings = sentinel.settings
+        configurator.globals[SettingsPlugin.DEFAULT_KEY] = sentinel.settings
         wsgi = configurator.make_wsgi_object("arg", kw="arg2")
 
         mpyramid_configurator.assert_called_once_with(
@@ -45,4 +46,6 @@ class TestPyramidApplication:
         pyramid.make_wsgi_app.assert_called_once_with()
         assert pyramid.make_wsgi_app.return_value == wsgi
 
-        configurator.plugins["plugin1"].start_pyramid.assert_called_once_with(pyramid)
+        configurator.plugins["plugin1"].start_pyramid.assert_called_once_with(
+            pyramid
+        )

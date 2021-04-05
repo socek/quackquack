@@ -4,12 +4,12 @@ from pytest import fixture
 from pytest import raises
 
 from qq.plugins.sqlalchemy.exceptions import SettingMissing
-from qq.plugins.sqlalchemy.plugin import DatabasePlugin
+from qq.plugins.sqlalchemy.plugin import SqlAlchemyPlugin
 
 PREFIX = "qq.plugins.sqlalchemy.plugin"
 
 
-class TestDatabasePlugin:
+class TestSqlAlchemyPlugin:
     @fixture
     def mapp(self):
         return MagicMock()
@@ -28,7 +28,7 @@ class TestDatabasePlugin:
 
     @fixture
     def plugin(self):
-        plugin = DatabasePlugin()
+        plugin = SqlAlchemyPlugin()
         plugin.init("dbname")
         return plugin
 
@@ -79,6 +79,10 @@ class TestDatabasePlugin:
         .exit should close the database session.
         """
         plugin.session = MagicMock()
+        plugin._settings = {
+            "url": "sqlite:///tmp.first.db",
+            "options": {"optionkey": "option value"},
+        }
 
         plugin.exit(None, None, None, None)
 

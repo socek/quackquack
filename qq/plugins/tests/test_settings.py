@@ -49,8 +49,9 @@ class TestSettingsPlugin(PluginFixtures):
         """
         .enter should add settings and paths to the application.
         """
-        plugin._settings = {"settings": sentinel.settings}
-        assert plugin.enter(None) == {"settings": sentinel.settings}
+        context = MagicMock()
+        context.globals = {"settings": sentinel.settings}
+        assert plugin.enter(context) == sentinel.settings
 
     def test_import(self, plugin):
         assert _import("os") == os
@@ -61,14 +62,13 @@ class TestSettingsPlugin(PluginFixtures):
         configurator.
         """
         mapp.startpoint = "myapp"
-        mapp.extra = {}
 
-        plugin.start(mapp)
+        result = plugin.start(mapp)
 
         mimport.assert_called_once_with(self.MODULE)
         mimport.return_value.myapp.assert_called_once_with()
 
-        assert mapp.extra["settings"] == mimport.return_value.myapp.return_value
+        assert result == mimport.return_value.myapp.return_value
 
 
 class TestPrefixedStringsDict:

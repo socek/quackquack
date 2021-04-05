@@ -62,7 +62,7 @@ class TestInjectors:
         name, value = list(get_injectors_from_function(example_fun, [1, 2], {}))[0]
 
         assert name == "third"
-        assert value(context, "key") == value
+        assert value(context, "key") != value
 
 
 def default_settings():

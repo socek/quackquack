@@ -91,10 +91,7 @@ class ContextManagerInjector(Injector):
         self.init(application, *args, **kwargs)
 
     def __call__(self, application, *args, **kwargs):
-        # self.application = application
-        # self.args = args
-        # self.kwargs = kwargs
-        return self
+        return self  # pragma: no cover
 
     def start(self):
         self.context = Context(self.application)
