@@ -5,7 +5,7 @@ from pytest import raises
 
 from qq import ApplicationNotStartedError
 from qq import Context
-from qq import InjectApplicationContext
+from qq import InitializeInjectors
 from qq import SimpleInjector
 from qq.application import Application
 from qq.injector import Injector
@@ -74,7 +74,7 @@ class ExampleApplication(Application):
         self.plugins["settings"] = SettingsPlugin("qq.tests.test_injector")
 
 
-class TestInjectApplicationContext:
+class TestInitializeInjectors:
     @fixture
     def app(self):
         return ExampleApplication()
@@ -84,7 +84,7 @@ class TestInjectApplicationContext:
         def example_fun(first, second, third=SimpleInjector(app, "settings")):
             return [first, second, third]
 
-        return InjectApplicationContext(example_fun)
+        return InitializeInjectors(example_fun)
 
     def test_when_arguments_provided(self, fun):
         assert fun(1, 2, 3) == [1, 2, 3]

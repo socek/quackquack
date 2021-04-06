@@ -88,11 +88,11 @@ You can also pass the context using decorator:
 
 ```python
 
-from qq import InjectApplicationContext, SimpleInjector
+from qq import InitializeInjectors, SimpleInjector
 
 app = MyApplication()
 
-@InjectApplicationContext
+@InitializeInjectors
 def fun(something, settings = SimpleInjector(app, "settings")):
     print(settings)
 
