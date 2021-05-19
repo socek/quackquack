@@ -3,12 +3,18 @@ from unittest.mock import MagicMock
 
 from pytest import fixture
 
+from qq.finder import CustomBaseTypeFinder
 from qq.finder import DataclassFinder
 from qq.finder import ObjectFinder
+from qq.plugins.types import CustomBaseType
 
 
 @dataclass
 class SimpleDataclass:
+    pass
+
+
+class CustomStr(str, CustomBaseType):
     pass
 
 
@@ -145,8 +151,16 @@ class TestDataclassFinder:
         """
         DataclassFinder.is_collectable should return True only if element is an dataclass
         """
-        assert (
-            DataclassFinder(["something"]).is_collectable(SimpleDataclass)
-            is True
-        )
-        assert DataclassFinder(["something"]).is_collectable("str") is False
+        finder = DataclassFinder(["something"])
+        assert finder.is_collectable(SimpleDataclass) is True
+        assert finder.is_collectable(str) is False
+
+
+class TestCustomBaseTypeFinder:
+    def test_is_collectable(self):
+        """
+        CustomBaseTypeFinder.is_collectable should return True only if element is an dataclass
+        """
+        finder = CustomBaseTypeFinder(["something"])
+        assert finder.is_collectable(CustomStr) is True
+        assert finder.is_collectable(str) is False

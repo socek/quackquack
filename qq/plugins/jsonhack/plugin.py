@@ -8,7 +8,7 @@ from pyramid.config import Configurator as PyramidConfigurator
 from pyramid.renderers import JSON
 
 from qq.application import Application
-from qq.finder import DataclassFinder
+from qq.finder import ObjectFinder
 from qq.plugin import Plugin
 from qq.plugins.jsonhack.models import get_encoders
 from qq.plugins.jsonhack.models import init_encoders
@@ -21,14 +21,14 @@ class JsonPlugin(Plugin):
     def __init__(
         self,
         stubs: List[EncoderStub],
-        finder: DataclassFinder = None,
+        finders: List[ObjectFinder] = None,
     ):
         super().__init__()
         self.stubs = stubs
-        self.finder = finder
+        self.finders = finders
 
     def start(self, application: Application):
-        init_encoders(self.finder)
+        init_encoders(self.finders)
         for stub in self.stubs:
             stub.stub()
 

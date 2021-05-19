@@ -141,16 +141,16 @@ class TestInitEncoders:
         ENCODERS_CACHE.clear()
 
     def test_parse_encoders(self):
-        init_encoders(None)
+        init_encoders([])
 
         assert len(ENCODERS_CACHE) is not 0
 
-    def test_with_finder(self, finder):
-        init_encoders(finder)
+    def test_with_finders(self, finder):
+        init_encoders([finder])
 
         finder.find.return_value = [CustomUuid]
 
-        init_encoders(finder)
+        init_encoders([finder])
 
         # I know this is strange, but I did not know how to test this behaviour
         # better
