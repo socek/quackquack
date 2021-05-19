@@ -4,16 +4,17 @@ from datetime import date
 from datetime import datetime
 from decimal import Decimal
 from unittest.mock import MagicMock
+from uuid import UUID
 from uuid import uuid4
 
 from pytest import fixture
 from pytest import raises
 
+from qq.plugins.jsonhack.encodergenerators import encoder_for
 from qq.plugins.jsonhack.encoders import DateEncoder
 from qq.plugins.jsonhack.encoders import DatetimeEncoder
 from qq.plugins.jsonhack.encoders import DecimalEncoder
 from qq.plugins.jsonhack.encoders import UUIDEncoder
-from qq.plugins.jsonhack.encoders import encoder_for
 from qq.plugins.jsonhack.errors import UnknownObjectError
 from qq.plugins.jsonhack.models import ENCODERS_CACHE
 from qq.plugins.jsonhack.models import add_encoder
@@ -21,6 +22,11 @@ from qq.plugins.jsonhack.models import init_encoders
 from qq.plugins.jsonhack.models import object_hook
 from qq.plugins.jsonhack.stubs import DecoderStub
 from qq.plugins.jsonhack.stubs import EncoderStub
+from qq.plugins.types import CustomBaseType
+
+
+class CustomUuid(UUID, CustomBaseType):
+    pass
 
 
 @dataclass
@@ -36,6 +42,7 @@ data = {
     "3": date.today(),
     "4": Decimal("3.14"),
     "5": SampleDataclass(name="first", year=2019),
+    "6": CustomUuid(uuid4().hex),
     "nested": {
         "n0": 0,
         "n1": datetime.now(),
@@ -43,6 +50,7 @@ data = {
         "n3": date.today(),
         "n4": Decimal("6.14"),
         "n5": SampleDataclass(name="second", year=2020),
+        "n6": CustomUuid(uuid4().hex),
     },
 }
 
@@ -60,7 +68,7 @@ class TestEncodingJson:
         add_encoder(DateEncoder())
         add_encoder(UUIDEncoder())
         add_encoder(DecimalEncoder())
-        for encoder in encoder_for([SampleDataclass]):
+        for encoder in encoder_for([SampleDataclass, CustomUuid]):
             add_encoder(encoder)
 
         encoder_stub.stub()
@@ -140,16 +148,14 @@ class TestInitEncoders:
     def test_with_finder(self, finder):
         init_encoders(finder)
 
-        datacls = MagicMock()
-
-        finder.find.return_value = [datacls]
+        finder.find.return_value = [CustomUuid]
 
         init_encoders(finder)
 
         # I know this is strange, but I did not know how to test this behaviour
         # better
         for enc in ENCODERS_CACHE:
-            if enc.TYPE == datacls:
+            if enc.TYPE == CustomUuid:
                 assert True
                 return
 

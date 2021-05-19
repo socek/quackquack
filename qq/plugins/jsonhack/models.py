@@ -5,6 +5,7 @@ from inspect import isabstract
 from logging import getLogger
 
 from qq.plugins.jsonhack import encoders
+from qq.plugins.jsonhack.encodergenerators import encoder_for
 from qq.plugins.jsonhack.errors import UnknownObjectError
 
 logger = getLogger(__name__)
@@ -37,7 +38,7 @@ def init_encoders(finder):
 
     if finder:
         # search for all dataclasses and generate encoder
-        for encoder in encoders.encoder_for(finder.find()):
+        for encoder in encoder_for(finder.find()):
             add_encoder(encoder)
 
 

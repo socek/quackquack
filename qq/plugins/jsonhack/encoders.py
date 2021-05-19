@@ -3,7 +3,6 @@ from abc import abstractmethod
 from datetime import date
 from datetime import datetime
 from decimal import Decimal
-from typing import List
 from uuid import UUID
 
 from dateutil import parser
@@ -18,10 +17,12 @@ class Encoder(ABC):
 
     @property
     def TYPENAME(self):
-        return getattr(self.TYPE, "ENCODED_TYPENAME", None) or self.TYPE.__name__
+        return (
+            getattr(self.TYPE, "ENCODED_TYPENAME", None) or self.TYPE.__name__
+        )
 
     def is_encodable(self, value):
-        return isinstance(value, self.TYPE)
+        return type(value) == self.TYPE
 
     def is_decodable(self, obj):
         return obj.get("_type") == self.TYPENAME
@@ -74,6 +75,17 @@ class DateEncoder(Encoder):
         return parser.parse(value).date()
 
 
+class DecimalEncoder(Encoder):
+    TYPENAME = "decimal"
+    TYPE = Decimal
+
+    def _encode(self, value):
+        return str(value)
+
+    def _decode(self, value):
+        return Decimal(value)
+
+
 class DataclassEncoder(Encoder):
     def _get_schema(self):
         return class_schema(self.TYPE)()
@@ -85,23 +97,3 @@ class DataclassEncoder(Encoder):
     def _decode(self, data):
         schema = self._get_schema()
         return schema.load(data)
-
-
-def encoder_for(dataclasses: List[object]):
-    for dataclass in dataclasses:
-
-        class Encoder(DataclassEncoder):
-            TYPE = dataclass
-
-        yield Encoder()
-
-
-class DecimalEncoder(Encoder):
-    TYPENAME = "decimal"
-    TYPE = Decimal
-
-    def _encode(self, value):
-        return str(value)
-
-    def _decode(self, value):
-        return Decimal(value)

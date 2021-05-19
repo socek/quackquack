@@ -1,2 +1,6 @@
-class Settings(dict):
+class CustomBaseType:
+    pass
+
+
+class Settings(dict, CustomBaseType):
     pass
