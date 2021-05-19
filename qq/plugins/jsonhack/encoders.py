@@ -21,7 +21,7 @@ class Encoder(ABC):
         return getattr(self.TYPE, "ENCODED_TYPENAME", None) or self.TYPE.__name__
 
     def is_encodable(self, value):
-        return type(value) == self.TYPE
+        return isinstance(value, self.TYPE)
 
     def is_decodable(self, obj):
         return obj.get("_type") == self.TYPENAME

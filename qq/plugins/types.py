@@ -1,1 +1,2 @@
-Settings = dict
+class Settings(dict):
+    pass

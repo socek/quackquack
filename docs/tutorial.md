@@ -84,7 +84,13 @@ with Context(app) as c1: # this is where context is initialized
 
 # Using Injectors
 
-You can also pass the context using decorator:
+The most useful feature in QuackQuack are injectors. This functions are responsible
+for injecting values from context into methods and functions. Injectors are passed
+to the function as default arguments, so if you need to inject dependecy (for
+example in tests), you can just pass the argument when calling. In order to
+initialize the injectors, you need to to decorate function with
+InitializeInjectors decorator.
+
 
 ```python
 
@@ -99,9 +105,6 @@ def fun(something, settings = SimpleInjector(app, "settings")):
 fun("something")
 ```
 
-This feature is a simple depndency injection, so if you like (for example in
-tests) you can just pass the argument.
-
 ```python
 # Remember to use keyword arguments here or else it will fail !!!
 fun("something", settings=Mock())
@@ -109,7 +112,8 @@ fun("something", settings=Mock())
 
 # Creating Plugins
 
-Power of the Quack Quack is in the plugins and how it is simple to create them.
+Quack Quack is designed in a way, that the core should be minimalistic, but the
+plugins should be responsible for all the features (like settings). So
 Only thing you need to do is inherit from `qq.Plugin`. This class should be self
 explantory:
 
@@ -122,55 +126,23 @@ class Plugin:
         """
         self.key = key
 
-    def start(self, application):
+    def start(self, application: Application) -> Any:
         """
         This method will be called at the start of the Application. It will be
         called only once and the result will be set in the Application.globals.
         """
 
-    def enter(self, application):
+    def enter(self, application: Application) -> Any:
         """
         This method will be called when the Application will be used as context
         manager. This is the enter phase. Result will be pasted in the Context
         dict.
         """
 
-    def exit(self, application, exc_type, exc_value, traceback):
+    def exit(self, application: Application, exc_type, exc_value, traceback):
         """
         This method will be called when the Application will be used as context
         manager. This is the exit phase.
         """
 ```
 
-# Extending the Application
-
-If you would need to add another phase for plugins, you will need to add another
-start method and just list thru all the plugins. For example, extension for
-pyramid would look like this:
-
-```python
-class PyramidApplication(Application):
-    PYRAMID_SETTINGS_KEY = "pyramid"
-    _SETTINGS_KEY = SettingsPlugin.DEFAULT_KEY
-
-    def make_wsgi_object(self, *args, **kwargs):
-        """
-        Configure application for web server and return pyramid's uwsgi
-        application object.
-        """
-        pyramid = Configurator(*args, settings=self.settings, **kwargs)
-        pyramid.registry["application"] = self
-        self._start_pyramid_plugins(pyramid)
-        return pyramid.make_wsgi_app()
-
-    def _start_pyramid_plugins(self, pyramid: Configurator):
-        for plugin in self.plugins.values():
-            method = getattr(plugin, "start_pyramid", lambda x: x)
-            method(pyramid)
-```
-
-In the `make_wsgi_object` method we are starting normal Sapp application and after
-that we are configuring pyramid's application. Now we can start the plugins.
-Please, notice that we are getting new method called "start_plugin" from the
-plugins. This is because not all plugins are aware of our Pyramid extensions,
-that is why the missing of the `start_plugin` method is a normal situation.
