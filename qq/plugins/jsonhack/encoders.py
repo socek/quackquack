@@ -86,6 +86,14 @@ class DecimalEncoder(Encoder):
         return Decimal(value)
 
 
+class EnumEncoder(Encoder):
+    def _encode(self, value):
+        return value.value
+
+    def _decode(self, value):
+        return self.TYPE(value)
+
+
 class DataclassEncoder(Encoder):
     def _get_schema(self):
         return class_schema(self.TYPE)()
