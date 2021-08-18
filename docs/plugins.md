@@ -4,6 +4,7 @@
 1. [Settings](#settings)
     * [History](#history)
     * [Implementing settings](#implementing-settings)
+    * [Other plugins and settings](#other-plugins-and-settings)
     * [Implementing paths settings](#implementing-paths-settings)
 2. [Logging](#logging)
 3. [JSON](#json)
@@ -69,9 +70,13 @@ Here we have 2 startpoints: "webapp" and "tests". Now we need to add this plugin
 to the configurator.
 
 ```python
-class MyappConfigurator(Configurator):
+from qq import Application
+
+SETTINGSKEY = "settings"
+
+class Myapp(Application):
     def create_plugins(self):
-        self.add_plugin(SettingsPlugin('myapp.application.settings'))
+        self.plugins[SETTINGSKEY] = SettingsPlugin('path.to.settings')
 ```
 
 Now, we can create functions which will be execute by external mechanism (tests
@@ -93,12 +98,52 @@ def tests():
 For getting values from settings, you can get if from the context:
 
 ```python
-with ContextManager(app) as context:
-    context.settings
+from qq import Context
+with Context(app) as context:
+    context[SETTINGSKEY]
 ```
 
-Also, the settings can be retrived from the configurator.settings. This was
+Also, the settings can be retrived from the application.globals["settings"]. This was
 added because plugins will also need access to the settings.
+
+## Other plugins and settings
+
+Settings should be divided into dicts, so every plugin should have it's own dict
+for settings. For example, if you have 3 plugins (and Settings plugin) looking
+like this:
+
+```python
+
+class Myapp(Application):
+    def create_plugins(self):
+        self.plugins["settings"] = SettingsPlugin('path.to.settings')
+        self.plugins["sql"] = SqlAlchemy()
+        self.plugins["redis"] = RedisPlugin()
+        self.plugins["secondredis"] = RedisPlugin()
+```
+
+In settings module it should look like this (using the same keys as the plugin):
+
+```python
+
+def default():
+    settings = {
+        "project_name": "example project name",
+    }
+    settings["sql"] = sqlsettings()
+    settings["redis"] = redissettings(settings)
+    settings["secondredis"] = secondredissettings(settings)
+    return settings
+
+def sqlsettings():
+    return {"host": "localhost"}
+
+def redissettings(settings):
+    return {"host": "localhost", "db": 1}
+
+def secondredissettings(settings):
+    return {"host": "localhost", "db": 2}
+```
 
 ## Implementing paths settings
 
@@ -132,7 +177,7 @@ instance will be started.
 Exapmle of the configuration:
 ```python
 def logging(settings):
-    settings['logging'] = {
+    return {
         'version': 1,
         'disable_existing_loggers': True,
         'formatters': {
@@ -163,10 +208,10 @@ def logging(settings):
                 'handlers': ['console'],
                 'qualname': 'alembic',
             },
-            'mypet': {
+            'myapp': {
                 'level': 'DEBUG',
                 'handlers': ['console'],
-                'qualname': 'mypet',
+                'qualname': 'myapp',
             },
             'waitress': {
                 'level': 'ERROR',
@@ -180,34 +225,25 @@ def logging(settings):
     }
 ```
 
-# JSON
-
-This plugin is a stub. This stub makes `JSONEncoder` able to encode uuid objects
-into json. To use it just add it to the Confiugrator:
-
-```python
-
-class MyConfigurator(Configurator):
-    def create_plugins(self):
-        self.add_plugin(JsonPlugin())
-```
-
 # Redis
 
 This plugin connects to the Redis database. In order to use it, you need to
 add these settings:
 
 ```python
-settings["redis:host"] = "redis"
-settings["redis:port"] = 6379
-settings["redis:db"] = 0
+def redis(settings):
+    return {
+        "host": "redis",
+        "port": 6379,
+        "db": 0,
+    }
 ```
 
 After that, you need add the plugin:
 
 ```python
 
-class MyConfigurator(Configurator):
+class MyApplication(Application):
     def create_plugins(self):
         self.add_plugin(RedisPlugin(ctx_key="context_key"))
 ```

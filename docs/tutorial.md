@@ -4,9 +4,8 @@
 1. [Configuration](#configuration)
 2. [Starting](#starting)
 3. [Using Context](#using-context)
-4. [Using Decorator](#using-decorator)
+4. [Using Injectors](#using-injectors)
 5. [Creating Plugins](#creating-plugins)
-6. [Extending Application](#extending-application)
 
 # Configuration
 
@@ -77,7 +76,7 @@ ended.
 app = MyApplication()
 
 with Context(app) as c1: # this is where context is initialized
-    with app as c2:
+    with Context(app) as c2:
         assert id(c1) == id(c2)
 # this is where the context is ended/stopped
 ```
@@ -113,8 +112,8 @@ fun("something", settings=Mock())
 # Creating Plugins
 
 Quack Quack is designed in a way, that the core should be minimalistic, but the
-plugins should be responsible for all the features (like settings). So
-Only thing you need to do is inherit from `qq.Plugin`. This class should be self
+plugins should be responsible for all the features (like settings). So the
+only thing you need to do is inherit from `qq.Plugin`. This class should be self
 explantory:
 
 ```python
@@ -132,14 +131,15 @@ class Plugin:
         called only once and the result will be set in the Application.globals.
         """
 
-    def enter(self, application: Application) -> Any:
+    def enter(self, context: Context) -> Any:
         """
         This method will be called when the Application will be used as context
-        manager. This is the enter phase. Result will be pasted in the Context
-        dict.
+        manager, but only when the plugin will be called. This is the enter phase.
+        Result will be set in the Context dict with the self.key as the key in
+        that dict.
         """
 
-    def exit(self, application: Application, exc_type, exc_value, traceback):
+    def exit(self, context: Context, exc_type, exc_value, traceback):
         """
         This method will be called when the Application will be used as context
         manager. This is the exit phase.

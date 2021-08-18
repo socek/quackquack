@@ -11,15 +11,15 @@ Version: 1.0.0
     * [Configuration](docs/tutorial.md#configuration)
     * [Starting](docs/tutorial.md#starting)
     * [Using Context](docs/tutorial.md#using-context)
+    * [Using Injectors](docs/tutorial.md#using-injectors)
     * [Creating Plugins](docs/tutorial.md#creating-plugins)
-    * [Extending Configurator](docs/tutorial.md#extending-configurator)
 5. [Plugins](docs/plugins.md)
     * [Settings](docs/plugins.md#settings)
     * [Logging](docs/plugins.md#logging)
-    * [JSON](docs/plugins.md#json)
     * [Redis](docs/plugins.md#redis)
     * [Pyramid Plugin](docs/pyramid.md)
     * [Sqlalchemy Plugin](docs/sqlalchemy.md)
+    * [Json Plugin](docs/json.md)
 6. [Phases](docs/phases.md)
     * [About Phases](docs/phases.md#about-phases)
     * [Phase 0](docs/phases.md#phase-0)
@@ -35,14 +35,15 @@ Version: 1.0.0
 
 # Overview
 
-This project will help starting an application, which needs to have initialization
-step (for example: for gathering settings or establishing connections) and use
-Python style code (context managers and decorators) to get those data.
+This project aims to resolve problem of configuring an application, which needs to
+have initialization step (for example: for gathering settings or establishing
+connections) and use Python style code (context managers and decorators) to get
+those data.
 
 For example, normally you would need to use two separate mechanism for settings
 in celery application and web application, because you should not use web
 application startup process in the celery app. This package provide a solution
-for this problem, by giving one simple and independent (for use in any place)
+for this problem, by giving one simple and independent of other frameworks
 mechanism to implement everywhere.
 
 # Quick Using Guide
