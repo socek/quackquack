@@ -50,10 +50,12 @@ from qq.plugins.pyramid.plugins import RoutingPlugin
 
 from myapp.application.routing import MyappRouting
 
-class MyappConfigurator(PyramidApplication):
+class MyApp(PyramidApplication):
     def create_plugins(self):
         self.plugins["settings"] = SettingsPlugin('myapp.application.settings')
         self.plugins["routing"] = RoutingPlugin(MyappRouting)
+
+myapp = MyApp()
 ```
 As you can see, you can use normal plugins along with the Pyramid's specifyc
 ones. More about plugins can be found [here](#creating-plugins)
@@ -67,12 +69,12 @@ and paster. In order to do that we need to start the Configurator.
 Example:
 
 ```python
-from myapp import app
+from myapp import myapp
 
 
 def wsgifunction(settings): # settings is dict with configuration from .ini file
-    app.start('pyramid')
-    return app.make_wsgi_app()
+    myapp.start('pyramid')
+    return myapp.make_wsgi_app()
 ```
 
 The settings argument is not used here. It is something that will be passed to
