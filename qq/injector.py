@@ -61,7 +61,6 @@ class Injector:
     def start(self, application: Application):
         self.context = Context(application)
         self.entered = self.context.__enter__()
-        ic(self.fun, self.entered)
         self.result = self.fun(self.entered, *self.args, **self.kwargs)
         if _is_generator(self.result):
             return self.result.__next__()

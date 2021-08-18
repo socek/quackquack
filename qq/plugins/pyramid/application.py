@@ -8,7 +8,7 @@ class PyramidApplication(Application):
     PYRAMID_SETTINGS_KEY = "pyramid"
     _SETTINGS_KEY = SettingsPlugin.DEFAULT_KEY
 
-    def make_wsgi_object(self, *args, **kwargs):
+    def make_wsgi_app(self, *args, **kwargs):
         """
         Configure application for web server and return pyramid's uwsgi
         application object.

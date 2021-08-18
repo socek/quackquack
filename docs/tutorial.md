@@ -59,6 +59,7 @@ After starting the application, we can use it as a context manager.
 from qq import Context
 
 app = MyApplication()
+app.start()
 
 with Context(app) as ctx:
     print(ctx["settings"])
@@ -74,6 +75,7 @@ ended.
 
 ```python
 app = MyApplication()
+app.start("pyramid")
 
 with Context(app) as c1: # this is where context is initialized
     with Context(app) as c2:
@@ -81,7 +83,7 @@ with Context(app) as c1: # this is where context is initialized
 # this is where the context is ended/stopped
 ```
 
-# Using Injectors
+# Using Injectors and dependency injection
 
 The most useful feature in QuackQuack are injectors. This functions are responsible
 for injecting values from context into methods and functions. Injectors are passed
@@ -97,16 +99,19 @@ from qq import InitializeInjectors, SimpleInjector
 
 app = MyApplication()
 
-@InitializeInjectors
-def fun(something, settings = SimpleInjector(app, "settings")):
+
+@InitializeInjectors(app)
+def fun(something, settings = SimpleInjector("settings")):
     print(settings)
 
+app.start()
 fun("something")
 ```
 
 ```python
-# Remember to use keyword arguments here or else it will fail !!!
-fun("something", settings=Mock())
+from unittest.mock import MagicMock
+fun("something", MagicMock())
+fun("something", settings=MagicMock())
 ```
 
 # Creating Plugins

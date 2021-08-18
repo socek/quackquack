@@ -1,8 +1,11 @@
 from qq.plugin import Plugin
+from qq.plugins.pyramid.application import PyramidApplication
+from qq.plugins.settings import SettingsBasedPlugin
 
 
-class BasePyramidPlugin(Plugin):
-    pass
+class BasePyramidPlugin(SettingsBasedPlugin):
+    def start(self, application: PyramidApplication):
+        self.settings = self.get_my_settings(application)
 
 
 class AuthPlugin(BasePyramidPlugin):

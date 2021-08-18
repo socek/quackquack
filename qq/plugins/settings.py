@@ -58,5 +58,8 @@ class SettingsBasedPlugin(Plugin):
         super().__init__()
         self.settings_key = settings_key
 
-    def get_my_settings(self, obj: (Application, Context)):
-        return obj.globals[self.settings_key][self.key]
+    def get_my_settings(self, source: (Application, Context)):
+        """
+        Get settings for this plugin from Application or Context
+        """
+        return source.globals[self.settings_key][self.key]
