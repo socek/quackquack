@@ -1,9 +1,9 @@
 from collections import OrderedDict
 from contextvars import ContextVar
 
+from qq.errors import AlreadyStartedError
 
-class AlreadyStartedError(RuntimeError):
-    pass
+KEY_PREFIX = "quackquack"
 
 
 class Application:
@@ -14,8 +14,9 @@ class Application:
         self.extra = {}
         self.globals = {}
         self.context = ContextVar(self.context_var_key)
+        self._token = None
 
-    def start(self, startpoint: str = "default", **kwargs) -> bool:
+    def start(self, startpoint: str = "default", **kwargs):
         """
         Start application. Return True if started. Return False if already
         started before.
@@ -30,7 +31,6 @@ class Application:
         self._start_plugins()
 
         self.is_started = True
-        return True
 
     def _start_plugins(self):
         for key, plugin in self.plugins.items():
@@ -42,4 +42,4 @@ class Application:
 
     @property
     def context_var_key(self):
-        return f"{self.__class__.__name__}_{id(self)}"
+        return f"{KEY_PREFIX}_{self.__class__.__name__}"

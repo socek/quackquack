@@ -81,10 +81,10 @@ class TestInitializeInjectors:
 
     @fixture
     def fun(self, app):
-        def example_fun(first, second, third=SimpleInjector(app, "settings")):
+        def example_fun(first, second, third=SimpleInjector("settings")):
             return [first, second, third]
 
-        return InitializeInjectors(example_fun)
+        return InitializeInjectors(app)(example_fun)
 
     def test_when_arguments_provided(self, fun):
         assert fun(1, 2, 3) == [1, 2, 3]

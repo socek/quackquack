@@ -1,8 +1,5 @@
 from qq import Application
-
-
-class ApplicationNotStartedError(RuntimeError):
-    pass
+from qq.errors import ApplicationNotStartedError
 
 
 class Context:

@@ -21,6 +21,7 @@ pytest-cov = { version = "^2.10.1" }
 pytest-mock = { version = "^3.2.0" }
 ipython = { version = "^7.16.1" }
 ipdb = { version = "^0.13.3" }
+icecream = "^2.1.1"
 
 [tool.poetry.extras]
 alembic = ["alembic"]

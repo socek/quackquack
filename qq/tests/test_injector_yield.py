@@ -50,11 +50,11 @@ class TestReturnInjector(Fixtures):
 
     @fixture
     def examplefun(self, exampleinjector, mapp, data):
-        def fun(obj=exampleinjector(mapp, "name")):
+        def fun(obj=exampleinjector("name")):
             assert data["name"] == 1
             return obj
 
-        return InitializeInjectors(fun)
+        return InitializeInjectors(mapp)(fun)
 
     def test_yielding(self, data, examplefun):
         assert data["name"] == 0
@@ -75,11 +75,11 @@ class TestYieldInjector(Fixtures):
 
     @fixture
     def examplefun(self, exampleinjector, mapp, data):
-        def fun(obj=exampleinjector(mapp, "name")):
+        def fun(obj=exampleinjector("name")):
             assert data["name"] == 1
             return obj
 
-        return InitializeInjectors(fun)
+        return InitializeInjectors(mapp)(fun)
 
     def test_yielding(self, data, examplefun):
         assert data["name"] == 0
@@ -102,11 +102,11 @@ class TestContextManagerInjector(Fixtures):
 
     @fixture
     def examplefun(self, exampleinjector, mapp, data):
-        def fun(obj=exampleinjector(mapp, "name")):
+        def fun(obj=exampleinjector("name")):
             assert data["name"] == 1
             return obj
 
-        return InitializeInjectors(fun)
+        return InitializeInjectors(mapp)(fun)
 
     def test_context_manager(self, data, examplefun):
         assert data["name"] == 0

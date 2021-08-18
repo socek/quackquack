@@ -11,45 +11,57 @@ from typing import Iterable
 from typing import List
 from typing import Tuple
 
+from qq.application import Application
 from qq.context import Context
 
 
-def InitializeInjectors(method: Callable):
-    """
-    If function has injectors in the defaults of arguments, then start them.
-    """
+class InitializeInjectors:
+    def __init__(self, application: Application):
+        self.application = application
 
-    @wraps(method)
-    def wrapper(*args, **kwargs):
-        injector_list = list(get_injectors_from_function(method, args, kwargs))
-        for name, injector in injector_list:
-            kwargs[name] = injector.start()
+    def __call__(self, method: Callable) -> Callable:
+        """
+        If function has injectors in the defaults of arguments, then start them.
+        """
 
-        try:
-            return method(*args, **kwargs)
-        finally:
-            for name, injector in reversed(injector_list):
-                injector.end()
+        @wraps(method)
+        def wrapper(*args, **kwargs):
+            injector_list = list(
+                get_injectors_from_function(method, args, kwargs)
+            )
+            for name, injector in injector_list:
+                kwargs[name] = injector.start(wrapper._qq_application)
 
-    return wrapper
+            try:
+                return method(*args, **kwargs)
+            finally:
+                for name, injector in reversed(injector_list):
+                    injector.end()
+
+        def set_qq_app(application: Application):
+            wrapper._qq_application = application
+
+        wrapper._set_qq_app = set_qq_app
+        wrapper._set_qq_app(self.application)
+        return wrapper
 
 
 class Injector:
     def __init__(self, fun):
         self.fun = fun
 
-    def __call__(self, application, *args, **kwargs):
-        return self.__class__(self.fun).init(application, *args, **kwargs)
+    def __call__(self, *args, **kwargs):
+        return self.__class__(self.fun).init(*args, **kwargs)
 
-    def init(self, application, *args, **kwargs):
-        self.application = application
+    def init(self, *args, **kwargs):
         self.args = args
         self.kwargs = kwargs
         return self
 
-    def start(self):
-        self.context = Context(self.application)
+    def start(self, application: Application):
+        self.context = Context(application)
         self.entered = self.context.__enter__()
+        ic(self.fun, self.entered)
         self.result = self.fun(self.entered, *self.args, **self.kwargs)
         if _is_generator(self.result):
             return self.result.__next__()
@@ -64,15 +76,15 @@ class Injector:
 
 
 class ContextManagerInjector(Injector):
-    def __init__(self, application, *args, **kwargs):
+    def __init__(self, *args, **kwargs):
         super().__init__(None)
-        self.init(application, *args, **kwargs)
+        self.init(*args, **kwargs)
 
-    def __call__(self, application, *args, **kwargs):
+    def __call__(self, *args, **kwargs):
         return self  # pragma: no cover
 
-    def start(self):
-        self.context = Context(self.application)
+    def start(self, application: Application):
+        self.context = Context(application)
         self.entered = self.context.__enter__()
         return self.__enter__(self.entered, *self.args, **self.kwargs)
 
