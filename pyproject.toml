@@ -1,0 +1,75 @@
+[tool.poetry]
+name = "quackquack"
+version = "1.0.0"
+description = "Quack Quack: A simple application framework"
+authors = ["Dominik Dlugajczyk <msocek@gmail.com>"]
+license = "MIT"
+packages = [{ include="qq", from="." },]
+
+[tool.poetry.dependencies]
+python = "^3.8"
+marshmallow_dataclass = "^8.0.0"
+alembic = { version = "^1.0.9", optional = true }
+sqlalchemy = { version = "^1.3.3", optional = true }
+pyramid = { version = "^1.10.4", optional = true }
+redis = { version = "^3.2.1", optional = true }
+celery = { version = "^5.0.0", optional = true }
+
+[tool.poetry.dev-dependencies]
+pytest = { version = "^6.2.2" }
+pytest-cov = { version = "^2.10.1" }
+pytest-mock = { version = "^3.2.0" }
+ipython = { version = "^7.16.1" }
+ipdb = { version = "^0.13.3" }
+icecream = { version = "^2.1.1" }
+
+[tool.poetry.extras]
+alembic = ["alembic"]
+sqlalchemy = ["sqlalchemy"]
+pyramid = ["pyramid"]
+redis = ["redis"]
+celery = ["celery"]
+developer = [
+    "alembic",
+    "sqlalchemy",
+    "pyramid",
+    "redis",
+    "celery",
+]
+
+[tool.isort]
+line_length = 80
+known_first_party = [ "qq" ]
+multi_line_output = 3
+sections = [ "FUTURE", "STDLIB", "DJANGO", "THIRDPARTY", "FIRSTPARTY", "LOCALFOLDER"]
+force_single_line = true
+
+[tool.black]
+line_length = 80
+target-version = [ "py38" ]
+ignore = [ "W503", "W504" ]
+
+[build-system]
+requires = ["poetry>=0.12"]
+build-backend = "poetry.masonry.api"
+
+[tool.pytest.ini_options]
+addopts = "--cov --cov-report term:skip-covered --cov-report html --no-cov-on-fail -vv --ff -x qq"
+norecursedirs = [ ".cache", ".git", ".idea", "bin", "*migrations*", "spa", "static", "var", "docker" ]
+filterwarnings = [ "error::RuntimeWarning", "ignore:.*the imp module is deprecated.*:DeprecationWarning" ]
+
+[tool.coverage.run]
+branch = true
+omit = [
+    "*/tests/*",
+    "*/test_*/*",
+    "*/versions/*",
+    "*/testing.py",
+    "*/settings/*",
+    "*/app/*",
+    "*/admin.py",
+    "*/.cache/*",
+    "/home/user/*",
+    "/home/circleci/.cache/*",
+    "conftest.py",
+]

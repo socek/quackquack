@@ -2,11 +2,10 @@
 
 0. [Go Home](../README.md)
 1. [About](#about)
-2. [Extended Configurator](#extended-configurator)
-    * [Implement Configurator](#implement-configurator)
+2. [Extended Application](#extended-application)
+    * [Application Implementation](#application-implementation)
     * [Implement Startpoint](#implement-startpoint)
-    * [Configuring Egg](#configuring-egg)
-    * [Configuring Paster](#configuring-paster)
+    * [Configuring Paste and Gunicorn](#configuring-paste-and-gunicorn)
     * [Starting development server](#starting-development-server)
     * [Starting uwsgi server](#starting-uwsgi-server)
     * [Creating Plugins for Pyramid](#creating-plugins-for-pyramid)
@@ -15,32 +14,30 @@
     * [How to implement Routing](#how-to-implement-routing)
 4. [Views](#views)
     * [RestfulView](#restfulview)
-5. [BaseWebTestFixture](#basewebtestfixture)
 
 # About
 
-Pyramid Plugin is a set of couple of features:
+Pyramid Plugin is a simple set of features:
 
-- [Extended Configurator](#extended-configurator) and plugins - allows to creat
-    wsgi object for uwsgi
+- [Extended Configurator](#extended-configurator) and plugins - allows to create
+    wsgi object for uwsgi or gunicorn frameworks to use
 - [Routing Wrapper](#routing-wrapper) - allows to get view value from class
     variables
 - [Views](#views) - view classes with support of http methods
-- [BaseWebTestFixture](#basewebtestfixture) - fixtures for pytest to use webtest
 
 All these features can be used separately.
 
 # Extended Configurator
 
-Pyramid Framework gives you possibility to create wsgi application, which can be
-used by the uwsgi/gunicorn/etc. process. Pyramid is using Paster to configure
+Pyramid Framework gives you ability to create wsgi application, which can be
+used by the uwsgi/gunicorn/etc. frameworks. Pyramid is using Paster to configure
 the wsgi application, this means you need to configure some stuff in the
 Paster/Pyramid way.
 
-## Implement Configurator
+## Application Implementation
 
-Implementing the Configurator is pretty simple. The only thing needed to be done
-is to inherited your Configurator from `ConfiguratorWithPyramid` insted of the
+Implementing of the Application is pretty simple. The only thing which needed to be done
+is to inherited your Application class from `PyramidApplication` insted of the
 normal configurator. The new Configurator will be responsible for running
 Pyramid's plugins as well.
 
@@ -48,15 +45,17 @@ For example, we will add SettingsPlugin fro Sapp and RoutingPlugin from Sapp's
 Pyramid Plugin.
 
 ```python
-from sapp.plugins.pyramid.configurator import ConfiguratorWithPyramid
-from sapp.plugins.pyramid.plugins import RoutingPlugin
+from qq.plugins.pyramid.application import PyramidApplication
+from qq.plugins.pyramid.plugins import RoutingPlugin
 
 from myapp.application.routing import MyappRouting
 
-class MyappConfigurator(ConfiguratorWithPyramid):
-    def append_plugins(self):
-        self.add_plugin(SettingsPlugin('myapp.application.settings'))
-        self.add_plugin(RoutingPlugin(MyappRouting))
+class MyApp(PyramidApplication):
+    def create_plugins(self):
+        self.plugins["settings"] = SettingsPlugin('myapp.application.settings')
+        self.plugins["routing"] = RoutingPlugin(MyappRouting)
+
+myapp = MyApp()
 ```
 As you can see, you can use normal plugins along with the Pyramid's specifyc
 ones. More about plugins can be found [here](#creating-plugins)
@@ -70,85 +69,44 @@ and paster. In order to do that we need to start the Configurator.
 Example:
 
 ```python
-from myapp import app
+from myapp import myapp
 
 
-def wsgi(settings): # settings is dict with configuration from .ini file
-    app.start('pyramid')
-    return app.make_wsgi_object()
+def wsgifunction(settings): # settings is dict with configuration from .ini file
+    myapp.start('pyramid')
+    return myapp.make_wsgi_app()
 ```
 
 The settings argument is not used here. It is something that will be passed to
 the function by the uwsgi or paster, but Sapp Settings does not use it at all.
 
-## Configuring Egg
+## Configuring Paste and Gunicorn
 
-You need to have proper setup.py which will create an egg for us (otherwise the
-Paster will not work). Creating of proper setup.py is described in the Python's
-Documentation [here](https://docs.python.org/3.6/distutils/setupscript.html).
-
-In the setup method you need yo add this lines:
-
-```python
-entry_points={
-    'paste.app_factory': ['main = myapp.startpoints:wsgi'],
-}
-```
-
-Of course, if you have entry_points already, you can extend it.
-`paste.app_factory` is name of the value which will be read by the Paster.
-`main` is a name which will be used in an .ini file.
-`myapp.startpoints:uwsgi` is dotted url for method which will return wsgi object.
-
-After all that, you can create the egg.
-
-```bash
-python setup.py develop
-```
-
-## Configuring Paster
-
-Last file to create is an app.ini. This file is an configuration for paster and
-uwsgi (you can make 2 different files for that, but it is a good idea to make
-only one file).
+Last file to create is an app.ini. This file is an configuration for paste and
+gunicorn.
 
 
 ```ini
 [app:main]
-    use = egg:myapp
+    use = call:{PY_URL}:wsgifunction
 
 [server:main]
-    use = egg:waitress#main
+    use = egg:gunicorn#main
     host = 0.0.0.0
     port = 8000
-
-[uwsgi]
-    socket = 0.0.0.0:8000
-    chdir = /code
-    master = true
-    need-app = true
-    processes = 4
-    pythonpath = *.egg
 
 [pipeline:main]
     pipeline =
         main
 ```
 
-`[app:main]` section is here to tell the paster which egg to use. Paster use
-this egg to search for `paste.app_factory` section in entry_points. This is
-how the uwsgi/Paster knows which startpoint to use and this is why the setup.py
-is an important file.
+`[app:main]` section is here to tell the paste which function to use in order to
+create wsgi application.
 
-This section is also used for Pyramid's settings, but the Sapp is not using it
-at all, because we use Setting's plugin.
+This section is also used for Pyramid's settings, but the Quack Quack is using
+the SettingsPlugin, so we leave this section empty.
 
-`[server:main]` sections is here to configure the development server. `waitress`
-is a simple www server for development purpose. More info about waitress can be
-found [here](https://docs.pylonsproject.org/projects/waitress/en/latest/)
-
-`[uwsgi]` section will configure the uwsgi process. Description of all the
-options can be found [here](http://uwsgi-docs.readthedocs.io/en/latest/Options.html)
+`[server:main]` sections is here to configure the gunicorn server.
 
 Description for the `[pipeline:main]` section can be found [here](http://docs.repoze.org/moonshining/tools/paste.html#example-configuring-the-wsgi-pipeline)
 
@@ -168,57 +126,48 @@ be restarting every time the python files will change.
 pserve app.ini --reload
 ```
 
-## Starting uwsgi server
-
-In order to start uwsgi process, you need to use `--ini-paste` switch with a
-path to an `app.ini` file.
-
-```bash
-uwsgi --ini-paste app.ini
-```
-
 ## Creating Plugins for Pyramid
 
-`ConfiguratorWithPyramid` will run `start_pyramid(pyramid)` method for all
-plugins when running `.make_wsgi_object`. Of corse, if the configurator will not
-find the `start_pyramid` method, it will not complain, because otherwise the old
-plugins would be not compatible with the `ConfiguratorWithPyramid`. So if you
+`PyramidApplication` will run `start_pyramid(pyramid)` method for all
+plugins when running `.make_wsgi_app`. Of corse, if the application will not
+find the `start_pyramid` method, it will not raise any error, because otherwise
+the old plugins would be not compatible with the `PyramidApplication`. So if you
 want to make a Pyramid's specifyc plugin, you should just add
 `start_pyramid(pyramid)` method to your normal plugin.
 
 `pyramid` in `start_pyramid(pyramid)` method is pyramid.config.Configurator
 instance.
 
-Implementation of the CsrfPlugin should be a good example.
+Implementation of the CsrfPlugin should be a good example:
 
 ```python
-class CsrfPlugin(Plugin):
+class BasePyramidPlugin(SettingsBasedPlugin):
+    def start(self, application: PyramidApplication):
+        self.settings = self.get_my_settings(application)
+
+class CsrfPlugin(BasePyramidPlugin):
     """
     Add csrf mechanism to the pyramid app.
     """
-
     def __init__(self, policy_cls):
         self.policy_cls = policy_cls
-
-    def start(self, configurator):
-        self.settings = configurator.settings
 
     def start_pyramid(self, pyramid):
         pyramid.set_csrf_storage_policy(self.policy_cls())
         pyramid.set_default_csrf_options(
             require_csrf=True,
-            token=self.settings['csrf_token_key'],
-            header=self.settings['csrf_header_key'])
+            token=self.settings["csrf_token_key"],
+
 ```
 
 # Routing Wrapper
 
 ## Why we need a router wrapper
-`sapp.plugins.pyramid.routing.Routing` was designed to simplify creating of
+`qq.plugins.pyramid.routing.Routing` was designed to simplify creating of
 routes. In normal Pyramid, the developer needs to configure the route in one
 place and the view in another. Also, configuring is made by @view_config
 decorators which is not a good way if you want to share some values between
-many classes, you can not use polymorphism. Instead you uneed to copy these
+many classes, because you can not use polymorphism. Instead you uneed to copy these
 configuration variables across all the views.
 
 Another disadvantage of normal pyramid's routing is that the linking of the
@@ -228,7 +177,7 @@ is very buggable.
 ## How to implement Routing
 
 First step is to implement Routing class inherited from
-`sapp.plugins.pyramid.routing.Routing` and make a `make(self)` method.
+`qq.plugins.pyramid.routing.Routing` and make a `make(self)` method.
 This is our wrapper for normal pyramid routing. It will help us, but if you want
 to use the old ways, you are free to do that. `pyramid` property from the
 `Routing` class is a [Pyramid Configurator](https://docs.pylonsproject.org/projects/pyramid/en/latest/api/config.html#pyramid.config.Configurator).
@@ -243,7 +192,7 @@ Example:
 
 
 ```python
-from sapp.plugins.pyramid.routing import Routing
+from qq.plugins.pyramid.routing import Routing
 
 from myapp.home.routing import home_routing
 
@@ -256,7 +205,7 @@ class MyappRouting(Routing):
         not_home_routing(self)
 ```
 
-Only method which is needed description here is `Routing.add`. First argument is
+The only method which neededs description is `Routing.add`. First argument is
 dotted path to the view (or view class if you wish). Second is route
 name. Third is the route url. All other args and kwargs will be passed to the
 [add_route](https://docs.pylonsproject.org/projects/pyramid/en/latest/api/config.html#pyramid.config.Configurator.add_route) method. In order this route
@@ -266,7 +215,7 @@ method. All the kwargs for this method will be taken from the view class.
 Example view:
 
 ```python
-class View(object:
+class View(object):
     rendered = 'json'
 
     def __init__(self, root_factory, request):
@@ -279,14 +228,14 @@ class View(object:
 
 # Views
 
-Sapp comes with base class for every View.
+Quack Quack comes with base class for every View.
 
 Main reason to implement an view is to generate response proper response.
 The simples way to return the data is to implement `.get(self)` method and
 return a dict.
 
 ```python
-from sapp.plugins.pyramid.view import View
+from qq.plugins.pyramid.view import View
 
 
 class Home(View):
@@ -300,11 +249,11 @@ The renderer property here is to configure the view, so the framework will know
 that this view will return json data. More info about the configuration
 properties can be found [here]((#how-to-implement-routing)).
 
-If you want to create a view which return template, you can implement it in this
+If you want to create a view which returns template, you can implement it in this
 way:
 
 ```python
-from sapp.plugins.pyramid.view import View
+from qq.plugins.pyramid.view import View
 
 
 class Home(View):
@@ -344,20 +293,5 @@ More info about HTTP methods can be found [here](https://en.wikipedia.org/wiki/H
 
 ## RestfulView
 
-RestfulView is a View, which returns JSON.
-
-# BaseWebTestFixture
-
-BaseWebTestFixture is a pytest's fixtures class whith WebTests. In order to use
-it you need to just use `fake_app` fixture in your test.
-
-```python
-class TestWebAuthView(BaseWebTestFixture):
-    CONFIGURATOR_CLASS = MyConfigurator
-
-    def test_homepage(self, fake_app):
-        fake_app.get('/')
-```
-
-`fake_app` is an instance of `TestApp` class. For more info, please go to the
-official WebTest documentation [here](https://docs.pylonsproject.org/projects/webtest/en/latest/)
+RestfulView is a View, with JSON as renderer. So it will be more suitable for RESTful views.
+Name of methods are the same as in View class.

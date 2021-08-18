@@ -1,4 +1,4 @@
-from sapp.plugins.pyramid.routing import Routing
+from qq.plugins.pyramid.routing import Routing
 
 
 class ExampleRouting(Routing):

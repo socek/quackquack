@@ -3,33 +3,29 @@
 0. [Go Home](../README.md)
 1. [Configuration](#configuration)
 2. [Starting](#starting)
-3. [Using ContextManager](#using-contextmanager)
-4. [Using Decorator](#using-decorator)
+3. [Using Context](#using-context)
+4. [Using Injectors](#using-injectors)
 5. [Creating Plugins](#creating-plugins)
-6. [Extending Configurator](#extending-configurator)
 
 # Configuration
 
-First step in using Sapp is to make your own Configurator, which will be
-inheriting from `sapp.Configurator`. There you would overwrite `append_plugins`
-method, which is a place to append the plugins.
+First step using Quack Quack is to implement your own Application, which will be
+inheriting from `qq.Application`. Bare Application almost does nothing, so it
+needs plugins to work. In order to do that, you need to overwrite `create_plugins`
+method and add some plugins. For the sake of tutorial, we just add one: Setting's Plugin
 
 ```python
-from sapp.configurator import Configurator
-from sapp.plugins import SettingsPlugin
+from qq import Application
+from qq.plugins import SettingsPlugin
 
-class MyConfigurator(Configurator):
-    def append_plugins(self):
-        self.add_plugin(SettingsPlugin('path.to.settings'))
+class MyApplication(Application):
+    def create_plugins(self):
+        self.plugins["settings"] = SettingsPlugin('path.to.settings')
 
-application = MyConfigurator()
+application = MyApplication()
 ```
 
-There is no need to do more with the configurator at this point. If you wish to
-extend the Configurator class, please see the [Extending Configurator](#extending-configurator)
-section below.
-
-Configurator object should be created in some module as an global object. This
+Application instance should be created in some module as a global variable. This
 object will be used in all of the places of the application. Making many
 instances of the same class is possible, but it is a waste of resources, so
 please avoid that.
@@ -40,139 +36,118 @@ Starting is very important. This is the place, where the plugins will be
 initalized. For example, for Logging plugin, this will be the place, where the
 logging will start.
 
-The start can be done only once, but there can be many endpoints in where you
-can do it. For example, you can make start for web application and for celery
-application. This two starts can be different, but they can use one Configurator
-object.
+The start can be done only once, but it can be done for different processes (for
+example for web application and celery worker), so we need to name it. This is
+called "startpoint" and the default name is just "default".
+
 
 ```python
-application = MyConfigurator()
+application = MyApplication()
 
 def start_for_pyramid():
-    application.start(endpoint='pyramid')
+    application.start('pyramid')
 
 def start_for_celery():
-    application.start(endpoint='celery')
+    application.start('celery')
 ```
 
-# Using ContextManager
+# Using Context
 
-After starting the configurator, we can use it as a context manager.
+After starting the application, we can use it as a context manager.
 
 ```python
-from sapp import ContextManager
+from qq import Context
 
-app = MyConfigurator()
+app = MyApplication()
+app.start()
 
-with ContextManager(app) as ctx:
-    print(ctx.settings)
+with Context(app) as ctx:
+    print(ctx["settings"])
 ```
 
-This is very simple, but it is even simpler, when you want to get only part of
-the context? The context manager will start the whole context, but you can get
-only part of it like this:
-
-```python
-from sapp import ContextManager
-
-app = MyConfigurator()
-
-with ContextManager(app, 'settings') as settings:
-    print(settings)
-
-with ContextManager(app, ('settings', 'db')) as (settings, db):
-    print(settings, db)
-
-```
+This part shows how the plugin works in general. Every plugin returns simple
+value (even if it's a dict) in context initialization. Initialization is made
+only when the value is called by name.
 
 Please, be aware, that you can nest the context managers. The context will be
 generated once with the first `with` statement and ended with the same statement
 ended.
 
 ```python
-app = MyConfigurator()
+app = MyApplication()
+app.start("pyramid")
 
-with ContextManager(app) as c1: # this is where context is generated
-    with app as c2:
-        assert c1 == c2
-    # this is where the context is ended/stopped
+with Context(app) as c1: # this is where context is initialized
+    with Context(app) as c2:
+        assert id(c1) == id(c2)
+# this is where the context is ended/stopped
 ```
 
-# Using Decorator
+# Using Injectors and dependency injection
 
-You can also pass the context using decorator:
+The most useful feature in QuackQuack are injectors. This functions are responsible
+for injecting values from context into methods and functions. Injectors are passed
+to the function as default arguments, so if you need to inject dependecy (for
+example in tests), you can just pass the argument when calling. In order to
+initialize the injectors, you need to to decorate function with
+InitializeInjectors decorator.
+
 
 ```python
 
-from sapp import Decorator
+from qq import InitializeInjectors, SimpleInjector
 
-app = MyConfigurator()
+app = MyApplication()
 
-@Decorator(app, "settings")
-def fun(something, settings):
+
+@InitializeInjectors(app)
+def fun(something, settings = SimpleInjector("settings")):
     print(settings)
 
+app.start()
 fun("something")
 ```
 
-The advantage here is that you can very simple use dependency injection here:
-
 ```python
-# Remember to use keyword arguments here or else it will fail !!!
-fun("something", settings=Mock())
+from unittest.mock import MagicMock
+fun("something", MagicMock())
+fun("something", settings=MagicMock())
 ```
 
 # Creating Plugins
 
-Power of the Sapp is in the plugins and how it is simple to create them. Only
-thing you need to do is inherit from `sapp.Plugin`. This class should be self
+Quack Quack is designed in a way, that the core should be minimalistic, but the
+plugins should be responsible for all the features (like settings). So the
+only thing you need to do is inherit from `qq.Plugin`. This class should be self
 explantory:
 
 ```python
-class Plugin(object):
-    def start(self, configurator):
+class Plugin:
+    def init(self, key: str):
         """
-        This method will be called at the start of the Configurator. It will be
-        called only once per process start. configurator is an object where all
-        the configuratation is stored.
+        Initialize the plguin during creating the plugins.
+        key - key which is used in the Application.plugins dict for this plugin.
+        """
+        self.key = key
+
+    def start(self, application: Application) -> Any:
+        """
+        This method will be called at the start of the Application. It will be
+        called only once and the result will be set in the Application.globals.
         """
 
-    def enter(self, application):
+    def enter(self, context: Context) -> Any:
         """
-        This method will be called when the Configurator will be used as context
-        manager. This is the enter phase.
+        This method will be called when the Application will be used as context
+        manager, but only when the plugin will be called. This is the enter phase.
+        Result will be set in the Context dict with the self.key as the key in
+        that dict.
         """
 
-    def exit(self, application, exc_type, exc_value, traceback):
+    def exit(self, context: Context, exc_type, exc_value, traceback):
         """
-        This method will be called when the Configurator will be used as context
+        This method will be called when the Application will be used as context
         manager. This is the exit phase.
         """
 ```
 
-# Extending Configurator
-
-If you would need to add another phase for plugins, you will need to add another
-start method and just list thru all the plugins. For example, extension for
-pyramid would look like this:
-
-```python
-class ConfiguratorWithPyramid(Configurator):
-    def start_pyramid_plugins(self, pyramid):
-        for plugin in self.plugins:
-            method = getattr(plugin, 'start_pyramid', lambda x: x)
-            method(pyramid)
-
-    def start_pyramid(self, *args, **kwargs):
-        self.start(endpoint='pyramid')
-
-        pyramid = PyramidConfigurator(*args, **kwargs)
-        self.start_pyramid_plugins(pyramid)
-        return pyramid.make_wsgi_object()
-```
-
-In the `start_pyramid` method we are starting normal Sapp application and after
-that we are configuring pyramid's configurator. Now we can start the plugins.
-Please, notice that we are getting new method called "start_pyramid" from the
-plugins. This is because not all plugins are aware of our Pyramid extensions,
-that is why the missing of the `start_pyramid` method is a normal situation.

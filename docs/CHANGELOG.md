@@ -4,6 +4,27 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning]
 (http://semver.org/).
 
+## 1.0.0
+
+- Changed name from sapp to Quack Quack
+- Change behavoiur of the application and contexts: removex ContextManager and LazyContextManager in favor of always lazy Context.
+- Remove decorator injecting dependencies in favor of injectors
+
+## 0.5.0 - (Not released)
+
+- Switch from pipfile into poetry and from setup.py into pyproject.toml
+- Decorator should not start an context if it's not needed.
+- Change settings of DatabasePlugin from a form of "db:dbname:url" into normal dict: {"databases": {"dbname": {"url": "x"}}}
+- Add recreate for DatabasePlugin and remove old recreate mechanism, including using "default url".
+- Removed old "driver" support for DatabasePlugin. Preparing code for CQRS instead, like "command" and "query" wrappers.
+- Fixed problem with starting context again
+- Cleaned up dependecies
+- Changed and improved alembic migration scripts. Now it allows to start the app by the developer instead of the code.
+- Added Object Finder.
+- Added JsonHack.
+- New encoder: Decimal and new way of adding encoders (sapp.plugins.jsonhack.models.add_encoder).
+- Change View class so all of the ednpoint will get the request as a param.
+
 ## 0.4.0 - Split Context Manager and Decorator for Configurator
 
 ### Added

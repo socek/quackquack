@@ -1,8 +1,8 @@
-from sapp import Decorator
-
 from example import app
 from example.application.capp import cel
 from example.application.models import Model
+
+from qq import Decorator
 
 
 @cel.task
