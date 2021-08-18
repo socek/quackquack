@@ -4,6 +4,7 @@ from unittest.mock import sentinel
 from pytest import fixture
 
 from qq.plugins.pyramid.plugins import AuthPlugin
+from qq.plugins.pyramid.plugins import BasePyramidPlugin
 from qq.plugins.pyramid.plugins import CsrfPlugin
 from qq.plugins.pyramid.plugins import RoutingPlugin
 from qq.plugins.pyramid.plugins import SessionPlugin
@@ -11,12 +12,31 @@ from qq.plugins.pyramid.plugins import SessionPlugin
 
 class Fixtures:
     @fixture
-    def mconfigurator(self):
-        return MagicMock()
-
-    @fixture
     def mpyramid(self):
         return MagicMock()
+
+
+class TestBasePyramidPlugin(Fixtures):
+    @fixture
+    def mapp(self):
+        app = MagicMock()
+        app.globals = {
+            "settings": {
+                "dbkey": sentinel.dbsettings,
+            },
+        }
+        return app
+
+    @fixture
+    def plugin(self):
+        plugin = BasePyramidPlugin()
+        plugin.init("dbkey")
+        return plugin
+
+    def test_getting_settings(self, mapp, plugin):
+        plugin.start(mapp)
+
+        assert plugin.settings == sentinel.dbsettings
 
 
 class TestAuthPlugin(Fixtures):

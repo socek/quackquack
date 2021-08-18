@@ -2,58 +2,121 @@
 
 0. [Go Home](../README.md)
 1. [About](#about)
-2. [Installation](#installation)
-3. [Using in context](#using-in-context)
-4. [Integrate with Alembic](#integrate-with-alembic)
-5. [CQRS like drivers](#cqrs-like-drivers)
+2. [Dependencies](#dependencies)
+3. [Example implementation](#example-implementation)
+4. [Settings description](#settings-description)
+5. [Using in context](#using-in-context)
+6. [Integrate with Alembic](#integrate-with-alembic)
+7. [CQRS like drivers](#cqrs-like-drivers)
 
 # About
 
 SQLAlchemy plugin is just a wrapper for SQLAlchemy. This plugin allows starting
 database session at context phase start and closing it at context phase end.
 
-# Installation
+# Dependencies
 
-In order to use the plugin, you need to add the plugin to the Configurator.
-Database plugins needs the SettingsPlugin as well.
+*  SettingsPlugin
+
+# Example implementation
 
 ```python
-from qq.configurator import Configurator
+from qq import Application
 from qq.plugins.settings import SettingsPlugin
-from qq.plugins.sqlalchemy.plugin import DatabasePlugin
+from qq.plugins.sqlalchemy.plugin import SqlAlchemyPlugin
 
-class MyConfigurator(Configurator):
+class MyApplication(Application):
     def create_plugins(self):
-        self.add_plugin(SettingsPlugin('myapp.application.settings'))
-        self.add_plugin(DatabasePlugin('dbsession'))
+        self.plugins["settings"] = SettingsPlugin("myapp.application.settings")
+        self.plugins["dbsession"] = SqlAlchemyPlugin()
 ```
 
-Argument for the DatabasePlugin is the name for the session which will be used
-in many places, like context or settings. Let's call it "main key".
-
-Before you cane use this code, you need to make proper settings. Example
-settings:
+Before you cane use this code, you need to make proper settings. Example:
 
 ```python
-def database(settings):
-    settings['db:dbsession:url'] = 'postgresql://name:password@postgres:5432/dbname'
-    settings['db:dbsession:default_url'] = 'postgresql://name:password@postgres:5432/postgres'
-    settings['db:dbsession:options'] = {
-        'pool_recycle': 3600
+def default() -> Settings:
+    settings = Settings()
+    settings["dbsession"] = database()
+    return settings
+
+def database() -> Settings:
+    name = os.get_env("DB_NAME")
+    user = os.get_env("DB_USER")
+    password = os.get_env("DB_PASSWORD")
+    host = os.get_env("DB_HOST")
+    return {
+        "url": f"postgresql://{user}:{password}@{host}:5432/{name}",
+        "options": {
+            "pool_recycle": os.get_env("DB_POOL_RECYCLE", 3600, cast=int),
+            "pool_pre_ping": os.get_env("DB_PRE_PING", True, cast=bool),
+            "pool_size": os.get_env("DB_SIZE", 40, cast=int),
+            "max_overflow": os.get_env("DB_OVERFLOW", 20, cast=int),
+        },
     }
 ```
 
-As you can see here, to proper settings key name is "db:" prefix with main key.
-The last part is one of the values name:
+# Settings description
 
 - url - sqlalchemy url for the database
-- default_url - sqlalchemy url for the default database. This settings is needed
-  when you wanto to recreate the database. PostgreSQL do not allow to drop
-  database which you are connected to. That is why we need to connect to a second
-  database. `postgres` is a good second database, because this database is always
-  existing on the postgresql servers.
 - options - dict of options which will be passed to a `sqlalchemy.engine.create_engine`.
   For more info visit [SQLAlchemy docs](http://docs.sqlalchemy.org/en/latest/core/engines.html#sqlalchemy.create_engine)
+
+# Defining sql table
+
+All tables should be defined using SqlAchemy's ORM. Code below is a simple
+definition of base table.
+
+Also it implements TableFinder which is used for searching all defined tables
+in our package. This will be used in the Alembic integration.
+
+
+```python
+from datetime import datetime
+from uuid import uuid4
+
+from qq.finder import ObjectFinder
+from sqlalchemy import Column
+from sqlalchemy import DateTime
+from sqlalchemy import Integer
+from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.schema import MetaData
+
+# Recommended naming convention used by Alembic, as various different database
+# providers will autogenerate vastly different names making migrations more
+# difficult. See: http://alembic.zzzcomputing.com/en/latest/naming.html
+NAMING_CONVENTION = {
+    "ix": "ix_%(column_0_label)s",
+    "uq": "uq_%(table_name)s_%(column_0_name)s",
+    "ck": "ck_%(table_name)s_%(constraint_name)s",
+    "fk": "fk_%(table_name)s_%(column_0_name)s_%(referred_table_name)s",
+    "pk": "pk_%(table_name)s",
+}
+metadata = MetaData(naming_convention=NAMING_CONVENTION)
+
+
+class Base:
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid4, unique=True, nullable=False)
+    created_at = Column(DateTime, default=datetime.utcnow)
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+    def _asdict(self):
+        data = dict(self.__dict__)
+        del data["_sa_instance_state"]
+        return data
+
+
+class TableFinder(ObjectFinder):
+    def is_collectable(self, element: object):
+        try:
+            return issubclass(element, SqlTable) and element != SqlTable
+        except TypeError:
+            return False
+
+
+SqlTable = declarative_base(cls=Base, metadata=metadata)
+
+```
 
 # Using in context
 
@@ -63,7 +126,34 @@ context like this (assuming your main key is "dbsession"):
 ```python
 
 with app as context:
-  context.dbsession.query(User).all()
+  context["dbsession"].query(User).all()
+```
+
+# Using injectors
+
+SQL like database has transactions. In order to use this transactions in efficent
+way the plugin comes with two injectors:
+
+* `qq.plugins.sqlalchemy.injectors.SAQuery` - which gives the
+    `sqlalchemy.orm.Session` object, which is ready to use
+* `qq.plugins.sqlalchemy.injectors.SACommand` - which gives the
+    `sqlalchemy.orm.Session` object as well, but after the function is completed
+    it will commit the changes (or do only the .flush() if the `tests` option is
+    set to True)
+
+```python
+from qq.plugins.sqlalchemy.injectors import SAQuery
+from qq.plugins.sqlalchemy.injectors import SACommand
+
+query = SAQuery("dbsession")
+command = SACommand("dbsession")
+
+def example_query(db = query):
+    return db.query(User).all()
+
+def example_command(db = command):
+    db.add(User())
+
 ```
 
 # Integrate with Alembic
@@ -72,19 +162,16 @@ Alembic is a library to manage migrations. Alembic makes a folder for the versio
 changes. This folder contains "env.py" file, which we need to change like this:
 
 ```python
-# flake8: noqa
-from qq.plugins.sqlalchemy.alembic import AlembicScript
+from qq.plugins.sqlalchemy.alembic import run_migrations
 
-from myapp import app
-from myapp.application.model import Model
+from PACKAGE import application
+from PACKAGE.app.db import SqlTable
+from PACKAGE.app.db import TableFinder
 
-# import or define all models here to ensure they are attached to the
-# Model.metadata prior to any initialization routines
+application.start("default")
+TableFinder([DOTTED_PATH_TO_PACKAGES], [DOTTED_PATH_TO_MODULES_TO_IGNORE]).find()
+run_migrations(application.globals["dbsession"], SqlTable.metadata)
 
-import myapp.answers.models
-
-
-AlembicScript(app, Model, 'dbsession').run()
 ```
 
 First, you need to import the app object and base Model if you use SQLAlchemy
@@ -93,67 +180,3 @@ ORM. Also, you need to import all the models in this file, if you want to use
 
 For more info, you can go to the Alembic [documentation](http://alembic.zzzcomputing.com/en/latest/)
 
-# CQRS like drivers
-
-You can also use [CQRS](https://martinfowler.com/bliki/CQRS.html) like objects.
-For this puprose, you can use `sapp.plugins.sqlalchemy.driver.Query` and
-`sapp.plugins.sqlalchemy.driver.Command` classes.
-
-```python
-from qq.plugins.sqlalchemy.driver import Query
-from qq.plugins.sqlalchemy.driver import Command
-
-from myapp.auth.models import User
-
-
-class UserQuery(Query):
-    model = User
-
-    def _get_by_email(self, email):
-        return self.query().filter(self.model.email == email)
-
-    def find_by_email(self, email):
-        return self._get_by_email(email).first()
-
-
-class UserCommand(Command):
-    model = User
-
-    def create(self, **kwargs):
-        password = None
-        obj = self.model()
-        password = kwargs.pop('password', None)
-
-        for key, value in kwargs.items():
-            setattr(obj, key, value)
-
-        if password:
-            obj.set_password(password)
-
-        self.database.add(obj)
-        self.database.commit()
-
-        return obj
-```
-
-`Query` class is for reading the database. The convetion here is simple:
-
-- methods with "_" prefix should return QuerySet
-- methods with normal name should return objects or data
-  - methods with "get_" prefix should get one object or raise an error
-  - methods with "first_" prefix should get one object or return `None`
-  - methods with "list_" prefix should return iterable or list
-
-`Command` class is for writing to the database. The convention here is a different:
-
-- method with "_" prefix should not commit to the database.
-- method with normal name should commit to the database.
-
-Pre-implemented methods are:
-
-- `Query`
-  - `._query()` - query the model
-  - `.get_by_id(id)` - get user by the id
-  - `.list_all()` - list all of the objects from the database
-- `Command`
-  - `.create(**kwargs)` - create instance of the model in the database

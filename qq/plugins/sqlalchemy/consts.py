@@ -1,5 +1,6 @@
 URL_KEY = "url"
-DATABASES_KEY = "databases"
+OPTIONS_KEY = "options"
+TESTS_KEY = "tests"
 
 SESSIONMAKER_KEY = "session"
 ENGINE_KEY = "engine"
