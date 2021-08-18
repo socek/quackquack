@@ -1,7 +1,7 @@
 # Quack Quack
 
 If it quacks like a quack, then it's a Quack Quack.
-Version: 1.0.0
+Version: 1.0.2
 
 # Table of Contents
 1. [Overview](#overview)

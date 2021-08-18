@@ -1,10 +1,12 @@
 [tool.poetry]
 name = "quackquack"
-version = "1.0.0"
+version = "1.0.2"
 description = "Quack Quack: A simple application framework"
 authors = ["Dominik Dlugajczyk <msocek@gmail.com>"]
 license = "MIT"
 packages = [{ include="qq", from="." },]
+readme = "README.md"
+homepage = "https://github.com/socek/quackquack"
 
 [tool.poetry.dependencies]
 python = "^3.8"
