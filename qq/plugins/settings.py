@@ -4,6 +4,8 @@ from qq.application import Application
 from qq.context import Context
 from qq.plugin import Plugin
 
+TESTS_KEY = "tests"
+
 
 def _import(modulepath):
     return __import__(modulepath, globals(), locals(), [""])

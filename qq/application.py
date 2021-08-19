@@ -14,7 +14,6 @@ class Application:
         self.extra = {}
         self.globals = {}
         self.context = ContextVar(self.context_var_key)
-        self._token = None
 
     def start(self, startpoint: str = "default", **kwargs):
         """
