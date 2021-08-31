@@ -5,11 +5,13 @@ from pytest import raises
 
 from qq import ApplicationNotStartedError
 from qq import Context
-from qq import InitializeInjectors
+from qq import InjectApplication
 from qq import SimpleInjector
 from qq.application import Application
 from qq.injector import Injector
-from qq.injector import get_injectors_from_function
+from qq.injector import InjectorsRunner
+from qq.injector import get_injectors
+from qq.injector import get_runners
 from qq.injector import is_injector_ready
 from qq.plugins import SettingsPlugin
 
@@ -43,13 +45,22 @@ class TestIsInjectorReady:
 app = Application()
 
 
-def example_fun(first, second, third=SimpleInjector(app, "key")):
-    return [first, second, third]
+def not_injected_fun():
+    pass
+
+
+injected_fun = InjectApplication(None)(not_injected_fun)
+
+
+def example_fun(
+    first, second, third=SimpleInjector(app, "key"), fourth=injected_fun
+):
+    return [first, second, third, fourth]
 
 
 class TestInjectors:
     def test_when_arguments_provided(self):
-        assert list(get_injectors_from_function(example_fun, [1, 2, 3], {})) == []
+        assert list(get_injectors(example_fun, [1, 2, 3, 4], {})) == []
 
     def test_when_arguments_not_provided(self):
         """
@@ -59,10 +70,28 @@ class TestInjectors:
         context = Context(Application())
         context.values["key"] = 333
 
-        name, value = list(get_injectors_from_function(example_fun, [1, 2], {}))[0]
+        name, value = list(get_injectors(example_fun, [1, 2], {}))[0]
 
         assert name == "third"
         assert value(context, "key") != value
+
+
+class TestInjectedApplication:
+    def test_when_arguments_provided(self):
+        assert list(get_runners(example_fun, [1, 2, 3, 4], {})) == []
+
+    def test_when_arguments_not_provided(self):
+        """
+        When injector argument not provided, injectors fun should return this
+        injector.
+        """
+        context = Context(Application())
+        context.values["key"] = 333
+
+        name, value = list(get_runners(example_fun, [1, 2], {}))[0]
+
+        assert name == "fourth"
+        assert value == injected_fun
 
 
 def default_settings():
@@ -81,13 +110,13 @@ class TestInitializeInjectors:
 
     @fixture
     def fun(self, app):
-        def example_fun(first, second, third=SimpleInjector("settings")):
-            return [first, second, third]
+        def example_fun(first, second, third=SimpleInjector("settings"), fourth=injected_fun):
+            return [first, second, third, fourth]
 
-        return InitializeInjectors(app)(example_fun)
+        return InjectApplication(app)(example_fun)
 
     def test_when_arguments_provided(self, fun):
-        assert fun(1, 2, 3) == [1, 2, 3]
+        assert fun(1, 2, 3, 4) == [1, 2, 3, 4]
 
     def test_when_arguments_not_provided_and_app_not_started(self, fun):
         with raises(ApplicationNotStartedError):
@@ -95,4 +124,14 @@ class TestInitializeInjectors:
 
     def test_when_arguments_not_provided_and_app_started(self, app, fun):
         app.start("default_settings")
-        assert fun(1, 2) == [1, 2, {"settings": True}]
+        result = fun(1, 2)
+        assert result[0] == 1
+        assert result[1] == 2
+        assert result[2] == {"settings": True}
+        assert isinstance(result[3], InjectorsRunner)
+        assert result[3].application == app
+        assert result[3].method == not_injected_fun
+
+    def test_swap_application(self, fun):
+        secondfun = fun.swap_application(None)
+        assert secondfun.application is None

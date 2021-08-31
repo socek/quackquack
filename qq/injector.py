@@ -15,35 +15,39 @@ from qq.application import Application
 from qq.context import Context
 
 
-class InitializeInjectors:
-    def __init__(self, application: Application):
+class InjectorsRunner:
+    def __init__(self, method, application: Application = None):
+        self.method = method
         self.application = application
 
-    def __call__(self, method: Callable) -> Callable:
+    def swap_application(self, application: Application) -> Callable:
+        return InjectorsRunner(self.method, application)
+
+    def __call__(self, *args, **kwargs):
+        injectors = list(get_injectors(self.method, args, kwargs))
+        for name, injector in injectors:
+            kwargs[name] = injector.start(self.application)
+
+        runners = list(get_runners(self.method, args, kwargs))
+        for name, runner in runners:
+            kwargs[name] = runner.swap_application(self.application)
+
+        try:
+            return self.method(*args, **kwargs)
+        finally:
+            for name, injector in reversed(injectors):
+                injector.end()
+
+
+def InjectApplication(application: Application) -> Callable:
+    def wrapper(method: Callable) -> Callable:
         """
-        If function has injectors in the defaults of arguments, then start them.
+        If function has injectors in the defaults of arguments, then init them.
         """
+        runner = InjectorsRunner(method, application)
+        return wraps(method)(runner)
 
-        @wraps(method)
-        def wrapper(*args, **kwargs):
-            injector_list = list(
-                get_injectors_from_function(method, args, kwargs)
-            )
-            for name, injector in injector_list:
-                kwargs[name] = injector.start(wrapper._qq_application)
-
-            try:
-                return method(*args, **kwargs)
-            finally:
-                for name, injector in reversed(injector_list):
-                    injector.end()
-
-        def set_qq_app(application: Application):
-            wrapper._qq_application = application
-
-        wrapper._set_qq_app = set_qq_app
-        wrapper._set_qq_app(self.application)
-        return wrapper
+    return wrapper
 
 
 class Injector:
@@ -61,7 +65,9 @@ class Injector:
     def start(self, application: Application):
         self.context = Context(application)
         self.entered = self.context.__enter__()
-        self.result = self.fun(self.entered, *self.args, **self.kwargs)
+        self.result = InjectorsRunner(self.fun, application)(
+            self.entered, *self.args, **self.kwargs
+        )
         if _is_generator(self.result):
             return self.result.__next__()
         else:
@@ -110,7 +116,15 @@ def is_injector_ready(parameter: Any, name: str, bound_args: BoundArguments):
     return is_injector and name not in bound_args.arguments
 
 
-def get_injectors_from_function(
+def is_injected_ready(parameter: Any, name: str, bound_args: BoundArguments):
+    """
+    Is parameter an injector and the value is not provided in the call.
+    """
+    is_injected = isinstance(parameter._default, InjectorsRunner)
+    return is_injected and name not in bound_args.arguments
+
+
+def get_injectors(
     method: Callable, args: List, kwargs: Dict
 ) -> Iterable[Tuple[str, Callable]]:
     """
@@ -121,6 +135,18 @@ def get_injectors_from_function(
 
     for name, parameter in sig._parameters.items():
         if is_injector_ready(parameter, name, bound_args):
+            yield name, parameter._default
+
+
+def get_runners(
+    method: Callable, args: List, kwargs: Dict
+) -> Iterable[Tuple[str, Callable]]:
+    """ """
+    sig = signature(method)
+    bound_args = sig.bind_partial(*args, **kwargs)
+
+    for name, parameter in sig._parameters.items():
+        if is_injected_ready(parameter, name, bound_args):
             yield name, parameter._default
 
 

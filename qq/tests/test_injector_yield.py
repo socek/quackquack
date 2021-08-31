@@ -6,7 +6,7 @@ from pytest import fixture
 
 from qq.context import Context
 from qq.injector import ContextManagerInjector
-from qq.injector import InitializeInjectors
+from qq.injector import InjectApplication
 from qq.injector import Injector
 
 
@@ -54,7 +54,7 @@ class TestReturnInjector(Fixtures):
             assert data["name"] == 1
             return obj
 
-        return InitializeInjectors(mapp)(fun)
+        return InjectApplication(mapp)(fun)
 
     def test_yielding(self, data, examplefun):
         assert data["name"] == 0
@@ -79,7 +79,7 @@ class TestYieldInjector(Fixtures):
             assert data["name"] == 1
             return obj
 
-        return InitializeInjectors(mapp)(fun)
+        return InjectApplication(mapp)(fun)
 
     def test_yielding(self, data, examplefun):
         assert data["name"] == 0
@@ -106,7 +106,7 @@ class TestContextManagerInjector(Fixtures):
             assert data["name"] == 1
             return obj
 
-        return InitializeInjectors(mapp)(fun)
+        return InjectApplication(mapp)(fun)
 
     def test_context_manager(self, data, examplefun):
         assert data["name"] == 0

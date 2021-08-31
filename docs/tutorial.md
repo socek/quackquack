@@ -90,17 +90,17 @@ for injecting values from context into methods and functions. Injectors are pass
 to the function as default arguments, so if you need to inject dependecy (for
 example in tests), you can just pass the argument when calling. In order to
 initialize the injectors, you need to to decorate function with
-InitializeInjectors decorator.
+InjectApplication decorator.
 
 
 ```python
 
-from qq import InitializeInjectors, SimpleInjector
+from qq import InjectApplication, SimpleInjector
 
 app = MyApplication()
 
 
-@InitializeInjectors(app)
+@InjectApplication(app)
 def fun(something, settings = SimpleInjector("settings")):
     print(settings)
 
