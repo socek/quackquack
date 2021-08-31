@@ -1,0 +1,29 @@
+.. Quack Quack documentation master file, created by
+   sphinx-quickstart on Wed Sep  1 00:12:58 2021.
+   You can adapt this file completely to your liking, but it should at least
+   contain the root `toctree` directive.
+
+***********
+Quack Quack
+***********
+
+If it quacks like a quack, then it's a Quack Quack.
+Version: 1.0.4
+
+.. toctree::
+   :caption: Table of Contents
+   :numbered:
+   :maxdepth: 3
+
+   docs/about
+   docs/tutorial
+   docs/plugins
+   docs/phases
+   docs/CHANGELOG
+
+Indices and tables
+==================
+
+* :ref:`genindex`
+* :ref:`modindex`
+* :ref:`search`
