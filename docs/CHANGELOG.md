@@ -4,6 +4,40 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning]
 (http://semver.org/).
 
+## 1.0.4
+
+### Added
+
+- Injectors can have injectors in arguments. Application object will be forwarded from to the top to the bottom.
+- @InjectApplication (or @InitializeInjectors before) functions now can have another @InjectApplication functions in default arguments. Application object will be forwarded from to the top to the bottom.
+
+### Changed
+
+- Renamed InitializeInjectors into InjectApplication
+
+### Fixed
+
+- Starting and running of injectors.
+
+## 1.0.3
+
+### Fixed
+
+- Add missing const for settings plugin.
+
+
+## 1.0.2
+
+### Fixed
+
+- Release fix: the release configuration was broken, but the code did not changed (yes, second time :/).
+
+## 1.0.1
+
+### Fixed
+
+- Release fix: the release configuration was broken, but the code did not changed.
+
 ## 1.0.0
 
 - Changed name from sapp to Quack Quack
