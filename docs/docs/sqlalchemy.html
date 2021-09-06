@@ -1,0 +1,379 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>SQLAlchemy Plugin &mdash; Quack Quack 1.0.4 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> Quack Quack
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption" role="heading"><span class="caption-text">Table of Contents</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="about.html">1. About</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial.html">2. Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="plugins.html">3. Plugins</a></li>
+<li class="toctree-l1"><a class="reference internal" href="phases.html">4. Phases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html">5. Changelog</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Quack Quack</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>SQLAlchemy Plugin</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="../_sources/docs/sqlalchemy.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <section id="sqlalchemy-plugin">
+<h1>SQLAlchemy Plugin<a class="headerlink" href="#sqlalchemy-plugin" title="Permalink to this headline">¶</a></h1>
+<section id="about">
+<h2>About<a class="headerlink" href="#about" title="Permalink to this headline">¶</a></h2>
+<p>SQLAlchemy plugin is just a wrapper for SQLAlchemy. This plugin allows starting
+database session at context phase start and closing it at context phase end.</p>
+</section>
+<section id="dependencies">
+<h2>Dependencies<a class="headerlink" href="#dependencies" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p>SettingsPlugin</p></li>
+</ul>
+</section>
+<section id="example-implementation">
+<h2>Example implementation<a class="headerlink" href="#example-implementation" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">qq</span> <span class="kn">import</span> <span class="n">Application</span>
+<span class="kn">from</span> <span class="nn">qq.plugins.settings</span> <span class="kn">import</span> <span class="n">SettingsPlugin</span>
+<span class="kn">from</span> <span class="nn">qq.plugins.sqlalchemy.plugin</span> <span class="kn">import</span> <span class="n">SqlAlchemyPlugin</span>
+
+<span class="k">class</span> <span class="nc">MyApplication</span><span class="p">(</span><span class="n">Application</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">create_plugins</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">plugins</span><span class="p">[</span><span class="s2">&quot;settings&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">SettingsPlugin</span><span class="p">(</span><span class="s2">&quot;myapp.application.settings&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">plugins</span><span class="p">[</span><span class="s2">&quot;dbsession&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">SqlAlchemyPlugin</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Before you cane use this code, you need to make proper settings. Example:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">default</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Settings</span><span class="p">:</span>
+    <span class="n">settings</span> <span class="o">=</span> <span class="n">Settings</span><span class="p">()</span>
+    <span class="n">settings</span><span class="p">[</span><span class="s2">&quot;dbsession&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">database</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">settings</span>
+
+<span class="k">def</span> <span class="nf">database</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Settings</span><span class="p">:</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">get_env</span><span class="p">(</span><span class="s2">&quot;DB_NAME&quot;</span><span class="p">)</span>
+    <span class="n">user</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">get_env</span><span class="p">(</span><span class="s2">&quot;DB_USER&quot;</span><span class="p">)</span>
+    <span class="n">password</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">get_env</span><span class="p">(</span><span class="s2">&quot;DB_PASSWORD&quot;</span><span class="p">)</span>
+    <span class="n">host</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">get_env</span><span class="p">(</span><span class="s2">&quot;DB_HOST&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">{</span>
+        <span class="s2">&quot;url&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;postgresql://</span><span class="si">{</span><span class="n">user</span><span class="si">}</span><span class="s2">:</span><span class="si">{</span><span class="n">password</span><span class="si">}</span><span class="s2">@</span><span class="si">{</span><span class="n">host</span><span class="si">}</span><span class="s2">:5432/</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;options&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;pool_recycle&quot;</span><span class="p">:</span> <span class="n">os</span><span class="o">.</span><span class="n">get_env</span><span class="p">(</span><span class="s2">&quot;DB_POOL_RECYCLE&quot;</span><span class="p">,</span> <span class="mi">3600</span><span class="p">,</span> <span class="n">cast</span><span class="o">=</span><span class="nb">int</span><span class="p">),</span>
+            <span class="s2">&quot;pool_pre_ping&quot;</span><span class="p">:</span> <span class="n">os</span><span class="o">.</span><span class="n">get_env</span><span class="p">(</span><span class="s2">&quot;DB_PRE_PING&quot;</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="n">cast</span><span class="o">=</span><span class="nb">bool</span><span class="p">),</span>
+            <span class="s2">&quot;pool_size&quot;</span><span class="p">:</span> <span class="n">os</span><span class="o">.</span><span class="n">get_env</span><span class="p">(</span><span class="s2">&quot;DB_SIZE&quot;</span><span class="p">,</span> <span class="mi">40</span><span class="p">,</span> <span class="n">cast</span><span class="o">=</span><span class="nb">int</span><span class="p">),</span>
+            <span class="s2">&quot;max_overflow&quot;</span><span class="p">:</span> <span class="n">os</span><span class="o">.</span><span class="n">get_env</span><span class="p">(</span><span class="s2">&quot;DB_OVERFLOW&quot;</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="n">cast</span><span class="o">=</span><span class="nb">int</span><span class="p">),</span>
+        <span class="p">},</span>
+    <span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="settings-description">
+<h2>Settings description<a class="headerlink" href="#settings-description" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p>url - sqlalchemy url for the database</p></li>
+<li><p>options - dict of options which will be passed to a <code class="docutils literal notranslate"><span class="pre">sqlalchemy.engine.create_engine</span></code>.
+For more info visit <a class="reference external" href="http://docs.sqlalchemy.org/en/latest/core/engines.html#sqlalchemy.create_engine">SQLAlchemy docs</a></p></li>
+</ul>
+</section>
+<section id="defining-sql-table">
+<h2>Defining sql table<a class="headerlink" href="#defining-sql-table" title="Permalink to this headline">¶</a></h2>
+<p>All tables should be defined using SqlAchemy’s ORM. Code below is a simple
+definition of base table.</p>
+<p>Also it implements TableFinder which is used for searching all defined tables
+in our package. This will be used in the Alembic integration.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
+<span class="kn">from</span> <span class="nn">uuid</span> <span class="kn">import</span> <span class="n">uuid4</span>
+
+<span class="kn">from</span> <span class="nn">qq.finder</span> <span class="kn">import</span> <span class="n">ObjectFinder</span>
+<span class="kn">from</span> <span class="nn">sqlalchemy</span> <span class="kn">import</span> <span class="n">Column</span>
+<span class="kn">from</span> <span class="nn">sqlalchemy</span> <span class="kn">import</span> <span class="n">DateTime</span>
+<span class="kn">from</span> <span class="nn">sqlalchemy</span> <span class="kn">import</span> <span class="n">Integer</span>
+<span class="kn">from</span> <span class="nn">sqlalchemy.dialects.postgresql</span> <span class="kn">import</span> <span class="n">UUID</span>
+<span class="kn">from</span> <span class="nn">sqlalchemy.ext.declarative</span> <span class="kn">import</span> <span class="n">declarative_base</span>
+<span class="kn">from</span> <span class="nn">sqlalchemy.schema</span> <span class="kn">import</span> <span class="n">MetaData</span>
+
+<span class="c1"># Recommended naming convention used by Alembic, as various different database</span>
+<span class="c1"># providers will autogenerate vastly different names making migrations more</span>
+<span class="c1"># difficult. See: http://alembic.zzzcomputing.com/en/latest/naming.html</span>
+<span class="n">NAMING_CONVENTION</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;ix&quot;</span><span class="p">:</span> <span class="s2">&quot;ix_</span><span class="si">%(column_0_label)s</span><span class="s2">&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;uq&quot;</span><span class="p">:</span> <span class="s2">&quot;uq_</span><span class="si">%(table_name)s</span><span class="s2">_</span><span class="si">%(column_0_name)s</span><span class="s2">&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;ck&quot;</span><span class="p">:</span> <span class="s2">&quot;ck_</span><span class="si">%(table_name)s</span><span class="s2">_</span><span class="si">%(constraint_name)s</span><span class="s2">&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;fk&quot;</span><span class="p">:</span> <span class="s2">&quot;fk_</span><span class="si">%(table_name)s</span><span class="s2">_</span><span class="si">%(column_0_name)s</span><span class="s2">_</span><span class="si">%(referred_table_name)s</span><span class="s2">&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;pk&quot;</span><span class="p">:</span> <span class="s2">&quot;pk_</span><span class="si">%(table_name)s</span><span class="s2">&quot;</span><span class="p">,</span>
+<span class="p">}</span>
+<span class="n">metadata</span> <span class="o">=</span> <span class="n">MetaData</span><span class="p">(</span><span class="n">naming_convention</span><span class="o">=</span><span class="n">NAMING_CONVENTION</span><span class="p">)</span>
+
+
+<span class="k">class</span> <span class="nc">Base</span><span class="p">:</span>
+    <span class="nb">id</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span><span class="n">UUID</span><span class="p">(</span><span class="n">as_uuid</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span> <span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="n">uuid4</span><span class="p">,</span> <span class="n">unique</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">nullable</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">created_at</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span><span class="n">DateTime</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">utcnow</span><span class="p">)</span>
+    <span class="n">updated_at</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span><span class="n">DateTime</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">utcnow</span><span class="p">,</span> <span class="n">onupdate</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">utcnow</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_asdict</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">)</span>
+        <span class="k">del</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;_sa_instance_state&quot;</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">data</span>
+
+
+<span class="k">class</span> <span class="nc">TableFinder</span><span class="p">(</span><span class="n">ObjectFinder</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">is_collectable</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">element</span><span class="p">:</span> <span class="nb">object</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">issubclass</span><span class="p">(</span><span class="n">element</span><span class="p">,</span> <span class="n">SqlTable</span><span class="p">)</span> <span class="ow">and</span> <span class="n">element</span> <span class="o">!=</span> <span class="n">SqlTable</span>
+        <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span>
+
+
+<span class="n">SqlTable</span> <span class="o">=</span> <span class="n">declarative_base</span><span class="p">(</span><span class="bp">cls</span><span class="o">=</span><span class="n">Base</span><span class="p">,</span> <span class="n">metadata</span><span class="o">=</span><span class="n">metadata</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="using-in-context">
+<h2>Using in context<a class="headerlink" href="#using-in-context" title="Permalink to this headline">¶</a></h2>
+<p>In order to use the database in the context, just get the main key from the
+context like this (assuming your main key is “dbsession”):</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">app</span> <span class="k">as</span> <span class="n">context</span><span class="p">:</span>
+  <span class="n">context</span><span class="p">[</span><span class="s2">&quot;dbsession&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">User</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+<section id="using-injectors">
+<h2>Using injectors<a class="headerlink" href="#using-injectors" title="Permalink to this headline">¶</a></h2>
+<p>SQL like database has transactions. In order to use this transactions in efficent
+way the plugin comes with two injectors:</p>
+<ul class="simple">
+<li><dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">qq.plugins.sqlalchemy.injectors.SAQuery</span></code> - which gives the</dt><dd><p><code class="docutils literal notranslate"><span class="pre">sqlalchemy.orm.Session</span></code> object, which is ready to use</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">qq.plugins.sqlalchemy.injectors.SACommand</span></code> - which gives the</dt><dd><p><code class="docutils literal notranslate"><span class="pre">sqlalchemy.orm.Session</span></code> object as well, but after the function is completed
+it will commit the changes (or do only the .flush() if the <code class="docutils literal notranslate"><span class="pre">tests</span></code> option is
+set to True)</p>
+</dd>
+</dl>
+</li>
+</ul>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">qq.plugins.sqlalchemy.injectors</span> <span class="kn">import</span> <span class="n">SAQuery</span>
+<span class="kn">from</span> <span class="nn">qq.plugins.sqlalchemy.injectors</span> <span class="kn">import</span> <span class="n">SACommand</span>
+
+<span class="n">query</span> <span class="o">=</span> <span class="n">SAQuery</span><span class="p">(</span><span class="s2">&quot;dbsession&quot;</span><span class="p">)</span>
+<span class="n">command</span> <span class="o">=</span> <span class="n">SACommand</span><span class="p">(</span><span class="s2">&quot;dbsession&quot;</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">example_query</span><span class="p">(</span><span class="n">db</span> <span class="o">=</span> <span class="n">query</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">db</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">User</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+
+<span class="k">def</span> <span class="nf">example_command</span><span class="p">(</span><span class="n">db</span> <span class="o">=</span> <span class="n">command</span><span class="p">):</span>
+    <span class="n">db</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">User</span><span class="p">())</span>
+</pre></div>
+</div>
+</section>
+<section id="integrate-with-alembic">
+<h2>Integrate with Alembic<a class="headerlink" href="#integrate-with-alembic" title="Permalink to this headline">¶</a></h2>
+<p>Alembic is a library to manage migrations. Alembic makes a folder for the version
+changes. This folder contains “env.py” file, which we need to change like this:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">qq.plugins.sqlalchemy.alembic</span> <span class="kn">import</span> <span class="n">run_migrations</span>
+
+<span class="kn">from</span> <span class="nn">PACKAGE</span> <span class="kn">import</span> <span class="n">application</span>
+<span class="kn">from</span> <span class="nn">PACKAGE.app.db</span> <span class="kn">import</span> <span class="n">SqlTable</span>
+<span class="kn">from</span> <span class="nn">PACKAGE.app.db</span> <span class="kn">import</span> <span class="n">TableFinder</span>
+
+<span class="n">application</span><span class="o">.</span><span class="n">start</span><span class="p">(</span><span class="s2">&quot;default&quot;</span><span class="p">)</span>
+<span class="n">TableFinder</span><span class="p">([</span><span class="n">DOTTED_PATH_TO_PACKAGES</span><span class="p">],</span> <span class="p">[</span><span class="n">DOTTED_PATH_TO_MODULES_TO_IGNORE</span><span class="p">])</span><span class="o">.</span><span class="n">find</span><span class="p">()</span>
+<span class="n">run_migrations</span><span class="p">(</span><span class="n">application</span><span class="o">.</span><span class="n">globals</span><span class="p">[</span><span class="s2">&quot;dbsession&quot;</span><span class="p">],</span> <span class="n">SqlTable</span><span class="o">.</span><span class="n">metadata</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>First, you need to import the app object and base Model if you use SQLAlchemy
+ORM. Also, you need to import all the models in this file, if you want to use
+“–autogenerate”. Last, but not least you need to run AlembicScript.</p>
+<p>For more info, you can go to the Alembic <a class="reference external" href="http://alembic.zzzcomputing.com/en/latest/">documentation</a></p>
+</section>
+</section>
+
+
+           </div>
+           
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2021, Dominik &#34;Socek&#34; Długajczyk.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

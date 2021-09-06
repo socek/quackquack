@@ -1,0 +1,288 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>4. Phases &mdash; Quack Quack 1.0.4 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="5. Changelog" href="CHANGELOG.html" />
+    <link rel="prev" title="3. Plugins" href="plugins.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> Quack Quack
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption" role="heading"><span class="caption-text">Table of Contents</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="about.html">1. About</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial.html">2. Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="plugins.html">3. Plugins</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">4. Phases</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#about">4.1. About</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#phase-0">4.2. Phase 0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#phase-1-creating-application-instance">4.3. Phase 1 - creating Application instance</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#phase-2-starting-application">4.4. Phase 2 - starting Application</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#extending-phases">4.5. Extending Phases</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#context-phase-start">4.6. Context Phase Start</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#context-phase-end">4.7. Context Phase End</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html">5. Changelog</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Quack Quack</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li><span class="section-number">4. </span>Phases</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="../_sources/docs/phases.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <section id="phases">
+<h1><span class="section-number">4. </span>Phases<a class="headerlink" href="#phases" title="Permalink to this headline">¶</a></h1>
+<section id="about">
+<h2><span class="section-number">4.1. </span>About<a class="headerlink" href="#about" title="Permalink to this headline">¶</a></h2>
+<p>The Application class was designed, so the configuration will always be run in
+proper order. This needs to be sliced in phases, so the developer will know
+in which order the plugin that was implemented will be executed.</p>
+</section>
+<section id="phase-0">
+<h2><span class="section-number">4.2. </span>Phase 0<a class="headerlink" href="#phase-0" title="Permalink to this headline">¶</a></h2>
+<p>Before creating the Application instance, you can set something here, like
+logging. But please don’t use this phase very often. You should always try
+to implement a plugin, because the plugins can use other plugins (for example
+plugin for settings).</p>
+</section>
+<section id="phase-1-creating-application-instance">
+<h2><span class="section-number">4.3. </span>Phase 1 - creating Application instance<a class="headerlink" href="#phase-1-creating-application-instance" title="Permalink to this headline">¶</a></h2>
+<p>This phase is not doing too much. It is executed when the Application instance
+is created. It sets up the Application instance, so from now on, you can start
+the Application. This is the <code class="docutils literal notranslate"><span class="pre">__init__</span></code> method of the Application class, so
+if you want to extend this phase, you should overwrite this method.</p>
+</section>
+<section id="phase-2-starting-application">
+<h2><span class="section-number">4.4. </span>Phase 2 - starting Application<a class="headerlink" href="#phase-2-starting-application" title="Permalink to this headline">¶</a></h2>
+<p>This is where all the main stuff happen. This phase will start the plugins
+(by start, I mean attach some data to the application). The plugins are started
+in order of add order from <code class="docutils literal notranslate"><span class="pre">create_plugins</span></code> method. You should be careful about
+the order.
+For example, for minimal application, you should start Settings plugin at first,
+and the logging after that, because logging is using the settings to configure
+logger. This example is for default Settings and Logging plugins which comes
+with the Sapp package.
+You should also implement plugins in a way, so if you will have 2 Application
+instances from the same class and you will start them in the same process with
+the same arguments, you will have the same objects. It is because you can not be
+sure when the Application will be started, and debbuing two different instances
+of Application will be very hard if they are different.</p>
+<p>From now on, you can use application as context manager.</p>
+</section>
+<section id="extending-phases">
+<h2><span class="section-number">4.5. </span>Extending Phases<a class="headerlink" href="#extending-phases" title="Permalink to this headline">¶</a></h2>
+<p>You can create your own phases on top of the existing ones. For example, if you
+have Celery and Pyramid application, you would need to have pyramid phase. This
+phase would execute tha Phase 2 at the beggining, and then run all the plugins,
+with the new phase. So now, the Celery application would not start web plugins.</p>
+</section>
+<section id="context-phase-start">
+<h2><span class="section-number">4.6. </span>Context Phase Start<a class="headerlink" href="#context-phase-start" title="Permalink to this headline">¶</a></h2>
+<p>This is where the application will be used as the context manager. This is the
+enter step. Application will execute .start method on all the Plugins in order
+of add order from <code class="docutils literal notranslate"><span class="pre">create_plugins</span></code> method. The responsibility of the plugins
+is to add vars into the Application object.
+For example, database plugin will start the session here in paste the session
+into the application instance.</p>
+</section>
+<section id="context-phase-end">
+<h2><span class="section-number">4.7. </span>Context Phase End<a class="headerlink" href="#context-phase-end" title="Permalink to this headline">¶</a></h2>
+<p>This is the exit step. Application will execute .exit method on all the Plugins in REVERSED
+order of add order from <code class="docutils literal notranslate"><span class="pre">create_plugins</span></code> method.
+For exampple, database plugin will start the session before another plugin will
+us it. The exit will close th session.
+So the database plun should start before other plugin and end after the other
+plugin. That is why the Phase End will execute plugins in reversed order.</p>
+</section>
+</section>
+
+
+           </div>
+           
+          </div>
+          <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+        <a href="CHANGELOG.html" class="btn btn-neutral float-right" title="5. Changelog" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="plugins.html" class="btn btn-neutral float-left" title="3. Plugins" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2021, Dominik &#34;Socek&#34; Długajczyk.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

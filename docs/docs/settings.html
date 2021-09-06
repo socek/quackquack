@@ -1,0 +1,375 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>Settings &mdash; Quack Quack 1.0.4 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> Quack Quack
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption" role="heading"><span class="caption-text">Table of Contents</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="about.html">1. About</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial.html">2. Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="plugins.html">3. Plugins</a></li>
+<li class="toctree-l1"><a class="reference internal" href="phases.html">4. Phases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html">5. Changelog</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Quack Quack</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>Settings</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="../_sources/docs/settings.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <section id="settings">
+<h1>Settings<a class="headerlink" href="#settings" title="Permalink to this headline">¶</a></h1>
+<section id="history-and-concept">
+<h2>History and concept<a class="headerlink" href="#history-and-concept" title="Permalink to this headline">¶</a></h2>
+<p>Settings plugin was designed to make object of all the settings of the application,
+which can be gather during the start of the application. There are many different
+ways to achive this (Django uses simple python modules, Paster uses .ini file).
+This mechanism needs to be simple as it can be, because we do not need anything
+complicated here. We just want to get/set values depending on what part of the application
+we want to use (different settings for web application, another for task workers
+and totally different settings for tests). The advandtage of the Django’s way
+is that we can import modules on the fly, so we can decide which setting to use
+depending on what do we want to use (run application or only tests). .ini files
+does not gives us such flexability.</p>
+<p>I do not like the Django way, because it is hard to make nice Python’s code. In
+many Django’s setting files I have seen code, that would be not accetable in
+other places due to the code smell (like dynamic imports, strange indentations
+and so on).</p>
+</section>
+<section id="implementing-settings">
+<h2>Implementing settings<a class="headerlink" href="#implementing-settings" title="Permalink to this headline">¶</a></h2>
+<p>Simple Python’s dict should be enough to serve as settings container. It should
+be generated in one place so reading the settings will be simple. Spliting code
+in a parts(the database’s settings will be in one place and the settings for web
+application in another place) can be achived by using simple functions.</p>
+<p>The only “magic” mechanism will be to choose proper settings for proper
+“startpoint” (for example startpoint=”webapp” or startpoint=”tests”). All the
+starpoints should prepere the same default options, which can be changed in the
+future.</p>
+<p>Example code:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">myapp.application.settings.webapp</span> <span class="kn">import</span> <span class="n">webapp_specific</span>
+<span class="kn">from</span> <span class="nn">myapp.application.settings.tests</span> <span class="kn">import</span> <span class="n">tests_specific</span>
+<span class="kn">from</span> <span class="nn">qq.plugins.types</span> <span class="kn">import</span> <span class="n">Settings</span>
+
+
+<span class="k">def</span> <span class="nf">_default</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Settings</span><span class="p">:</span>
+    <span class="n">settings</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s1">&#39;project_name&#39;</span><span class="p">:</span> <span class="s1">&#39;example project name&#39;</span><span class="p">,</span>
+        <span class="s2">&quot;database&quot;</span><span class="p">:</span> <span class="n">database</span><span class="p">(),</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="n">settings</span>
+
+<span class="k">def</span> <span class="nf">database</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Settings</span><span class="p">:</span>
+    <span class="k">return</span> <span class="p">{</span>
+        <span class="s2">&quot;db&quot;</span><span class="p">:</span> <span class="s2">&quot;something&quot;</span><span class="p">,</span>
+    <span class="p">}</span>
+
+<span class="k">def</span> <span class="nf">webapp</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Settings</span><span class="p">:</span>
+    <span class="n">settings</span> <span class="o">=</span> <span class="n">_default</span><span class="p">()</span>
+    <span class="n">webapp_specific</span><span class="p">(</span><span class="n">settings</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">settings</span>
+
+<span class="k">def</span> <span class="nf">tests</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Settings</span><span class="p">:</span>
+    <span class="n">settings</span> <span class="o">=</span> <span class="n">_default</span><span class="p">()</span>
+    <span class="n">webapp_specific</span><span class="p">(</span><span class="n">settings</span><span class="p">)</span>
+    <span class="n">tests_specific</span><span class="p">(</span><span class="n">settings</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">settings</span>
+</pre></div>
+</div>
+<p>Here we have 2 startpoints: “webapp” and “tests”. Now we need to add this plugin
+to the configurator.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">qq</span> <span class="kn">import</span> <span class="n">Application</span>
+<span class="kn">from</span> <span class="nn">qq.plugins</span> <span class="kn">import</span> <span class="n">SettingsPlugin</span>
+
+<span class="k">class</span> <span class="nc">Myapp</span><span class="p">(</span><span class="n">Application</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">create_plugins</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">plugins</span><span class="p">[</span><span class="n">SettingsPlugin</span><span class="o">.</span><span class="n">DEFAULT_KEY</span><span class="p">]</span> <span class="o">=</span> <span class="n">SettingsPlugin</span><span class="p">(</span><span class="s1">&#39;path.to.settings&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Now, we can create functions which will be execute by external mechanism (tests
+function for example can be executed by pytest).</p>
+<p><code class="docutils literal notranslate"><span class="pre">create_wsgi_app</span></code> method is something from Pyramid plugin. Please go there for
+more info.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">myapp</span> <span class="kn">import</span> <span class="n">app</span>
+
+
+<span class="k">def</span> <span class="nf">uwsgi</span><span class="p">():</span>
+    <span class="n">app</span><span class="o">.</span><span class="n">start</span><span class="p">(</span><span class="s1">&#39;webapp&#39;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">app</span><span class="o">.</span><span class="n">create_wsgi_app</span><span class="p">()</span>
+
+
+<span class="k">def</span> <span class="nf">tests</span><span class="p">():</span>
+    <span class="n">app</span><span class="o">.</span><span class="n">start</span><span class="p">(</span><span class="s1">&#39;tests&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>For getting values from settings, you can get if from the context:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">qq</span> <span class="kn">import</span> <span class="n">Context</span>
+<span class="k">with</span> <span class="n">Context</span><span class="p">(</span><span class="n">app</span><span class="p">)</span> <span class="k">as</span> <span class="n">context</span><span class="p">:</span>
+    <span class="n">context</span><span class="p">[</span><span class="n">SettingsPlugin</span><span class="o">.</span><span class="n">DEFAULT_KEY</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>Also, the settings can be retrived from the application.globals[“settings”]. This was
+added because plugins will also need access to the settings.</p>
+</section>
+<section id="other-plugins-and-settings">
+<h2>Other plugins and settings<a class="headerlink" href="#other-plugins-and-settings" title="Permalink to this headline">¶</a></h2>
+<p>Settings should be divided into dicts, so every plugin should have it’s own dict
+for settings. For example, if you have 3 plugins (and Settings plugin) looking
+like this:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Myapp</span><span class="p">(</span><span class="n">Application</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">create_plugins</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">plugins</span><span class="p">[</span><span class="s2">&quot;settings&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">SettingsPlugin</span><span class="p">(</span><span class="s1">&#39;path.to.settings&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">plugins</span><span class="p">[</span><span class="s2">&quot;sql&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">SqlAlchemy</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">plugins</span><span class="p">[</span><span class="s2">&quot;redis&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">RedisPlugin</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">plugins</span><span class="p">[</span><span class="s2">&quot;secondredis&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">RedisPlugin</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">plugins</span><span class="p">[</span><span class="n">CUSTOM_PLUGIN_KEY</span><span class="p">]</span> <span class="o">=</span> <span class="n">CustomPlugin</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>In settings module it should look like this (using the same keys as the plugin):</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">default</span><span class="p">():</span>
+    <span class="n">settings</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;project_name&quot;</span><span class="p">:</span> <span class="s2">&quot;example project name&quot;</span><span class="p">,</span>
+    <span class="p">}</span>
+    <span class="n">settings</span><span class="p">[</span><span class="s2">&quot;sql&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sqlsettings</span><span class="p">()</span>
+    <span class="n">settings</span><span class="p">[</span><span class="s2">&quot;redis&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">redissettings</span><span class="p">(</span><span class="n">settings</span><span class="p">)</span>
+    <span class="n">settings</span><span class="p">[</span><span class="s2">&quot;secondredis&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">secondredissettings</span><span class="p">(</span><span class="n">settings</span><span class="p">)</span>
+    <span class="n">settings</span><span class="p">[</span><span class="n">CUSTOM_PLUGIN_KEY</span><span class="p">]</span> <span class="o">=</span> <span class="n">customsettings</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">settings</span>
+
+<span class="k">def</span> <span class="nf">sqlsettings</span><span class="p">():</span>
+    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;host&quot;</span><span class="p">:</span> <span class="s2">&quot;localhost&quot;</span><span class="p">}</span>
+
+<span class="k">def</span> <span class="nf">redissettings</span><span class="p">(</span><span class="n">settings</span><span class="p">):</span>
+    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;host&quot;</span><span class="p">:</span> <span class="s2">&quot;localhost&quot;</span><span class="p">,</span> <span class="s2">&quot;db&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">}</span>
+
+<span class="k">def</span> <span class="nf">secondredissettings</span><span class="p">(</span><span class="n">settings</span><span class="p">):</span>
+    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;host&quot;</span><span class="p">:</span> <span class="s2">&quot;localhost&quot;</span><span class="p">,</span> <span class="s2">&quot;db&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">}</span>
+
+<span class="k">def</span> <span class="nf">customsettings</span><span class="p">():</span>
+    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;options&quot;</span><span class="p">:</span> <span class="s2">&quot;something&quot;</span><span class="p">}</span>
+</pre></div>
+</div>
+<p>Implementing custom plugins with settings is also simple. You need to inherit from
+<code class="docutils literal notranslate"><span class="pre">SettingsBasedPlugin</span></code> and use <code class="docutils literal notranslate"><span class="pre">get_my_settings</span></code> method to get the proper settings.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">qq.plugins.settings</span> <span class="kn">import</span> <span class="n">SettingsBasedPlugin</span>
+
+<span class="k">class</span> <span class="nc">CustomPlugin</span><span class="p">(</span><span class="n">SettingsBasedPlugin</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">application</span><span class="p">:</span> <span class="n">Application</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+        <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_my_settings</span><span class="p">(</span><span class="n">application</span><span class="p">)</span> <span class="o">==</span> <span class="p">{</span><span class="s2">&quot;options&quot;</span><span class="p">:</span> <span class="s2">&quot;something&quot;</span><span class="p">}</span>
+
+    <span class="k">def</span> <span class="nf">enter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="n">Context</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+        <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_my_settings</span><span class="p">(</span><span class="n">context</span><span class="p">)</span> <span class="o">==</span> <span class="p">{</span><span class="s2">&quot;options&quot;</span><span class="p">:</span> <span class="s2">&quot;something&quot;</span><span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="implementing-paths-settings">
+<h2>Implementing paths settings<a class="headerlink" href="#implementing-paths-settings" title="Permalink to this headline">¶</a></h2>
+<p>If you wish to configure paths to settings, a simple dict can not be enough.
+Our proposition is to have prefixed dict, in which you specify prefix once,
+and all paths will be prefixed.</p>
+<p>Example:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">qq.plugins.settings</span> <span class="kn">import</span> <span class="n">PrefixedStringsDict</span>
+
+<span class="k">def</span> <span class="nf">default</span><span class="p">():</span>
+    <span class="n">paths</span> <span class="o">=</span> <span class="n">PrefixedStringsDict</span><span class="p">(</span><span class="s1">&#39;/code/&#39;</span><span class="p">)</span>
+    <span class="n">paths</span><span class="p">[</span><span class="s1">&#39;app.ini&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;app.ini&#39;</span>
+    <span class="k">assert</span> <span class="n">paths</span><span class="p">[</span><span class="s1">&#39;app.ini&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;/code/app.ini&#39;</span>
+
+    <span class="n">settings</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s1">&#39;paths&#39;</span><span class="p">:</span> <span class="n">paths</span><span class="p">,</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="n">settings</span>
+</pre></div>
+</div>
+</section>
+</section>
+
+
+           </div>
+           
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2021, Dominik &#34;Socek&#34; Długajczyk.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
