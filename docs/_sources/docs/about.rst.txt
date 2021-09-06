@@ -24,18 +24,23 @@ the application. After that you can use the configurator as context manager.
 
 .. code-block:: python
 
-   from qq import Application, Context
-   from qq.plugins import SettingsPlugin
+    from qq import Application, Context, InjectApplication, SimpleInjector
+    from qq.plugins import SettingsPlugin
+    from qq.plugins.types import Settings
 
-   class MyApplication(Application):
-       def create_plugins(self):
-           self.plugins["settings"] = SettingsPlugin('settings')
+    class MyApplication(Application):
+        def create_plugins(self):
+            self.plugins["settings"] = SettingsPlugin('settings')
 
-   application = MyApplication()
-   application.start('application')
+    application = MyApplication()
+    application.start('application')
 
-   with Context(application) as ctx:
-       print(ctx["settings"])
+    with Context(application) as ctx:
+        print(ctx["settings"])
+
+    @InjectApplication(application)
+    def samplefun(settings: Settings = SimpleInjector("settings")):
+        print(settings)
 
 ``context.settings`` in above example is variable made by the SettingsPlugin.
 If you would like to know more, please go to the `Tutorial <docs/tutorial.md>`_

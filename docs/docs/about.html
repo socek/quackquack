@@ -186,8 +186,9 @@ mechanism to implement everywhere.</p>
 <p>To use Quack Quack you need to create the application class (inherited from
 <code class="docutils literal notranslate"><span class="pre">qq.Application</span></code>) in which you need to add plugins. After configuring, you need to “start”
 the application. After that you can use the configurator as context manager.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">qq</span> <span class="kn">import</span> <span class="n">Application</span><span class="p">,</span> <span class="n">Context</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">qq</span> <span class="kn">import</span> <span class="n">Application</span><span class="p">,</span> <span class="n">Context</span><span class="p">,</span> <span class="n">InjectApplication</span><span class="p">,</span> <span class="n">SimpleInjector</span>
 <span class="kn">from</span> <span class="nn">qq.plugins</span> <span class="kn">import</span> <span class="n">SettingsPlugin</span>
+<span class="kn">from</span> <span class="nn">qq.plugins.types</span> <span class="kn">import</span> <span class="n">Settings</span>
 
 <span class="k">class</span> <span class="nc">MyApplication</span><span class="p">(</span><span class="n">Application</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">create_plugins</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -198,6 +199,10 @@ the application. After that you can use the configurator as context manager.</p>
 
 <span class="k">with</span> <span class="n">Context</span><span class="p">(</span><span class="n">application</span><span class="p">)</span> <span class="k">as</span> <span class="n">ctx</span><span class="p">:</span>
     <span class="nb">print</span><span class="p">(</span><span class="n">ctx</span><span class="p">[</span><span class="s2">&quot;settings&quot;</span><span class="p">])</span>
+
+<span class="nd">@InjectApplication</span><span class="p">(</span><span class="n">application</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">samplefun</span><span class="p">(</span><span class="n">settings</span><span class="p">:</span> <span class="n">Settings</span> <span class="o">=</span> <span class="n">SimpleInjector</span><span class="p">(</span><span class="s2">&quot;settings&quot;</span><span class="p">)):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">settings</span><span class="p">)</span>
 </pre></div>
 </div>
 <p><code class="docutils literal notranslate"><span class="pre">context.settings</span></code> in above example is variable made by the SettingsPlugin.
