@@ -8,7 +8,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>3. Plugins &mdash; Quack Quack 1.0.4 documentation</title>
+  <title>4. Plugins &mdash; Quack Quack 1.0.4 documentation</title>
   
 
   
@@ -42,8 +42,8 @@
     
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="4. Phases" href="phases.html" />
-    <link rel="prev" title="2. Tutorial" href="tutorial.html" /> 
+    <link rel="next" title="5. Phases" href="phases.html" />
+    <link rel="prev" title="3. Under the hood" href="under_the_hood.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -92,52 +92,53 @@
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="about.html">1. About</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tutorial.html">2. Tutorial</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">3. Plugins</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#settings">3.1. Settings</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#history-and-concept">3.1.1. History and concept</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#implementing-settings">3.1.2. Implementing settings</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#other-plugins-and-settings">3.1.3. Other plugins and settings</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#implementing-paths-settings">3.1.4. Implementing paths settings</a></li>
+<li class="toctree-l1"><a class="reference internal" href="under_the_hood.html">3. Under the hood</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">4. Plugins</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#settings">4.1. Settings</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#history-and-concept">4.1.1. History and concept</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#implementing-settings">4.1.2. Implementing settings</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#other-plugins-and-settings">4.1.3. Other plugins and settings</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#implementing-paths-settings">4.1.4. Implementing paths settings</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#logging">3.2. Logging</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#redis">3.3. Redis</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#pyramid-plugin">3.4. Pyramid Plugin</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#about">3.4.1. About</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id1">3.4.2. Extended Configurator</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#application-implementation">3.4.2.1. Application Implementation</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#implement-startpoint">3.4.2.2. Implement Startpoint</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#configuring-paste-and-gunicorn">3.4.2.3. Configuring Paste and Gunicorn</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#starting-development-server">3.4.2.4. Starting development server</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#creating-plugins-for-pyramid">3.4.2.5. Creating Plugins for Pyramid</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#logging">4.2. Logging</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#redis">4.3. Redis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#pyramid-plugin">4.4. Pyramid Plugin</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#about">4.4.1. About</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id1">4.4.2. Extended Configurator</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#application-implementation">4.4.2.1. Application Implementation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#implement-startpoint">4.4.2.2. Implement Startpoint</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#configuring-paste-and-gunicorn">4.4.2.3. Configuring Paste and Gunicorn</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#starting-development-server">4.4.2.4. Starting development server</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#creating-plugins-for-pyramid">4.4.2.5. Creating Plugins for Pyramid</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="#id2">3.4.3. Routing Wrapper</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#why-we-need-a-router-wrapper">3.4.3.1. Why we need a router wrapper</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#how-to-implement-routing">3.4.3.2. How to implement Routing</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id2">4.4.3. Routing Wrapper</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#why-we-need-a-router-wrapper">4.4.3.1. Why we need a router wrapper</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#how-to-implement-routing">4.4.3.2. How to implement Routing</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="#id3">3.4.4. Views</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#restfulview">3.4.4.1. RestfulView</a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="#sqlalchemy-plugin">3.5. SQLAlchemy Plugin</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#id4">3.5.1. About</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#dependencies">3.5.2. Dependencies</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#example-implementation">3.5.3. Example implementation</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#settings-description">3.5.4. Settings description</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#defining-sql-table">3.5.5. Defining sql table</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#using-in-context">3.5.6. Using in context</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#using-injectors">3.5.7. Using injectors</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#integrate-with-alembic">3.5.8. Integrate with Alembic</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id3">4.4.4. Views</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#restfulview">4.4.4.1. RestfulView</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="phases.html">4. Phases</a></li>
-<li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html">5. Changelog</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#sqlalchemy-plugin">4.5. SQLAlchemy Plugin</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id4">4.5.1. About</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#dependencies">4.5.2. Dependencies</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#example-implementation">4.5.3. Example implementation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#settings-description">4.5.4. Settings description</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#defining-sql-table">4.5.5. Defining sql table</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#using-in-context">4.5.6. Using in context</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#using-injectors">4.5.7. Using injectors</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#integrate-with-alembic">4.5.8. Integrate with Alembic</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="phases.html">5. Phases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html">6. Changelog</a></li>
 </ul>
 
             
@@ -186,7 +187,7 @@
     
       <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
         
-      <li><span class="section-number">3. </span>Plugins</li>
+      <li><span class="section-number">4. </span>Plugins</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -206,11 +207,11 @@
            <div itemprop="articleBody">
             
   <section id="plugins">
-<h1><span class="section-number">3. </span>Plugins<a class="headerlink" href="#plugins" title="Permalink to this headline">¶</a></h1>
+<h1><span class="section-number">4. </span>Plugins<a class="headerlink" href="#plugins" title="Permalink to this headline">¶</a></h1>
 <section id="settings">
-<h2><span class="section-number">3.1. </span>Settings<a class="headerlink" href="#settings" title="Permalink to this headline">¶</a></h2>
+<h2><span class="section-number">4.1. </span>Settings<a class="headerlink" href="#settings" title="Permalink to this headline">¶</a></h2>
 <section id="history-and-concept">
-<h3><span class="section-number">3.1.1. </span>History and concept<a class="headerlink" href="#history-and-concept" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">4.1.1. </span>History and concept<a class="headerlink" href="#history-and-concept" title="Permalink to this headline">¶</a></h3>
 <p>Settings plugin was designed to make object of all the settings of the application,
 which can be gather during the start of the application. There are many different
 ways to achive this (Django uses simple python modules, Paster uses .ini file).
@@ -227,7 +228,7 @@ other places due to the code smell (like dynamic imports, strange indentations
 and so on).</p>
 </section>
 <section id="implementing-settings">
-<h3><span class="section-number">3.1.2. </span>Implementing settings<a class="headerlink" href="#implementing-settings" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">4.1.2. </span>Implementing settings<a class="headerlink" href="#implementing-settings" title="Permalink to this headline">¶</a></h3>
 <p>Simple Python’s dict should be enough to serve as settings container. It should
 be generated in one place so reading the settings will be simple. Spliting code
 in a parts(the database’s settings will be in one place and the settings for web
@@ -302,7 +303,7 @@ more info.</p>
 added because plugins will also need access to the settings.</p>
 </section>
 <section id="other-plugins-and-settings">
-<h3><span class="section-number">3.1.3. </span>Other plugins and settings<a class="headerlink" href="#other-plugins-and-settings" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">4.1.3. </span>Other plugins and settings<a class="headerlink" href="#other-plugins-and-settings" title="Permalink to this headline">¶</a></h3>
 <p>Settings should be divided into dicts, so every plugin should have it’s own dict
 for settings. For example, if you have 3 plugins (and Settings plugin) looking
 like this:</p>
@@ -354,7 +355,7 @@ like this:</p>
 </div>
 </section>
 <section id="implementing-paths-settings">
-<h3><span class="section-number">3.1.4. </span>Implementing paths settings<a class="headerlink" href="#implementing-paths-settings" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">4.1.4. </span>Implementing paths settings<a class="headerlink" href="#implementing-paths-settings" title="Permalink to this headline">¶</a></h3>
 <p>If you wish to configure paths to settings, a simple dict can not be enough.
 Our proposition is to have prefixed dict, in which you specify prefix once,
 and all paths will be prefixed.</p>
@@ -375,7 +376,7 @@ and all paths will be prefixed.</p>
 </section>
 </section>
 <section id="logging">
-<h2><span class="section-number">3.2. </span>Logging<a class="headerlink" href="#logging" title="Permalink to this headline">¶</a></h2>
+<h2><span class="section-number">4.2. </span>Logging<a class="headerlink" href="#logging" title="Permalink to this headline">¶</a></h2>
 <p>Logging is a very simple plugin. It uses <code class="docutils literal notranslate"><span class="pre">logging.config.dictConfig</span></code> from the
 standard python’s library. Plugin will just get the settings[‘logging’] value
 and push it to the dictConfig. The logging will start when the Configurator
@@ -428,7 +429,7 @@ instance will be started.</p>
 </div>
 </section>
 <section id="redis">
-<h2><span class="section-number">3.3. </span>Redis<a class="headerlink" href="#redis" title="Permalink to this headline">¶</a></h2>
+<h2><span class="section-number">4.3. </span>Redis<a class="headerlink" href="#redis" title="Permalink to this headline">¶</a></h2>
 <p>This plugin connects to the Redis database. It will return <code class="docutils literal notranslate"><span class="pre">redis.Redis</span></code> connection
 to the context.</p>
 <p>In order to use it, you need to add these settings:</p>
@@ -454,9 +455,9 @@ to the context.</p>
 </div>
 </section>
 <section id="pyramid-plugin">
-<h2><span class="section-number">3.4. </span>Pyramid Plugin<a class="headerlink" href="#pyramid-plugin" title="Permalink to this headline">¶</a></h2>
+<h2><span class="section-number">4.4. </span>Pyramid Plugin<a class="headerlink" href="#pyramid-plugin" title="Permalink to this headline">¶</a></h2>
 <section id="about">
-<h3><span class="section-number">3.4.1. </span>About<a class="headerlink" href="#about" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">4.4.1. </span>About<a class="headerlink" href="#about" title="Permalink to this headline">¶</a></h3>
 <p>Pyramid Plugin is a simple set of features:</p>
 <ul class="simple">
 <li><dl class="simple">
@@ -474,13 +475,13 @@ to the context.</p>
 <p>All these features can be used separately.</p>
 </section>
 <section id="id1">
-<h3><span class="section-number">3.4.2. </span>Extended Configurator<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">4.4.2. </span>Extended Configurator<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
 <p>Pyramid Framework gives you ability to create wsgi application, which can be
 used by the uwsgi/gunicorn/etc. frameworks. Pyramid is using Paster to configure
 the wsgi application, this means you need to configure some stuff in the
 Paster/Pyramid way.</p>
 <section id="application-implementation">
-<h4><span class="section-number">3.4.2.1. </span>Application Implementation<a class="headerlink" href="#application-implementation" title="Permalink to this headline">¶</a></h4>
+<h4><span class="section-number">4.4.2.1. </span>Application Implementation<a class="headerlink" href="#application-implementation" title="Permalink to this headline">¶</a></h4>
 <p>Implementing of the Application is pretty simple. The only thing which needed to be done
 is to inherited your Application class from <code class="docutils literal notranslate"><span class="pre">PyramidApplication</span></code> insted of the
 normal configurator. The new Configurator will be responsible for running
@@ -504,7 +505,7 @@ Pyramid Plugin.</p>
 ones. More about plugins can be found <a class="reference external" href="#creating-plugins">here</a></p>
 </section>
 <section id="implement-startpoint">
-<h4><span class="section-number">3.4.2.2. </span>Implement Startpoint<a class="headerlink" href="#implement-startpoint" title="Permalink to this headline">¶</a></h4>
+<h4><span class="section-number">4.4.2.2. </span>Implement Startpoint<a class="headerlink" href="#implement-startpoint" title="Permalink to this headline">¶</a></h4>
 <p>Second step of implementing Pyramid’s Plugin is to create a startpoint. It needs
 to be a function which will return an wsgi object, which will be used by uwsgi
 and paster. In order to do that we need to start the Configurator.</p>
@@ -521,7 +522,7 @@ and paster. In order to do that we need to start the Configurator.</p>
 the function by the uwsgi or paster, but Sapp Settings does not use it at all.</p>
 </section>
 <section id="configuring-paste-and-gunicorn">
-<h4><span class="section-number">3.4.2.3. </span>Configuring Paste and Gunicorn<a class="headerlink" href="#configuring-paste-and-gunicorn" title="Permalink to this headline">¶</a></h4>
+<h4><span class="section-number">4.4.2.3. </span>Configuring Paste and Gunicorn<a class="headerlink" href="#configuring-paste-and-gunicorn" title="Permalink to this headline">¶</a></h4>
 <p>Last file to create is an app.ini. This file is an configuration for paste and
 gunicorn.</p>
 <div class="highlight-ini notranslate"><div class="highlight"><pre><span></span><span class="k">[app:main]</span>
@@ -550,7 +551,7 @@ the SettingsPlugin, so we leave this section empty.</p>
 </ul>
 </section>
 <section id="starting-development-server">
-<h4><span class="section-number">3.4.2.4. </span>Starting development server<a class="headerlink" href="#starting-development-server" title="Permalink to this headline">¶</a></h4>
+<h4><span class="section-number">4.4.2.4. </span>Starting development server<a class="headerlink" href="#starting-development-server" title="Permalink to this headline">¶</a></h4>
 <p>In order to start the development server you need to run pserve with a path for
 <code class="docutils literal notranslate"><span class="pre">app.ini</span></code> file. It is usefull also to add <code class="docutils literal notranslate"><span class="pre">--reload</span></code> switch, so the server will
 be restarting every time the python files will change.</p>
@@ -559,7 +560,7 @@ be restarting every time the python files will change.</p>
 </div>
 </section>
 <section id="creating-plugins-for-pyramid">
-<h4><span class="section-number">3.4.2.5. </span>Creating Plugins for Pyramid<a class="headerlink" href="#creating-plugins-for-pyramid" title="Permalink to this headline">¶</a></h4>
+<h4><span class="section-number">4.4.2.5. </span>Creating Plugins for Pyramid<a class="headerlink" href="#creating-plugins-for-pyramid" title="Permalink to this headline">¶</a></h4>
 <p><code class="docutils literal notranslate"><span class="pre">PyramidApplication</span></code> will run <code class="docutils literal notranslate"><span class="pre">start_pyramid(pyramid)</span></code> method for all
 plugins when running <code class="docutils literal notranslate"><span class="pre">.make_wsgi_app</span></code>. Of corse, if the application will not
 find the <code class="docutils literal notranslate"><span class="pre">start_pyramid</span></code> method, it will not raise any error, because otherwise
@@ -590,9 +591,9 @@ instance.</p>
 </section>
 </section>
 <section id="id2">
-<h3><span class="section-number">3.4.3. </span>Routing Wrapper<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">4.4.3. </span>Routing Wrapper<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
 <section id="why-we-need-a-router-wrapper">
-<h4><span class="section-number">3.4.3.1. </span>Why we need a router wrapper<a class="headerlink" href="#why-we-need-a-router-wrapper" title="Permalink to this headline">¶</a></h4>
+<h4><span class="section-number">4.4.3.1. </span>Why we need a router wrapper<a class="headerlink" href="#why-we-need-a-router-wrapper" title="Permalink to this headline">¶</a></h4>
 <p><code class="docutils literal notranslate"><span class="pre">qq.plugins.pyramid.routing.Routing</span></code> was designed to simplify creating of
 routes. In normal Pyramid, the developer needs to configure the route in one
 place and the view in another. Also, configuring is made by &#64;view_config
@@ -604,7 +605,7 @@ route and the view is made by name which is not very sophisticated and it
 is very buggable.</p>
 </section>
 <section id="how-to-implement-routing">
-<h4><span class="section-number">3.4.3.2. </span>How to implement Routing<a class="headerlink" href="#how-to-implement-routing" title="Permalink to this headline">¶</a></h4>
+<h4><span class="section-number">4.4.3.2. </span>How to implement Routing<a class="headerlink" href="#how-to-implement-routing" title="Permalink to this headline">¶</a></h4>
 <p>First step is to implement Routing class inherited from
 <code class="docutils literal notranslate"><span class="pre">qq.plugins.pyramid.routing.Routing</span></code> and make a <code class="docutils literal notranslate"><span class="pre">make(self)</span></code> method.
 This is our wrapper for normal pyramid routing. It will help us, but if you want
@@ -650,7 +651,7 @@ method. All the kwargs for this method will be taken from the view class.</p>
 </section>
 </section>
 <section id="id3">
-<h3><span class="section-number">3.4.4. </span>Views<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">4.4.4. </span>Views<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h3>
 <p>Quack Quack comes with base class for every View.</p>
 <p>Main reason to implement an view is to generate response proper response.
 The simples way to return the data is to implement <code class="docutils literal notranslate"><span class="pre">.get(self)</span></code> method and
@@ -715,27 +716,27 @@ way:</p>
 </ul>
 <p>More info about HTTP methods can be found <a class="reference external" href="https://en.wikipedia.org/wiki/Hypertext_Transfer_Protocol#Request_methods">here</a></p>
 <section id="restfulview">
-<h4><span class="section-number">3.4.4.1. </span>RestfulView<a class="headerlink" href="#restfulview" title="Permalink to this headline">¶</a></h4>
+<h4><span class="section-number">4.4.4.1. </span>RestfulView<a class="headerlink" href="#restfulview" title="Permalink to this headline">¶</a></h4>
 <p>RestfulView is a View, with JSON as renderer. So it will be more suitable for RESTful views.
 Name of methods are the same as in View class.</p>
 </section>
 </section>
 </section>
 <section id="sqlalchemy-plugin">
-<h2><span class="section-number">3.5. </span>SQLAlchemy Plugin<a class="headerlink" href="#sqlalchemy-plugin" title="Permalink to this headline">¶</a></h2>
+<h2><span class="section-number">4.5. </span>SQLAlchemy Plugin<a class="headerlink" href="#sqlalchemy-plugin" title="Permalink to this headline">¶</a></h2>
 <section id="id4">
-<h3><span class="section-number">3.5.1. </span>About<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">4.5.1. </span>About<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h3>
 <p>SQLAlchemy plugin is just a wrapper for SQLAlchemy. This plugin allows starting
 database session at context phase start and closing it at context phase end.</p>
 </section>
 <section id="dependencies">
-<h3><span class="section-number">3.5.2. </span>Dependencies<a class="headerlink" href="#dependencies" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">4.5.2. </span>Dependencies<a class="headerlink" href="#dependencies" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li><p>SettingsPlugin</p></li>
 </ul>
 </section>
 <section id="example-implementation">
-<h3><span class="section-number">3.5.3. </span>Example implementation<a class="headerlink" href="#example-implementation" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">4.5.3. </span>Example implementation<a class="headerlink" href="#example-implementation" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">qq</span> <span class="kn">import</span> <span class="n">Application</span>
 <span class="kn">from</span> <span class="nn">qq.plugins.settings</span> <span class="kn">import</span> <span class="n">SettingsPlugin</span>
 <span class="kn">from</span> <span class="nn">qq.plugins.sqlalchemy.plugin</span> <span class="kn">import</span> <span class="n">SqlAlchemyPlugin</span>
@@ -770,7 +771,7 @@ database session at context phase start and closing it at context phase end.</p>
 </div>
 </section>
 <section id="settings-description">
-<h3><span class="section-number">3.5.4. </span>Settings description<a class="headerlink" href="#settings-description" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">4.5.4. </span>Settings description<a class="headerlink" href="#settings-description" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li><p>url - sqlalchemy url for the database</p></li>
 <li><p>options - dict of options which will be passed to a <code class="docutils literal notranslate"><span class="pre">sqlalchemy.engine.create_engine</span></code>.
@@ -778,7 +779,7 @@ For more info visit <a class="reference external" href="http://docs.sqlalchemy.o
 </ul>
 </section>
 <section id="defining-sql-table">
-<h3><span class="section-number">3.5.5. </span>Defining sql table<a class="headerlink" href="#defining-sql-table" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">4.5.5. </span>Defining sql table<a class="headerlink" href="#defining-sql-table" title="Permalink to this headline">¶</a></h3>
 <p>All tables should be defined using SqlAchemy’s ORM. Code below is a simple
 definition of base table.</p>
 <p>Also it implements TableFinder which is used for searching all defined tables
@@ -831,7 +832,7 @@ in our package. This will be used in the Alembic integration.</p>
 </div>
 </section>
 <section id="using-in-context">
-<h3><span class="section-number">3.5.6. </span>Using in context<a class="headerlink" href="#using-in-context" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">4.5.6. </span>Using in context<a class="headerlink" href="#using-in-context" title="Permalink to this headline">¶</a></h3>
 <p>In order to use the database in the context, just get the main key from the
 context like this (assuming your main key is “dbsession”):</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">app</span> <span class="k">as</span> <span class="n">context</span><span class="p">:</span>
@@ -840,7 +841,7 @@ context like this (assuming your main key is “dbsession”):</p>
 </div>
 </section>
 <section id="using-injectors">
-<h3><span class="section-number">3.5.7. </span>Using injectors<a class="headerlink" href="#using-injectors" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">4.5.7. </span>Using injectors<a class="headerlink" href="#using-injectors" title="Permalink to this headline">¶</a></h3>
 <p>SQL like database has transactions. In order to use this transactions in efficent
 way the plugin comes with two injectors:</p>
 <ul class="simple">
@@ -872,7 +873,7 @@ set to True)</p>
 </div>
 </section>
 <section id="integrate-with-alembic">
-<h3><span class="section-number">3.5.8. </span>Integrate with Alembic<a class="headerlink" href="#integrate-with-alembic" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">4.5.8. </span>Integrate with Alembic<a class="headerlink" href="#integrate-with-alembic" title="Permalink to this headline">¶</a></h3>
 <p>Alembic is a library to manage migrations. Alembic makes a folder for the version
 changes. This folder contains “env.py” file, which we need to change like this:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">qq.plugins.sqlalchemy.alembic</span> <span class="kn">import</span> <span class="n">run_migrations</span>
@@ -900,8 +901,8 @@ ORM. Also, you need to import all the models in this file, if you want to use
           </div>
           <footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-        <a href="phases.html" class="btn btn-neutral float-right" title="4. Phases" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
-        <a href="tutorial.html" class="btn btn-neutral float-left" title="2. Tutorial" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="phases.html" class="btn btn-neutral float-right" title="5. Phases" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="under_the_hood.html" class="btn btn-neutral float-left" title="3. Under the hood" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
 
   <hr/>

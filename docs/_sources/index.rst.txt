@@ -17,9 +17,11 @@ Version: 1.0.4
 
    docs/about
    docs/tutorial
+   docs/under_the_hood
    docs/plugins
    docs/phases
    docs/CHANGELOG
+   docs/contributors
 
 Indices and tables
 ==================
