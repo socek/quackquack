@@ -1,74 +1,34 @@
-
-
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  
   <title>3. Models details &mdash; Quack Quack 1.0.4 documentation</title>
-  
-
-  
-  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
-
-  
-  
-
-  
-  
-
-  
-
-  
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
         <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
-    
-    <script type="text/javascript" src="../_static/js/theme.js"></script>
-
-    
+    <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="4. Plugins" href="plugins.html" />
     <link rel="prev" title="2. Tutorial" href="tutorial.html" /> 
 </head>
 
-<body class="wy-body-for-nav">
-
-   
+<body class="wy-body-for-nav"> 
   <div class="wy-grid-for-nav">
-    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-          
-
-          
             <a href="../index.html" class="icon icon-home"> Quack Quack
-          
-
-          
           </a>
-
-          
-            
-            
-          
-
-          
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -76,18 +36,7 @@
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-
-          
-        </div>
-
-        
-        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-          
-            
-            
-              
-            
-            
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">Table of Contents</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="about.html">1. About</a></li>
@@ -105,7 +54,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#exiting-context">3.3.3. Exiting context</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#injector">3.4. Injector</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#injectors-and-injectapplication">3.4. Injectors and InjectApplication</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="plugins.html">4. Plugins</a></li>
@@ -114,86 +63,45 @@
 <li class="toctree-l1"><a class="reference internal" href="contributors.html">7. Contributors</a></li>
 </ul>
 
-            
-          
         </div>
-        
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
-
-      
-      <nav class="wy-nav-top" aria-label="top navigation">
-        
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../index.html">Quack Quack</a>
-        
       </nav>
 
-
       <div class="wy-nav-content">
-        
         <div class="rst-content">
-        
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div role="navigation" aria-label="breadcrumbs navigation">
-
+          <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-    
       <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
-        
       <li><span class="section-number">3. </span>Models details</li>
-    
-    
       <li class="wy-breadcrumbs-aside">
-        
-          
             <a href="../_sources/docs/under_the_hood.rst.txt" rel="nofollow"> View page source</a>
-          
-        
       </li>
-    
   </ul>
-
-  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-            
+             
   <section id="models-details">
-<h1><span class="section-number">3. </span>Models details<a class="headerlink" href="#models-details" title="Permalink to this headline">¶</a></h1>
+<h1><span class="section-number">3. </span>Models details<a class="headerlink" href="#models-details" title="Permalink to this headline"></a></h1>
 <section id="application">
-<h2><span class="section-number">3.1. </span>Application<a class="headerlink" href="#application" title="Permalink to this headline">¶</a></h2>
+<h2><span class="section-number">3.1. </span>Application<a class="headerlink" href="#application" title="Permalink to this headline"></a></h2>
 <p>Application class is very simple. The purpose of this class is to start all the
 plugins. The two places where this is used are <cite>create_plugins</cite>  and <cite>start</cite>.</p>
 <section id="create-plugins">
-<h3><span class="section-number">3.1.1. </span>Create plugins<a class="headerlink" href="#create-plugins" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">3.1.1. </span>Create plugins<a class="headerlink" href="#create-plugins" title="Permalink to this headline"></a></h3>
 <p>This is where you will added your plugins. Your application class should inherite
-from the Application class and ovewrite the <cite>create_plugins</cite> method. In order to
+from the Application class and overwrite the <cite>create_plugins</cite> method. In order to
 add plugin you need to add plugin object to the <cite>self.plugins</cite> OrderedDict. Order
 here is important, so you can not create a simple dict. As of Python 3.6, for the
 CPython implementation of Python, dictionaries remember the order of items inserted,
 but this is implementation detail, that is why the OrderDict is used here.</p>
-<p>Dict keys of these plugins is used later on, so it is important not to ovewrite
+<p>Dict keys of these plugins is used later on, so it is important not to overwrite
 already created plugin.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">MyApplication</span><span class="p">(</span><span class="n">Application</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">create_plugins</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -212,7 +120,7 @@ in Application.globals.</p>
 the <a class="reference internal" href="#plugins"><span class="std std-ref">Plugin</span></a> section.</p>
 </section>
 <section id="application-start">
-<h3><span class="section-number">3.1.2. </span>Application Start<a class="headerlink" href="#application-start" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">3.1.2. </span>Application Start<a class="headerlink" href="#application-start" title="Permalink to this headline"></a></h3>
 <p>First step of the application should be starting (initializing) the Application
 object by simply calling the <cite>start</cite> method.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">app</span> <span class="o">=</span> <span class="n">MyApplication</span><span class="p">()</span>
@@ -244,76 +152,139 @@ in the <cite>Application.extra</cite> dict for plugins to use.</p>
 </section>
 </section>
 <section id="context">
-<h2><span class="section-number">3.2. </span>Context<a class="headerlink" href="#context" title="Permalink to this headline">¶</a></h2>
+<h2><span class="section-number">3.2. </span>Context<a class="headerlink" href="#context" title="Permalink to this headline"></a></h2>
 </section>
 <section id="plugin">
-<span id="plugins"></span><h2><span class="section-number">3.3. </span>Plugin<a class="headerlink" href="#plugin" title="Permalink to this headline">¶</a></h2>
+<span id="plugins"></span><h2><span class="section-number">3.3. </span>Plugin<a class="headerlink" href="#plugin" title="Permalink to this headline"></a></h2>
 <section id="starting">
-<h3><span class="section-number">3.3.1. </span>Starting<a class="headerlink" href="#starting" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">3.3.1. </span>Starting<a class="headerlink" href="#starting" title="Permalink to this headline"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">application</span><span class="p">:</span> <span class="n">Application</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+</pre></div>
+</div>
 <p>This is the place, when the plugins are started (initialized). If there is a
 need to do something only once (for example: read the settings), this is the
-right place for this. Plugin classes have a method <cite>start</cite> where the
-<cite>Application.globals[key]</cite></p>
+right place for this. Plugin classes have a method <cite>start</cite>. Return object will
+be put into <cite>Application.globals[key]</cite>.</p>
 </section>
 <section id="entering-context">
-<h3><span class="section-number">3.3.2. </span>Entering context<a class="headerlink" href="#entering-context" title="Permalink to this headline">¶</a></h3>
-<p><cite>Context[key]</cite></p>
+<h3><span class="section-number">3.3.2. </span>Entering context<a class="headerlink" href="#entering-context" title="Permalink to this headline"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">enter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="n">Context</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+</pre></div>
+</div>
+<p>This place will be run every time the application will be used as a context manager.
+If you nest the <cite>with</cite> statement, this part will be executed only once. Return
+of the <cite>enter</cite> method will be put into <cite>Context[key]</cite>.</p>
 </section>
 <section id="exiting-context">
-<h3><span class="section-number">3.3.3. </span>Exiting context<a class="headerlink" href="#exiting-context" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">3.3.3. </span>Exiting context<a class="headerlink" href="#exiting-context" title="Permalink to this headline"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">exit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="n">Context</span><span class="p">,</span> <span class="n">exc_type</span><span class="p">,</span> <span class="n">exc_value</span><span class="p">,</span> <span class="n">traceback</span><span class="p">):</span>
+</pre></div>
+</div>
+<p>As any other context manager, Plugin’s class have also the <cite>exit</cite> method. This
+is used to close connections or handle exceptions. Please, remember that <cite>start</cite>
+is run in order of creating in <cite>create_plugins</cite>, but <cite>exit</cite> plugins is run in
+reversed order.</p>
 </section>
 </section>
-<section id="injector">
-<h2><span class="section-number">3.4. </span>Injector<a class="headerlink" href="#injector" title="Permalink to this headline">¶</a></h2>
+<section id="injectors-and-injectapplication">
+<h2><span class="section-number">3.4. </span>Injectors and InjectApplication<a class="headerlink" href="#injectors-and-injectapplication" title="Permalink to this headline"></a></h2>
+<p>This feature is designed as a dependency injection. Injector is a function that
+gets a context and return something. This function needs to be decorated with
+<cite>Injector</cite> function.</p>
+<p>Example:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">qq.injector</span> <span class="kn">import</span> <span class="n">Injector</span>
+
+<span class="nd">@Injector</span>
+<span class="k">def</span> <span class="nf">SimpleInjector</span><span class="p">(</span><span class="n">context</span><span class="p">:</span> <span class="n">Context</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">context</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>In order to use the <cite>injector</cite>, it needs to be provided as a default var in a
+function. Also, the <cite>InjectApplication</cite> needs to be used for that function.</p>
+<p>Example:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">qq.injector</span> <span class="kn">import</span> <span class="n">InjectApplication</span>
+
+<span class="nd">@InjectApplication</span><span class="p">(</span><span class="n">application</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">fun</span><span class="p">(</span><span class="n">settings</span> <span class="o">=</span> <span class="n">SimpleInjector</span><span class="p">(</span><span class="s2">&quot;settings&quot;</span><span class="p">)):</span>
+    <span class="o">...</span>
+</pre></div>
+</div>
+<p>The <cite>InjectApplication</cite> decorator is used to initialize the injectors with
+provided application. There is no need of using <cite>Application</cite> as a context manager,
+the function will be used under a with statement. For example, above code can be
+Implemented like this:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">qq.context</span> <span class="kn">import</span> <span class="n">Context</span>
+
+<span class="k">def</span> <span class="nf">fun</span><span class="p">(</span><span class="n">settings</span><span class="p">):</span>
+    <span class="o">...</span>
+
+<span class="k">with</span> <span class="n">Context</span><span class="p">(</span><span class="n">application</span><span class="p">)</span> <span class="k">as</span> <span class="n">context</span><span class="p">:</span>
+    <span class="n">settings</span> <span class="o">=</span> <span class="n">context</span><span class="p">[</span><span class="s2">&quot;settings&quot;</span><span class="p">]</span>
+    <span class="n">fun</span><span class="p">(</span><span class="n">settings</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The advandtage of the injectors is that you do not need to pass the context value
+everywhere or use the <cite>with</cite> statement. So it mitigate the boilerplate. Also,
+you can pass arguments instead of default values in functions. This is very
+helpful in implementation of tests.</p>
+<p>Example:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@InjectApplication</span><span class="p">(</span><span class="n">application</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">fun</span><span class="p">(</span><span class="n">settings</span> <span class="o">=</span> <span class="n">SimpleInjector</span><span class="p">(</span><span class="s2">&quot;settings&quot;</span><span class="p">)):</span>
+    <span class="k">return</span> <span class="n">settings</span>
+
+<span class="k">def</span> <span class="nf">test_flow</span><span class="p">():</span>
+    <span class="n">mock</span> <span class="o">=</span> <span class="n">MagicMock</span><span class="p">()</span>
+    <span class="k">assert</span> <span class="n">fun</span><span class="p">(</span><span class="n">mock</span><span class="p">)</span> <span class="o">==</span> <span class="n">mock</span>
+</pre></div>
+</div>
+<p>The <cite>InjectApplication</cite> function can overwrite the application var, so you
+can create a function with injectors in a library, but add the application var
+later.</p>
+<p>Example:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">qq.injector</span> <span class="kn">import</span> <span class="n">InjectApplication</span>
+
+<span class="nd">@InjectApplication</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">fun</span><span class="p">(</span><span class="n">settings</span> <span class="o">=</span> <span class="n">SimpleInjector</span><span class="p">(</span><span class="s2">&quot;settings&quot;</span><span class="p">)):</span>
+    <span class="o">...</span>
+
+<span class="n">fun2</span> <span class="o">=</span> <span class="n">InjectApplication</span><span class="p">(</span><span class="n">application</span><span class="p">)(</span><span class="n">fun</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The <cite>InjectApplication</cite> will overwrite the <cite>application</cite> value in all injectors.
+If those injectors would have it’s own injectors in the arguments, those injectors
+will have the new <cite>application</cite> value as well.</p>
 </section>
 </section>
 
 
            </div>
-           
           </div>
-          <footer>
-    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-        <a href="plugins.html" class="btn btn-neutral float-right" title="4. Plugins" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="tutorial.html" class="btn btn-neutral float-left" title="2. Tutorial" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="plugins.html" class="btn btn-neutral float-right" title="4. Plugins" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
 
   <div role="contentinfo">
-    <p>
-        &#169; Copyright 2021, Dominik &#34;Socek&#34; Długajczyk.
-
-    </p>
+    <p>&#169; Copyright 2021, Dominik &#34;Socek&#34; Długajczyk.</p>
   </div>
-    
-    
-    
-    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
-    
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
     <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
-    
-    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
 
 </footer>
         </div>
       </div>
-
     </section>
-
   </div>
-  
-
-  <script type="text/javascript">
+  <script>
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-
-  
-  
-    
-   
+  </script> 
 
 </body>
 </html>

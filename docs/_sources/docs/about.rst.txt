@@ -6,8 +6,8 @@ Overview
 
 This project aims to resolve problem of configuring an application, which needs to
 have initialization step (for example: for gathering settings or establishing
-connections) and use Python style code (context managers and decorators) to get
-those data.
+connections) and use Python style code (context managers and decorators) and
+dependency injection to get those data.
 
 For example, normally you would need to use two separate mechanism for settings
 in celery application and web application, because you should not use web

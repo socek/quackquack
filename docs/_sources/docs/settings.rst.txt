@@ -111,8 +111,8 @@ For getting values from settings, you can get if from the context:
 Also, the settings can be retrived from the application.globals["settings"]. This was
 added because plugins will also need access to the settings.
 
-Other plugins and settings
---------------------------
+Other plugins that uses settings
+--------------------------------
 
 Settings should be divided into dicts, so every plugin should have it's own dict
 for settings. For example, if you have 3 plugins (and Settings plugin) looking

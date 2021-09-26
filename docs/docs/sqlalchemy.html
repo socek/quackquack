@@ -1,72 +1,32 @@
-
-
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  
   <title>SQLAlchemy Plugin &mdash; Quack Quack 1.0.4 documentation</title>
-  
-
-  
-  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
-
-  
-  
-
-  
-  
-
-  
-
-  
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
         <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
-    
-    <script type="text/javascript" src="../_static/js/theme.js"></script>
-
-    
+    <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" /> 
 </head>
 
-<body class="wy-body-for-nav">
-
-   
+<body class="wy-body-for-nav"> 
   <div class="wy-grid-for-nav">
-    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-          
-
-          
             <a href="../index.html" class="icon icon-home"> Quack Quack
-          
-
-          
           </a>
-
-          
-            
-            
-          
-
-          
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -74,107 +34,57 @@
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-
-          
-        </div>
-
-        
-        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-          
-            
-            
-              
-            
-            
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">Table of Contents</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="about.html">1. About</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tutorial.html">2. Tutorial</a></li>
-<li class="toctree-l1"><a class="reference internal" href="plugins.html">3. Plugins</a></li>
-<li class="toctree-l1"><a class="reference internal" href="phases.html">4. Phases</a></li>
-<li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html">5. Changelog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="under_the_hood.html">3. Models details</a></li>
+<li class="toctree-l1"><a class="reference internal" href="plugins.html">4. Plugins</a></li>
+<li class="toctree-l1"><a class="reference internal" href="phases.html">5. Phases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html">6. Changelog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contributors.html">7. Contributors</a></li>
 </ul>
 
-            
-          
         </div>
-        
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
-
-      
-      <nav class="wy-nav-top" aria-label="top navigation">
-        
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../index.html">Quack Quack</a>
-        
       </nav>
 
-
       <div class="wy-nav-content">
-        
         <div class="rst-content">
-        
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div role="navigation" aria-label="breadcrumbs navigation">
-
+          <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-    
       <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
-        
       <li>SQLAlchemy Plugin</li>
-    
-    
       <li class="wy-breadcrumbs-aside">
-        
-          
             <a href="../_sources/docs/sqlalchemy.rst.txt" rel="nofollow"> View page source</a>
-          
-        
       </li>
-    
   </ul>
-
-  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-            
+             
   <section id="sqlalchemy-plugin">
-<h1>SQLAlchemy Plugin<a class="headerlink" href="#sqlalchemy-plugin" title="Permalink to this headline">¶</a></h1>
+<h1>SQLAlchemy Plugin<a class="headerlink" href="#sqlalchemy-plugin" title="Permalink to this headline"></a></h1>
 <section id="about">
-<h2>About<a class="headerlink" href="#about" title="Permalink to this headline">¶</a></h2>
+<h2>About<a class="headerlink" href="#about" title="Permalink to this headline"></a></h2>
 <p>SQLAlchemy plugin is just a wrapper for SQLAlchemy. This plugin allows starting
 database session at context phase start and closing it at context phase end.</p>
 </section>
 <section id="dependencies">
-<h2>Dependencies<a class="headerlink" href="#dependencies" title="Permalink to this headline">¶</a></h2>
+<h2>Dependencies<a class="headerlink" href="#dependencies" title="Permalink to this headline"></a></h2>
 <ul class="simple">
 <li><p>SettingsPlugin</p></li>
 </ul>
 </section>
 <section id="example-implementation">
-<h2>Example implementation<a class="headerlink" href="#example-implementation" title="Permalink to this headline">¶</a></h2>
+<h2>Example implementation<a class="headerlink" href="#example-implementation" title="Permalink to this headline"></a></h2>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">qq</span> <span class="kn">import</span> <span class="n">Application</span>
 <span class="kn">from</span> <span class="nn">qq.plugins.settings</span> <span class="kn">import</span> <span class="n">SettingsPlugin</span>
 <span class="kn">from</span> <span class="nn">qq.plugins.sqlalchemy.plugin</span> <span class="kn">import</span> <span class="n">SqlAlchemyPlugin</span>
@@ -209,7 +119,7 @@ database session at context phase start and closing it at context phase end.</p>
 </div>
 </section>
 <section id="settings-description">
-<h2>Settings description<a class="headerlink" href="#settings-description" title="Permalink to this headline">¶</a></h2>
+<h2>Settings description<a class="headerlink" href="#settings-description" title="Permalink to this headline"></a></h2>
 <ul class="simple">
 <li><p>url - sqlalchemy url for the database</p></li>
 <li><p>options - dict of options which will be passed to a <code class="docutils literal notranslate"><span class="pre">sqlalchemy.engine.create_engine</span></code>.
@@ -217,7 +127,7 @@ For more info visit <a class="reference external" href="http://docs.sqlalchemy.o
 </ul>
 </section>
 <section id="defining-sql-table">
-<h2>Defining sql table<a class="headerlink" href="#defining-sql-table" title="Permalink to this headline">¶</a></h2>
+<h2>Defining sql table<a class="headerlink" href="#defining-sql-table" title="Permalink to this headline"></a></h2>
 <p>All tables should be defined using SqlAchemy’s ORM. Code below is a simple
 definition of base table.</p>
 <p>Also it implements TableFinder which is used for searching all defined tables
@@ -270,7 +180,7 @@ in our package. This will be used in the Alembic integration.</p>
 </div>
 </section>
 <section id="using-in-context">
-<h2>Using in context<a class="headerlink" href="#using-in-context" title="Permalink to this headline">¶</a></h2>
+<h2>Using in context<a class="headerlink" href="#using-in-context" title="Permalink to this headline"></a></h2>
 <p>In order to use the database in the context, just get the main key from the
 context like this (assuming your main key is “dbsession”):</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">app</span> <span class="k">as</span> <span class="n">context</span><span class="p">:</span>
@@ -279,7 +189,7 @@ context like this (assuming your main key is “dbsession”):</p>
 </div>
 </section>
 <section id="using-injectors">
-<h2>Using injectors<a class="headerlink" href="#using-injectors" title="Permalink to this headline">¶</a></h2>
+<h2>Using injectors<a class="headerlink" href="#using-injectors" title="Permalink to this headline"></a></h2>
 <p>SQL like database has transactions. In order to use this transactions in efficent
 way the plugin comes with two injectors:</p>
 <ul class="simple">
@@ -311,7 +221,7 @@ set to True)</p>
 </div>
 </section>
 <section id="integrate-with-alembic">
-<h2>Integrate with Alembic<a class="headerlink" href="#integrate-with-alembic" title="Permalink to this headline">¶</a></h2>
+<h2>Integrate with Alembic<a class="headerlink" href="#integrate-with-alembic" title="Permalink to this headline"></a></h2>
 <p>Alembic is a library to manage migrations. Alembic makes a folder for the version
 changes. This folder contains “env.py” file, which we need to change like this:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">qq.plugins.sqlalchemy.alembic</span> <span class="kn">import</span> <span class="n">run_migrations</span>
@@ -334,46 +244,30 @@ ORM. Also, you need to import all the models in this file, if you want to use
 
 
            </div>
-           
           </div>
           <footer>
 
   <hr/>
 
   <div role="contentinfo">
-    <p>
-        &#169; Copyright 2021, Dominik &#34;Socek&#34; Długajczyk.
-
-    </p>
+    <p>&#169; Copyright 2021, Dominik &#34;Socek&#34; Długajczyk.</p>
   </div>
-    
-    
-    
-    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
-    
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
     <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
-    
-    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
 
 </footer>
         </div>
       </div>
-
     </section>
-
   </div>
-  
-
-  <script type="text/javascript">
+  <script>
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-
-  
-  
-    
-   
+  </script> 
 
 </body>
 </html>

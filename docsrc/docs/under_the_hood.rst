@@ -12,13 +12,13 @@ Create plugins
 --------------
 
 This is where you will added your plugins. Your application class should inherite
-from the Application class and ovewrite the `create_plugins` method. In order to
+from the Application class and overwrite the `create_plugins` method. In order to
 add plugin you need to add plugin object to the `self.plugins` OrderedDict. Order
 here is important, so you can not create a simple dict. As of Python 3.6, for the
 CPython implementation of Python, dictionaries remember the order of items inserted,
 but this is implementation detail, that is why the OrderDict is used here.
 
-Dict keys of these plugins is used later on, so it is important not to ovewrite
+Dict keys of these plugins is used later on, so it is important not to overwrite
 already created plugin.
 
 .. code-block:: python
@@ -89,18 +89,121 @@ Plugin
 Starting
 --------
 
+.. code-block:: python
+
+    def start(self, application: Application) -> Any:
+
 This is the place, when the plugins are started (initialized). If there is a
 need to do something only once (for example: read the settings), this is the
-right place for this. Plugin classes have a method `start` where the
-`Application.globals[key]`
+right place for this. Plugin classes have a method `start`. Return object will
+be put into `Application.globals[key]`.
 
 Entering context
 ----------------
 
-`Context[key]`
+.. code-block:: python
+
+    def enter(self, context: Context) -> Any:
+
+This place will be run every time the application will be used as a context manager.
+If you nest the `with` statement, this part will be executed only once. Return
+of the `enter` method will be put into `Context[key]`.
 
 Exiting context
 ---------------
 
-Injector
-========
+.. code-block:: python
+
+    def exit(self, context: Context, exc_type, exc_value, traceback):
+
+
+As any other context manager, Plugin's class have also the `exit` method. This
+is used to close connections or handle exceptions. Please, remember that `start`
+is run in order of creating in `create_plugins`, but `exit` plugins is run in
+reversed order.
+
+Injectors and InjectApplication
+===============================
+
+This feature is designed as a dependency injection. Injector is a function that
+gets a context and return something. This function needs to be decorated with
+`Injector` function.
+
+Example:
+
+.. code-block:: python
+
+    from qq.injector import Injector
+
+    @Injector
+    def SimpleInjector(context: Context, key: str):
+        return context[key]
+
+In order to use the `injector`, it needs to be provided as a default var in a
+function. Also, the `InjectApplication` needs to be used for that function.
+
+Example:
+
+.. code-block:: python
+
+    from qq.injector import InjectApplication
+
+    @InjectApplication(application)
+    def fun(settings = SimpleInjector("settings")):
+        ...
+
+
+The `InjectApplication` decorator is used to initialize the injectors with
+provided application. There is no need of using `Application` as a context manager,
+the function will be used under a with statement. For example, above code can be
+Implemented like this:
+
+.. code-block:: python
+
+    from qq.context import Context
+
+    def fun(settings):
+        ...
+
+    with Context(application) as context:
+        settings = context["settings"]
+        fun(settings)
+
+The advandtage of the injectors is that you do not need to pass the context value
+everywhere or use the `with` statement. So it mitigate the boilerplate. Also,
+you can pass arguments instead of default values in functions. This is very
+helpful in implementation of tests.
+
+Example:
+
+.. code-block:: python
+
+    @InjectApplication(application)
+    def fun(settings = SimpleInjector("settings")):
+        return settings
+
+    def test_flow():
+        mock = MagicMock()
+        assert fun(mock) == mock
+
+
+The `InjectApplication` function can overwrite the application var, so you
+can create a function with injectors in a library, but add the application var
+later.
+
+Example:
+
+.. code-block:: python
+
+    from qq.injector import InjectApplication
+
+    @InjectApplication(None)
+    def fun(settings = SimpleInjector("settings")):
+        ...
+
+    fun2 = InjectApplication(application)(fun)
+
+The `InjectApplication` will overwrite the `application` value in all injectors.
+If those injectors would have it's own injectors in the arguments, those injectors
+will have the new `application` value as well.
+
