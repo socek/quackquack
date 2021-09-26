@@ -5,7 +5,7 @@ description = "Quack Quack: A simple application framework"
 authors = ["Dominik Dlugajczyk <msocek@gmail.com>"]
 license = "MIT"
 packages = [{ include="qq", from="." },]
-readme = "README.md"
+readme = "readme.rst"
 homepage = "https://github.com/socek/quackquack"
 
 [tool.poetry.dependencies]
