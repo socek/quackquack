@@ -2,6 +2,7 @@ from os.path import dirname
 
 from qq.application import Application
 from qq.context import Context
+from qq.injector import Injector
 from qq.plugin import Plugin
 
 TESTS_KEY = "tests"
@@ -39,7 +40,7 @@ class SettingsPlugin(Plugin):
     a function which will create proper settings and push them to configurator.
     """
 
-    DEFAULT_KEY = "settings"
+    key = "settings"
 
     def __init__(self, modulepath: str):
         super().__init__()
@@ -56,12 +57,13 @@ class SettingsPlugin(Plugin):
 
 
 class SettingsBasedPlugin(Plugin):
-    def __init__(self, settings_key: str = SettingsPlugin.DEFAULT_KEY):
-        super().__init__()
-        self.settings_key = settings_key
-
     def get_my_settings(self, source: (Application, Context)):
         """
         Get settings for this plugin from Application or Context
         """
-        return source.globals[self.settings_key][self.key]
+        return source.globals[SettingsPlugin.key][self.key]
+
+
+@Injector
+def SettingsInjector(context: Context, key: str):
+    return context[SettingsPlugin.key][key]

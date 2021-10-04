@@ -23,7 +23,7 @@ from qq.plugins.jsonhack.models import init_encoders
 from qq.plugins.jsonhack.models import object_hook
 from qq.plugins.jsonhack.stubs import DecoderStub
 from qq.plugins.jsonhack.stubs import EncoderStub
-from qq.plugins.types import CustomBaseType
+from qq.types import CustomBaseType
 
 
 class CustomUuid(UUID, CustomBaseType):

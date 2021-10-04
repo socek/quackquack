@@ -7,7 +7,7 @@ from logging import getLogger
 from pkgutil import walk_packages
 from typing import List
 
-from qq.plugins.types import CustomBaseType
+from qq.types import CustomBaseType
 
 logger = getLogger(__name__)
 

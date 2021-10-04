@@ -6,7 +6,7 @@ from pytest import fixture
 from qq.finder import CustomBaseTypeFinder
 from qq.finder import DataclassFinder
 from qq.finder import ObjectFinder
-from qq.plugins.types import CustomBaseType
+from qq.types import CustomBaseType
 
 
 @dataclass

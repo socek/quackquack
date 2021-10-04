@@ -1,11 +1,15 @@
 from typing import Any
 
-from qq.application import Application
 from qq.context import Context
+from qq.types import Application
+from qq.types import Plugin as PluginType
+from qq.types import PluginKey
 
 
-class Plugin:
-    def init(self, key: str):
+class Plugin(PluginType):
+    key: PluginKey = None
+
+    def init(self, key: PluginKey):
         """
         Initialize the plguin during creating the plugins.
         key - key which is used in the Application.plugins dict for this plugin.

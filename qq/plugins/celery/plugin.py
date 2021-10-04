@@ -2,7 +2,6 @@ from celery import Celery
 
 from qq.application import Application
 from qq.plugins.settings import SettingsBasedPlugin
-from qq.plugins.settings import SettingsPlugin
 
 
 class CeleryPlugin(SettingsBasedPlugin):
@@ -11,9 +10,8 @@ class CeleryPlugin(SettingsBasedPlugin):
     def __init__(
         self,
         celeryapp: Celery,
-        settings_key: str = SettingsPlugin.DEFAULT_KEY,
     ):
-        super().__init__(settings_key)
+        super().__init__()
         self.celeryapp = celeryapp
 
     def start(self, application: Application):

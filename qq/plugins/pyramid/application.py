@@ -6,14 +6,13 @@ from qq.plugins.settings import SettingsPlugin
 
 class PyramidApplication(Application):
     PYRAMID_SETTINGS_KEY = "pyramid"
-    _SETTINGS_KEY = SettingsPlugin.DEFAULT_KEY
 
     def make_wsgi_app(self, *args, **kwargs):
         """
         Configure application for web server and return pyramid's uwsgi
         application object.
         """
-        pyramid = Configurator(*args, settings=self.globals[self._SETTINGS_KEY], **kwargs)
+        pyramid = Configurator(*args, settings=self.globals[SettingsPlugin.key], **kwargs)
         pyramid.registry["application"] = self
         self._start_pyramid_plugins(pyramid)
         return pyramid.make_wsgi_app()

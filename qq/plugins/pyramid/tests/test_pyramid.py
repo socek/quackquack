@@ -13,8 +13,8 @@ PREFIX = "qq.plugins.pyramid.application"
 class ExampleApplication(PyramidApplication):
     def create_plugins(self):
         super().create_plugins()
-        self.plugins["plugin1"] = MagicMock()
-        self.plugins["plugin2"] = MagicMock()
+        self.plugins["plugin1"] = MagicMock(key=None)
+        self.plugins["plugin2"] = MagicMock(key=None)
         del self.plugins["plugin2"].start_pyramid
 
 
@@ -36,7 +36,7 @@ class TestPyramidApplication:
         """
         configurator.start("pyramid")
 
-        configurator.globals[SettingsPlugin.DEFAULT_KEY] = sentinel.settings
+        configurator.globals[SettingsPlugin.key] = sentinel.settings
         wsgi = configurator.make_wsgi_app("arg", kw="arg2")
 
         mpyramid_configurator.assert_called_once_with(

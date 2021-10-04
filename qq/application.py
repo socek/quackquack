@@ -1,16 +1,17 @@
-from collections import OrderedDict
 from contextvars import ContextVar
 
 from qq.errors import AlreadyStartedError
+from qq.plugin_container import PluginContainer
+from qq.types import Application as ApplicationType
 
 KEY_PREFIX = "quackquack"
 
 
-class Application:
+class Application(ApplicationType):
     def __init__(self):
         self.is_started = False
         self.startpoint = None
-        self.plugins = OrderedDict()
+        self.plugins = PluginContainer()
         self.extra = {}
         self.globals = {}
         self.context = ContextVar(self.context_var_key)

@@ -18,8 +18,8 @@ class ExamplePlugin(Plugin):
 class ExampleApplication(Application):
     def create_plugins(self):
         super().create_plugins()
-        self.plugins["plugin1"] = MagicMock()
-        self.plugins["plugin2"] = MagicMock()
+        self.plugins["plugin1"] = MagicMock(key=None)
+        self.plugins["plugin2"] = MagicMock(key=None)
         self.plugins["plugin3"] = ExamplePlugin()
 
 

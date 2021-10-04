@@ -10,7 +10,7 @@ class LoggingPlugin(SettingsBasedPlugin):
     https://docs.python.org/3.6/library/logging.config.html#logging.config.dictConfig
     """
 
-    DEFAULT_KEY = "logging"
+    key = "logging"
 
     def start(self, application: Application):
         dictConfig(self.get_my_settings(application))

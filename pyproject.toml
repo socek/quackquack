@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "quackquack"
-version = "1.0.4"
+version = "1.0.5"
 description = "Quack Quack: A simple application framework"
 authors = ["Dominik Dlugajczyk <msocek@gmail.com>"]
 license = "MIT"

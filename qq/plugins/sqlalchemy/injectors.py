@@ -14,11 +14,10 @@ def SAQuery(context: Context, key: str) -> Session:
 
 class SACommand(ContextManagerInjector):
     def __init__(
-        self, key: str, settings_key: str = SettingsPlugin.DEFAULT_KEY
+        self, key: str
     ):
         super().__init__()
         self.key = key
-        self.settings_key = settings_key
 
     def __enter__(self, context) -> Session:
         return context[self.key]
@@ -30,7 +29,7 @@ class SACommand(ContextManagerInjector):
         traceback,
         context,
     ):
-        settings = context[self.settings_key][self.key]
+        settings = context[SettingsPlugin.key][self.key]
         db = context[self.key]
         if settings.get(TESTS_KEY, False):
             db.flush()
