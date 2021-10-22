@@ -5,7 +5,7 @@ from qq.plugins.settings import SettingsBasedPlugin
 
 
 class CeleryPlugin(SettingsBasedPlugin):
-    DEFAULT_KEY = "celery"
+    key = "celery"
 
     def __init__(
         self,
