@@ -2,14 +2,13 @@
 Plugins
 *******
 
-.. include:: settings.rst
+.. toctree::
+    :caption: Plugins
+    :maxdepth: 2
 
-.. include:: logging.rst
-
-.. include:: redis.rst
-
-.. include:: pyramid.rst
-
-.. include:: sqlalchemy.rst
-
-.. include:: celery.rst
+    settings.rst
+    logging.rst
+    redis.rst
+    pyramid.rst
+    sqlalchemy.rst
+    celery.rst

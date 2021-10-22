@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Pyramid Plugin &mdash; Quack Quack 1.0.4 documentation</title>
+  <title>4.4. Pyramid Plugin &mdash; Quack Quack 1.0.4 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -17,7 +17,9 @@
         <script src="../_static/doctools.js"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
-    <link rel="search" title="Search" href="../search.html" /> 
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="4.5. SQLAlchemy Plugin" href="sqlalchemy.html" />
+    <link rel="prev" title="4.3. Redis" href="redis.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -36,11 +38,39 @@
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">Table of Contents</span></p>
-<ul>
+<ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="about.html">1. About</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tutorial.html">2. Tutorial</a></li>
 <li class="toctree-l1"><a class="reference internal" href="under_the_hood.html">3. Models details</a></li>
-<li class="toctree-l1"><a class="reference internal" href="plugins.html">4. Plugins</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="plugins.html">4. Plugins</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="settings.html">4.1. Settings</a></li>
+<li class="toctree-l2"><a class="reference internal" href="logging.html">4.2. Logging</a></li>
+<li class="toctree-l2"><a class="reference internal" href="redis.html">4.3. Redis</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">4.4. Pyramid Plugin</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#about">4.4.1. About</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id1">4.4.2. Extended Configurator</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#application-implementation">4.4.2.1. Application Implementation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#implement-startpoint">4.4.2.2. Implement Startpoint</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#configuring-paste-and-gunicorn">4.4.2.3. Configuring Paste and Gunicorn</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#starting-development-server">4.4.2.4. Starting development server</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#creating-plugins-for-pyramid">4.4.2.5. Creating Plugins for Pyramid</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#id2">4.4.3. Routing Wrapper</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#why-we-need-a-router-wrapper">4.4.3.1. Why we need a router wrapper</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#how-to-implement-routing">4.4.3.2. How to implement Routing</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#id3">4.4.4. Views</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#restfulview">4.4.4.1. RestfulView</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="sqlalchemy.html">4.5. SQLAlchemy Plugin</a></li>
+<li class="toctree-l2"><a class="reference internal" href="celery.html">4.6. Celery Plugin</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="phases.html">5. Phases</a></li>
 <li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html">6. Changelog</a></li>
 <li class="toctree-l1"><a class="reference internal" href="contributors.html">7. Contributors</a></li>
@@ -60,7 +90,8 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
-      <li>Pyramid Plugin</li>
+          <li><a href="plugins.html"><span class="section-number">4. </span>Plugins</a> &raquo;</li>
+      <li><span class="section-number">4.4. </span>Pyramid Plugin</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../_sources/docs/pyramid.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -71,9 +102,9 @@
            <div itemprop="articleBody">
              
   <section id="pyramid-plugin">
-<h1>Pyramid Plugin<a class="headerlink" href="#pyramid-plugin" title="Permalink to this headline"></a></h1>
+<h1><span class="section-number">4.4. </span>Pyramid Plugin<a class="headerlink" href="#pyramid-plugin" title="Permalink to this headline"></a></h1>
 <section id="about">
-<h2>About<a class="headerlink" href="#about" title="Permalink to this headline"></a></h2>
+<h2><span class="section-number">4.4.1. </span>About<a class="headerlink" href="#about" title="Permalink to this headline"></a></h2>
 <p>Pyramid Plugin is a simple set of features:</p>
 <ul class="simple">
 <li><dl class="simple">
@@ -91,13 +122,13 @@
 <p>All these features can be used separately.</p>
 </section>
 <section id="id1">
-<h2>Extended Configurator<a class="headerlink" href="#id1" title="Permalink to this headline"></a></h2>
+<h2><span class="section-number">4.4.2. </span>Extended Configurator<a class="headerlink" href="#id1" title="Permalink to this headline"></a></h2>
 <p>Pyramid Framework gives you ability to create wsgi application, which can be
 used by the uwsgi/gunicorn/etc. frameworks. Pyramid is using Paster to configure
 the wsgi application, this means you need to configure some stuff in the
 Paster/Pyramid way.</p>
 <section id="application-implementation">
-<h3>Application Implementation<a class="headerlink" href="#application-implementation" title="Permalink to this headline"></a></h3>
+<h3><span class="section-number">4.4.2.1. </span>Application Implementation<a class="headerlink" href="#application-implementation" title="Permalink to this headline"></a></h3>
 <p>Implementing of the Application is pretty simple. The only thing which needed to be done
 is to inherited your Application class from <code class="docutils literal notranslate"><span class="pre">PyramidApplication</span></code> insted of the
 normal configurator. The new Configurator will be responsible for running
@@ -121,7 +152,7 @@ Pyramid Plugin.</p>
 ones. More about plugins can be found <a class="reference external" href="#creating-plugins">here</a></p>
 </section>
 <section id="implement-startpoint">
-<h3>Implement Startpoint<a class="headerlink" href="#implement-startpoint" title="Permalink to this headline"></a></h3>
+<h3><span class="section-number">4.4.2.2. </span>Implement Startpoint<a class="headerlink" href="#implement-startpoint" title="Permalink to this headline"></a></h3>
 <p>Second step of implementing Pyramid’s Plugin is to create a startpoint. It needs
 to be a function which will return an wsgi object, which will be used by uwsgi
 and paster. In order to do that we need to start the Configurator.</p>
@@ -138,7 +169,7 @@ and paster. In order to do that we need to start the Configurator.</p>
 the function by the uwsgi or paster, but Sapp Settings does not use it at all.</p>
 </section>
 <section id="configuring-paste-and-gunicorn">
-<h3>Configuring Paste and Gunicorn<a class="headerlink" href="#configuring-paste-and-gunicorn" title="Permalink to this headline"></a></h3>
+<h3><span class="section-number">4.4.2.3. </span>Configuring Paste and Gunicorn<a class="headerlink" href="#configuring-paste-and-gunicorn" title="Permalink to this headline"></a></h3>
 <p>Last file to create is an app.ini. This file is an configuration for paste and
 gunicorn.</p>
 <div class="highlight-ini notranslate"><div class="highlight"><pre><span></span><span class="k">[app:main]</span>
@@ -167,7 +198,7 @@ the SettingsPlugin, so we leave this section empty.</p>
 </ul>
 </section>
 <section id="starting-development-server">
-<h3>Starting development server<a class="headerlink" href="#starting-development-server" title="Permalink to this headline"></a></h3>
+<h3><span class="section-number">4.4.2.4. </span>Starting development server<a class="headerlink" href="#starting-development-server" title="Permalink to this headline"></a></h3>
 <p>In order to start the development server you need to run pserve with a path for
 <code class="docutils literal notranslate"><span class="pre">app.ini</span></code> file. It is usefull also to add <code class="docutils literal notranslate"><span class="pre">--reload</span></code> switch, so the server will
 be restarting every time the python files will change.</p>
@@ -176,7 +207,7 @@ be restarting every time the python files will change.</p>
 </div>
 </section>
 <section id="creating-plugins-for-pyramid">
-<h3>Creating Plugins for Pyramid<a class="headerlink" href="#creating-plugins-for-pyramid" title="Permalink to this headline"></a></h3>
+<h3><span class="section-number">4.4.2.5. </span>Creating Plugins for Pyramid<a class="headerlink" href="#creating-plugins-for-pyramid" title="Permalink to this headline"></a></h3>
 <p><code class="docutils literal notranslate"><span class="pre">PyramidApplication</span></code> will run <code class="docutils literal notranslate"><span class="pre">start_pyramid(pyramid)</span></code> method for all
 plugins when running <code class="docutils literal notranslate"><span class="pre">.make_wsgi_app</span></code>. Of corse, if the application will not
 find the <code class="docutils literal notranslate"><span class="pre">start_pyramid</span></code> method, it will not raise any error, because otherwise
@@ -207,9 +238,9 @@ instance.</p>
 </section>
 </section>
 <section id="id2">
-<h2>Routing Wrapper<a class="headerlink" href="#id2" title="Permalink to this headline"></a></h2>
+<h2><span class="section-number">4.4.3. </span>Routing Wrapper<a class="headerlink" href="#id2" title="Permalink to this headline"></a></h2>
 <section id="why-we-need-a-router-wrapper">
-<h3>Why we need a router wrapper<a class="headerlink" href="#why-we-need-a-router-wrapper" title="Permalink to this headline"></a></h3>
+<h3><span class="section-number">4.4.3.1. </span>Why we need a router wrapper<a class="headerlink" href="#why-we-need-a-router-wrapper" title="Permalink to this headline"></a></h3>
 <p><code class="docutils literal notranslate"><span class="pre">qq.plugins.pyramid.routing.Routing</span></code> was designed to simplify creating of
 routes. In normal Pyramid, the developer needs to configure the route in one
 place and the view in another. Also, configuring is made by &#64;view_config
@@ -221,7 +252,7 @@ route and the view is made by name which is not very sophisticated and it
 is very buggable.</p>
 </section>
 <section id="how-to-implement-routing">
-<h3>How to implement Routing<a class="headerlink" href="#how-to-implement-routing" title="Permalink to this headline"></a></h3>
+<h3><span class="section-number">4.4.3.2. </span>How to implement Routing<a class="headerlink" href="#how-to-implement-routing" title="Permalink to this headline"></a></h3>
 <p>First step is to implement Routing class inherited from
 <code class="docutils literal notranslate"><span class="pre">qq.plugins.pyramid.routing.Routing</span></code> and make a <code class="docutils literal notranslate"><span class="pre">make(self)</span></code> method.
 This is our wrapper for normal pyramid routing. It will help us, but if you want
@@ -267,7 +298,7 @@ method. All the kwargs for this method will be taken from the view class.</p>
 </section>
 </section>
 <section id="id3">
-<h2>Views<a class="headerlink" href="#id3" title="Permalink to this headline"></a></h2>
+<h2><span class="section-number">4.4.4. </span>Views<a class="headerlink" href="#id3" title="Permalink to this headline"></a></h2>
 <p>Quack Quack comes with base class for every View.</p>
 <p>Main reason to implement an view is to generate response proper response.
 The simples way to return the data is to implement <code class="docutils literal notranslate"><span class="pre">.get(self)</span></code> method and
@@ -332,7 +363,7 @@ way:</p>
 </ul>
 <p>More info about HTTP methods can be found <a class="reference external" href="https://en.wikipedia.org/wiki/Hypertext_Transfer_Protocol#Request_methods">here</a></p>
 <section id="restfulview">
-<h3>RestfulView<a class="headerlink" href="#restfulview" title="Permalink to this headline"></a></h3>
+<h3><span class="section-number">4.4.4.1. </span>RestfulView<a class="headerlink" href="#restfulview" title="Permalink to this headline"></a></h3>
 <p>RestfulView is a View, with JSON as renderer. So it will be more suitable for RESTful views.
 Name of methods are the same as in View class.</p>
 </section>
@@ -342,7 +373,10 @@ Name of methods are the same as in View class.</p>
 
            </div>
           </div>
-          <footer>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="redis.html" class="btn btn-neutral float-left" title="4.3. Redis" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="sqlalchemy.html" class="btn btn-neutral float-right" title="4.5. SQLAlchemy Plugin" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
 
   <hr/>
 
