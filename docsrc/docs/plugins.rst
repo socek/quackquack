@@ -11,3 +11,5 @@ Plugins
 .. include:: pyramid.rst
 
 .. include:: sqlalchemy.rst
+
+.. include:: celery.rst

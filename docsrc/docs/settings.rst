@@ -76,7 +76,7 @@ to the configurator.
 
    class Myapp(Application):
        def create_plugins(self):
-           self.plugins[SettingsPlugin.DEFAULT_KEY] = SettingsPlugin('path.to.settings')
+           self.plugins(SettingsPlugin('path.to.settings'))
 
 
 Now, we can create functions which will be execute by external mechanism (tests
@@ -105,7 +105,7 @@ For getting values from settings, you can get if from the context:
 
    from qq import Context
    with Context(app) as context:
-       context[SettingsPlugin.DEFAULT_KEY]
+       context[SettingsPlugin.key]
 
 
 Also, the settings can be retrived from the application.globals["settings"]. This was
@@ -197,3 +197,8 @@ Example:
            'paths': paths,
        }
        return settings
+
+Settings Injector
+-----------------
+
+Most of the cases the developer do not need access to whole
