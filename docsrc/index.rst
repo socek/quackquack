@@ -9,7 +9,7 @@ Quack Quack
 
 If it quacks like a quack, then it's a Quack Quack.
 
-Version: 1.0.4
+Version: 1.0.5
 
 .. toctree::
    :caption: Table of Contents
