@@ -52,11 +52,16 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="logging.html">4.2. Logging</a></li>
+<li class="toctree-l2"><a class="reference internal" href="redis.html">4.3. Redis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pyramid.html">4.4. Pyramid Plugin</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sqlalchemy.html">4.5. SQLAlchemy Plugin</a></li>
+<li class="toctree-l2"><a class="reference internal" href="celery.html">4.6. Celery Plugin</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="phases.html">5. Phases</a></li>
-<li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html">6. Changelog</a></li>
-<li class="toctree-l1"><a class="reference internal" href="contributors.html">7. Contributors</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tools.html">5. Tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="phases.html">6. Phases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html">7. Changelog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contributors.html">8. Contributors</a></li>
 </ul>
 
         </div>
@@ -185,7 +190,7 @@ for settings. For example, if you have 3 plugins (and Settings plugin) looking
 like this:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Myapp</span><span class="p">(</span><span class="n">Application</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">create_plugins</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">plugins</span><span class="p">[</span><span class="s2">&quot;settings&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">SettingsPlugin</span><span class="p">(</span><span class="s1">&#39;path.to.settings&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">plugins</span><span class="p">(</span><span class="n">SettingsPlugin</span><span class="p">(</span><span class="s1">&#39;path.to.settings&#39;</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">plugins</span><span class="p">[</span><span class="s2">&quot;sql&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">SqlAlchemy</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">plugins</span><span class="p">[</span><span class="s2">&quot;redis&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">RedisPlugin</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">plugins</span><span class="p">[</span><span class="s2">&quot;secondredis&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">RedisPlugin</span><span class="p">()</span>

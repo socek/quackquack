@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>5. Tools &mdash; Quack Quack 1.0.4 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="6. Phases" href="phases.html" />
+    <link rel="prev" title="4.6. Celery Plugin" href="celery.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> Quack Quack
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Table of Contents</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="about.html">1. About</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial.html">2. Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="under_the_hood.html">3. Models details</a></li>
+<li class="toctree-l1"><a class="reference internal" href="plugins.html">4. Plugins</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">5. Tools</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#finders-objectfinder-dataclassfinder-custombasetypefinder">5.1. Finders (ObjectFinder, DataclassFinder, CustomBaseTypeFinder)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#objectfinder">5.1.1. ObjectFinder</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#dataclassfinder">5.1.2. DataclassFinder</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#custombasetypefinder">5.1.3. CustomBaseTypeFinder</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#creating-custom-finder">5.1.4. Creating custom Finder</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="phases.html">6. Phases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html">7. Changelog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contributors.html">8. Contributors</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Quack Quack</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+      <li><span class="section-number">5. </span>Tools</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/docs/tools.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="tools">
+<h1><span class="section-number">5. </span>Tools<a class="headerlink" href="#tools" title="Permalink to this headline"></a></h1>
+<p>This section provide documentation for some small classes and functions that
+comes along with the Quack Quack framework.</p>
+<section id="finders-objectfinder-dataclassfinder-custombasetypefinder">
+<h2><span class="section-number">5.1. </span>Finders (ObjectFinder, DataclassFinder, CustomBaseTypeFinder)<a class="headerlink" href="#finders-objectfinder-dataclassfinder-custombasetypefinder" title="Permalink to this headline"></a></h2>
+<p>This class is designed in order to auto import all the needed objects. This is
+very helpful, for example, when you need to import all the dataclasses used in
+project in order to make serialization, but you don’t want to write the
+configuration file. Finders will do that automaticly.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>All automatic import mechanism have a downside: if the import will not be
+successful, then the mechanism needs to ignore this file. In order to
+mitigate this problem Finders logs everything, so please remember to configure
+the <cite>qq.finder</cite> logger for yourself.</p>
+</div>
+<section id="objectfinder">
+<h3><span class="section-number">5.1.1. </span>ObjectFinder<a class="headerlink" href="#objectfinder" title="Permalink to this headline"></a></h3>
+<p>This class was created for searching objects across all needed packages.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">abc</span> <span class="kn">import</span> <span class="n">ABC</span>
+
+<span class="k">class</span> <span class="nc">ObjectFinder</span><span class="p">(</span><span class="n">ABC</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">parents</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+        <span class="n">ignore_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">cache_key</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">):</span>
+</pre></div>
+</div>
+<p>In order to crete an ObjectFinder you need to give list of packages in str
+<cite>parents: List[str]</cite> where to search for the objects. You can add some ignore
+list.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">finder</span> <span class="o">=</span> <span class="n">ObjectFinder</span><span class="p">([</span><span class="s2">&quot;mypackage&quot;</span><span class="p">],</span> <span class="p">[</span><span class="s2">&quot;mypackage.notthis&quot;</span><span class="p">])</span>
+<span class="n">objects</span> <span class="o">=</span> <span class="n">finder</span><span class="o">.</span><span class="n">find</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Finders are cached by default, so if you wish to recreate the cache, just add
+True to the method.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">finder</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">force</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="dataclassfinder">
+<h3><span class="section-number">5.1.2. </span>DataclassFinder<a class="headerlink" href="#dataclassfinder" title="Permalink to this headline"></a></h3>
+<p>This finder will search for all the dataclasses in the project. It is used by
+the <cite>JsonPlugin</cite> for finding all the objects that can be serialized.</p>
+</section>
+<section id="custombasetypefinder">
+<h3><span class="section-number">5.1.3. </span>CustomBaseTypeFinder<a class="headerlink" href="#custombasetypefinder" title="Permalink to this headline"></a></h3>
+<p>This finder will search for all the CustomBaseType’s in the project. It is used
+by the <cite>JsonPlugin</cite> for finding all the objects that can be serialized.</p>
+</section>
+<section id="creating-custom-finder">
+<h3><span class="section-number">5.1.4. </span>Creating custom Finder<a class="headerlink" href="#creating-custom-finder" title="Permalink to this headline"></a></h3>
+<p>Creating custom finder is very simple. You need to inherit from ObjectFinder and
+overwrite the <cite>is_collectable</cite> method. This method return True if the object
+which was found is the one we are looking for.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">StrFinder</span><span class="p">(</span><span class="n">ObjectFinder</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">is_collectable</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">element</span><span class="p">:</span> <span class="nb">object</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">element</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span>
+
+
+<span class="k">class</span> <span class="nc">DataclassFinder</span><span class="p">(</span><span class="n">ObjectFinder</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">is_collectable</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">element</span><span class="p">:</span> <span class="nb">object</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">is_dataclass</span><span class="p">(</span><span class="n">element</span><span class="p">)</span>
+
+
+<span class="k">class</span> <span class="nc">CustomBaseTypeFinder</span><span class="p">(</span><span class="n">ObjectFinder</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">is_collectable</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">element</span><span class="p">:</span> <span class="nb">object</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">issubclass</span><span class="p">(</span><span class="n">element</span><span class="p">,</span> <span class="n">CustomBaseType</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="celery.html" class="btn btn-neutral float-left" title="4.6. Celery Plugin" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="phases.html" class="btn btn-neutral float-right" title="6. Phases" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, Dominik &#34;Socek&#34; Długajczyk.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

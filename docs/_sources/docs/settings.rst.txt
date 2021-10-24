@@ -123,7 +123,7 @@ like this:
 
    class Myapp(Application):
        def create_plugins(self):
-           self.plugins["settings"] = SettingsPlugin('path.to.settings')
+           self.plugins(SettingsPlugin('path.to.settings'))
            self.plugins["sql"] = SqlAlchemy()
            self.plugins["redis"] = RedisPlugin()
            self.plugins["secondredis"] = RedisPlugin()

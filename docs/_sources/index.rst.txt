@@ -20,6 +20,7 @@ Version: 1.0.4
    docs/tutorial
    docs/under_the_hood
    docs/plugins
+   docs/tools
    docs/phases
    docs/CHANGELOG
    docs/contributors
