@@ -11,11 +11,13 @@ Version: 1.0.5
 ==============
 
 * Added
-    Add Plugin validation.
-    Add Singleton Plugins functionality.
-    Add Plugin Container in Application.
+    * Add Plugin validation.
+    * Add Singleton Plugins functionality.
+    * Add Plugin Container in Application.
 * Changed
-    Use Plugin Container instead of OrderedDict for plugins.
+    * Use Plugin Container instead of OrderedDict for plugins.
+* Fixed
+    * Overwriting the `self` when using `InjectApplication` decorator
 
 Version: 1.0.4
 ==============

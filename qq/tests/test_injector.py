@@ -8,10 +8,11 @@ from qq import Context
 from qq import InjectApplication
 from qq import SimpleInjector
 from qq.application import Application
+from qq.injector import QQ_PARAMETER
 from qq.injector import Injector
-from qq.injector import InjectorsRunner
 from qq.injector import get_injectors
 from qq.injector import get_runners
+from qq.injector import injector_runner
 from qq.injector import is_injector_ready
 from qq.plugins import SettingsPlugin
 
@@ -128,10 +129,8 @@ class TestInitializeInjectors:
         assert result[0] == 1
         assert result[1] == 2
         assert result[2] == {"settings": True}
-        assert isinstance(result[3], InjectorsRunner)
-        assert result[3].application == app
-        assert result[3].method == not_injected_fun
+        assert getattr(result[3], QQ_PARAMETER) == app
 
     def test_swap_application(self, fun):
-        secondfun = fun.swap_application(None)
-        assert secondfun.application is None
+        secondfun = injector_runner(fun, None)
+        assert getattr(secondfun, QQ_PARAMETER) is None

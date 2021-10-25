@@ -14,29 +14,36 @@ from typing import Tuple
 from qq.application import Application
 from qq.context import Context
 
+QQ_PARAMETER = "_qq_application"
 
-class InjectorsRunner:
-    def __init__(self, method, application: Application = None):
-        self.method = method
-        self.application = application
 
-    def swap_application(self, application: Application) -> Callable:
-        return InjectorsRunner(self.method, application)
+class DefaultEmptyVar:
+    pass
 
-    def __call__(self, *args, **kwargs):
-        injectors = list(get_injectors(self.method, args, kwargs))
+
+def injector_runner(method: Callable, application: Application = None):
+    if getattr(method, QQ_PARAMETER, None):
+        setattr(method, QQ_PARAMETER, application)
+        return method
+
+    @wraps(method)
+    def wrapper(*args, **kwargs):
+        injectors = list(get_injectors(method, args, kwargs))
         for name, injector in injectors:
-            kwargs[name] = injector.start(self.application)
+            kwargs[name] = injector.start(application)
 
-        runners = list(get_runners(self.method, args, kwargs))
+        runners = list(get_runners(method, args, kwargs))
         for name, runner in runners:
-            kwargs[name] = runner.swap_application(self.application)
+            kwargs[name] = injector_runner(runner, application)
 
         try:
-            return self.method(*args, **kwargs)
+            return method(*args, **kwargs)
         finally:
             for name, injector in reversed(injectors):
                 injector.end()
+
+    setattr(wrapper, QQ_PARAMETER, application)
+    return wrapper
 
 
 def InjectApplication(application: Application) -> Callable:
@@ -44,7 +51,7 @@ def InjectApplication(application: Application) -> Callable:
         """
         If function has injectors in the defaults of arguments, then init them.
         """
-        runner = InjectorsRunner(method, application)
+        runner = injector_runner(method, application)
         return wraps(method)(runner)
 
     return wrapper
@@ -65,7 +72,7 @@ class Injector:
     def start(self, application: Application):
         self.context = Context(application)
         self.entered = self.context.__enter__()
-        self.result = InjectorsRunner(self.fun, application)(
+        self.result = injector_runner(self.fun, application)(
             self.entered, *self.args, **self.kwargs
         )
         if _is_generator(self.result):
@@ -120,7 +127,8 @@ def is_injected_ready(parameter: Any, name: str, bound_args: BoundArguments):
     """
     Is parameter an injector and the value is not provided in the call.
     """
-    is_injected = isinstance(parameter._default, InjectorsRunner)
+    qq_application = getattr(parameter._default, QQ_PARAMETER, DefaultEmptyVar)
+    is_injected = qq_application != DefaultEmptyVar
     return is_injected and name not in bound_args.arguments
 
 
