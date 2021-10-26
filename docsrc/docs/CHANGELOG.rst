@@ -18,6 +18,7 @@ Version: 1.0.5
     * Use Plugin Container instead of OrderedDict for plugins.
 * Fixed
     * Overwriting the `self` when using `InjectApplication` decorator
+    * Better error info when Injector not inicialized
 
 Version: 1.0.4
 ==============

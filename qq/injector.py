@@ -13,6 +13,7 @@ from typing import Tuple
 
 from qq.application import Application
 from qq.context import Context
+from qq.errors import InjectorNotInicialized
 
 QQ_PARAMETER = "_qq_application"
 
@@ -60,6 +61,7 @@ def InjectApplication(application: Application) -> Callable:
 class Injector:
     def __init__(self, fun):
         self.fun = fun
+        self._initialized = False
 
     def __call__(self, *args, **kwargs):
         return self.__class__(self.fun).init(*args, **kwargs)
@@ -67,9 +69,12 @@ class Injector:
     def init(self, *args, **kwargs):
         self.args = args
         self.kwargs = kwargs
+        self._initialized = True
         return self
 
     def start(self, application: Application):
+        if not self._initialized:
+            raise InjectorNotInicialized()
         self.context = Context(application)
         self.entered = self.context.__enter__()
         self.result = injector_runner(self.fun, application)(

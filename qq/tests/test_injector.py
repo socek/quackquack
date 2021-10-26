@@ -8,6 +8,7 @@ from qq import Context
 from qq import InjectApplication
 from qq import SimpleInjector
 from qq.application import Application
+from qq.errors import InjectorNotInicialized
 from qq.injector import QQ_PARAMETER
 from qq.injector import Injector
 from qq.injector import get_injectors
@@ -111,7 +112,18 @@ class TestInitializeInjectors:
 
     @fixture
     def fun(self, app):
-        def example_fun(first, second, third=SimpleInjector("settings"), fourth=injected_fun):
+        def example_fun(
+            first, second, third=SimpleInjector("settings"), fourth=injected_fun
+        ):
+            return [first, second, third, fourth]
+
+        return InjectApplication(app)(example_fun)
+
+    @fixture
+    def errorfun(self, app):
+        def example_fun(
+            first, second, third=SimpleInjector, fourth=injected_fun
+        ):
             return [first, second, third, fourth]
 
         return InjectApplication(app)(example_fun)
@@ -134,3 +146,12 @@ class TestInitializeInjectors:
     def test_swap_application(self, fun):
         secondfun = injector_runner(fun, None)
         assert getattr(secondfun, QQ_PARAMETER) is None
+
+    def test_when_not_initialized(self, app, errorfun):
+        """
+        Injected function should raise InjectorNotInicialized error when
+        the Injector is wrongly used.
+        """
+        app.start("default_settings")
+        with raises(InjectorNotInicialized):
+            errorfun(1, 2)
