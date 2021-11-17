@@ -11,7 +11,7 @@ class Plugin(PluginType):
 
     def init(self, key: PluginKey):
         """
-        Initialize the plguin during creating the plugins.
+        Initialize the plugin during creation.
         key - key which is used in the Application.plugins dict for this plugin.
         """
         self.key = key

@@ -120,10 +120,12 @@ explantory:
 
 .. code-block:: python
 
-   class Plugin:
-       def init(self, key: str):
+   class Plugin(PluginType):
+       key: PluginKey = None
+
+       def init(self, key: PluginKey):
            """
-           Initialize the plguin during creating the plugins.
+           Initialize the plugin during creation.
            key - key which is used in the Application.plugins dict for this plugin.
            """
            self.key = key
@@ -147,3 +149,4 @@ explantory:
            This method will be called when the Application will be used as context
            manager. This is the exit phase.
            """
+
