@@ -1,8 +1,7 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>4.6. Celery Plugin &mdash; Quack Quack 1.0.4 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -18,7 +17,7 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="5. Phases" href="phases.html" />
+    <link rel="next" title="5. Tools" href="tools.html" />
     <link rel="prev" title="4.5. SQLAlchemy Plugin" href="sqlalchemy.html" /> 
 </head>
 
@@ -57,9 +56,10 @@
 </li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="phases.html">5. Phases</a></li>
-<li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html">6. Changelog</a></li>
-<li class="toctree-l1"><a class="reference internal" href="contributors.html">7. Contributors</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tools.html">5. Tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="phases.html">6. Phases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html">7. Changelog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contributors.html">8. Contributors</a></li>
 </ul>
 
         </div>
@@ -87,19 +87,19 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="celery-plugin">
+  <div class="section" id="celery-plugin">
 <h1><span class="section-number">4.6. </span>Celery Plugin<a class="headerlink" href="#celery-plugin" title="Permalink to this headline"></a></h1>
-<section id="about">
+<div class="section" id="about">
 <h2><span class="section-number">4.6.1. </span>About<a class="headerlink" href="#about" title="Permalink to this headline"></a></h2>
 <p>This plugin allows to integrate Quack Quack with <a class="reference external" href="https://docs.celeryproject.org/en/stable/">Celery</a> - Distributed Task Queue.</p>
-</section>
-<section id="dependencies">
+</div>
+<div class="section" id="dependencies">
 <h2><span class="section-number">4.6.2. </span>Dependencies<a class="headerlink" href="#dependencies" title="Permalink to this headline"></a></h2>
 <ul class="simple">
 <li><p>SettingsPlugin</p></li>
 </ul>
-</section>
-<section id="integration-implementation">
+</div>
+<div class="section" id="integration-implementation">
 <h2><span class="section-number">4.6.3. </span>Integration &amp; implementation<a class="headerlink" href="#integration-implementation" title="Permalink to this headline"></a></h2>
 <p>Celery is pretty straightforward, because this tool comes with it’s own worker
 and scheduler application and they both expect only the Celery app object. Quack
@@ -192,8 +192,8 @@ the package and find all Celery tasks.</p>
 </div>
 </div>
 <p>And that’s pretty much it.</p>
-</section>
-<section id="example-task">
+</div>
+<div class="section" id="example-task">
 <h2><span class="section-number">4.6.4. </span>Example task<a class="headerlink" href="#example-task" title="Permalink to this headline"></a></h2>
 <p>In prevoius section we’ve created a simple Integration with the celery (please
 remember, that if you need to have running broker in the background. For
@@ -224,15 +224,15 @@ more information please go to the Celery’s <a class="reference external" href=
 </div>
 <p>So after running this, the task will be sent to queue and will be executed by
 the worker.</p>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="sqlalchemy.html" class="btn btn-neutral float-left" title="4.5. SQLAlchemy Plugin" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="phases.html" class="btn btn-neutral float-right" title="5. Phases" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="tools.html" class="btn btn-neutral float-right" title="5. Tools" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

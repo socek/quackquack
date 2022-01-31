@@ -1,8 +1,7 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>2. Tutorial &mdash; Quack Quack 1.0.4 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -80,9 +79,9 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="tutorial">
+  <div class="section" id="tutorial">
 <h1><span class="section-number">2. </span>Tutorial<a class="headerlink" href="#tutorial" title="Permalink to this headline"></a></h1>
-<section id="configuration">
+<div class="section" id="configuration">
 <h2><span class="section-number">2.1. </span>Configuration<a class="headerlink" href="#configuration" title="Permalink to this headline"></a></h2>
 <p>First step using Quack Quack is to implement your own Application, which will be
 inheriting from <code class="docutils literal notranslate"><span class="pre">qq.Application</span></code>. Bare Application almost does nothing, so it
@@ -102,8 +101,8 @@ method and add some plugins. For the sake of tutorial, we just add one: Setting�
 object will be used in all of the places of the application. Making many
 instances of the same class is possible, but it is a waste of resources, so
 please avoid that.</p>
-</section>
-<section id="starting">
+</div>
+<div class="section" id="starting">
 <h2><span class="section-number">2.2. </span>Starting<a class="headerlink" href="#starting" title="Permalink to this headline"></a></h2>
 <p>Starting is very important. This is the place, where the plugins will be
 initalized. For example, for Logging plugin, this will be the place, where the
@@ -120,8 +119,8 @@ called “startpoint” and the default name is just “default”.</p>
     <span class="n">application</span><span class="o">.</span><span class="n">start</span><span class="p">(</span><span class="s1">&#39;celery&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
-</section>
-<section id="using-context">
+</div>
+<div class="section" id="using-context">
 <h2><span class="section-number">2.3. </span>Using Context<a class="headerlink" href="#using-context" title="Permalink to this headline"></a></h2>
 <p>After starting the application, we can use it as a context manager.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">qq</span> <span class="kn">import</span> <span class="n">Context</span>
@@ -148,8 +147,8 @@ ended.</p>
 <span class="c1"># this is where the context is ended/stopped</span>
 </pre></div>
 </div>
-</section>
-<section id="using-injectors-and-dependency-injection">
+</div>
+<div class="section" id="using-injectors-and-dependency-injection">
 <h2><span class="section-number">2.4. </span>Using Injectors and dependency injection<a class="headerlink" href="#using-injectors-and-dependency-injection" title="Permalink to this headline"></a></h2>
 <p>The most useful feature in QuackQuack are injectors. This functions are responsible
 for injecting values from context into methods and functions. Injectors are passed
@@ -175,8 +174,23 @@ InjectApplication decorator.</p>
 <span class="n">fun</span><span class="p">(</span><span class="s2">&quot;something&quot;</span><span class="p">,</span> <span class="n">settings</span><span class="o">=</span><span class="n">MagicMock</span><span class="p">())</span>
 </pre></div>
 </div>
-</section>
-<section id="creating-plugins">
+<p>If the method is a coroutine, you need to inform the InjectApplication, by passing
+for_coroutine as True.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">qq</span> <span class="kn">import</span> <span class="n">InjectApplication</span><span class="p">,</span> <span class="n">SimpleInjector</span>
+
+<span class="n">app</span> <span class="o">=</span> <span class="n">MyApplication</span><span class="p">()</span>
+
+
+<span class="nd">@InjectApplication</span><span class="p">(</span><span class="n">app</span><span class="p">,</span> <span class="n">for_coroutine</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">fun</span><span class="p">(</span><span class="n">something</span><span class="p">,</span> <span class="n">settings</span> <span class="o">=</span> <span class="n">SimpleInjector</span><span class="p">(</span><span class="s2">&quot;settings&quot;</span><span class="p">)):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">settings</span><span class="p">)</span>
+
+<span class="n">app</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+<span class="k">await</span> <span class="n">fun</span><span class="p">(</span><span class="s2">&quot;something&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="creating-plugins">
 <h2><span class="section-number">2.5. </span>Creating Plugins<a class="headerlink" href="#creating-plugins" title="Permalink to this headline"></a></h2>
 <p>Quack Quack is designed in a way, that the core should be minimalistic, but the
 plugins should be responsible for all the features (like settings). So the
@@ -213,8 +227,8 @@ explantory:</p>
 <span class="sd">        &quot;&quot;&quot;</span>
 </pre></div>
 </div>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

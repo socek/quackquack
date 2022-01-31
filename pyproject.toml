@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "quackquack"
-version = "1.0.5"
+version = "1.1.0"
 description = "Quack Quack: A simple application framework"
 authors = ["Dominik Dlugajczyk <msocek@gmail.com>"]
 license = "MIT"
@@ -25,6 +25,8 @@ pytest-mock = { version = "^3.2.0" }
 ipython = { version = "^7.16.1" }
 ipdb = { version = "^0.13.3" }
 icecream = { version = "^2.1.1" }
+pytest_async = "^0.1.1"
+pytest-asyncio = "^0.17.2"
 
 [tool.poetry.extras]
 alembic = ["alembic"]
@@ -60,6 +62,7 @@ build-backend = "poetry.masonry.api"
 addopts = "--cov --cov-report term:skip-covered --cov-report html --no-cov-on-fail -vv --ff -x qq"
 norecursedirs = [ ".cache", ".git", ".idea", "bin", "*migrations*", "spa", "static", "var", "docker" ]
 filterwarnings = [ "error::RuntimeWarning", "ignore:.*the imp module is deprecated.*:DeprecationWarning" ]
+asyncio_mode = 'auto'
 
 [tool.coverage.run]
 branch = true

@@ -1,8 +1,7 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>6. Phases &mdash; Quack Quack 1.0.4 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -82,29 +81,29 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="phases">
+  <div class="section" id="phases">
 <h1><span class="section-number">6. </span>Phases<a class="headerlink" href="#phases" title="Permalink to this headline"></a></h1>
-<section id="about">
+<div class="section" id="about">
 <h2><span class="section-number">6.1. </span>About<a class="headerlink" href="#about" title="Permalink to this headline"></a></h2>
 <p>The Application class was designed, so the configuration will always be run in
 proper order. This needs to be sliced in phases, so the developer will know
 in which order the plugin that was implemented will be executed.</p>
-</section>
-<section id="phase-0">
+</div>
+<div class="section" id="phase-0">
 <h2><span class="section-number">6.2. </span>Phase 0<a class="headerlink" href="#phase-0" title="Permalink to this headline"></a></h2>
 <p>Before creating the Application instance, you can set something here, like
 logging. But please don’t use this phase very often. You should always try
 to implement a plugin, because the plugins can use other plugins (for example
 plugin for settings).</p>
-</section>
-<section id="phase-1-creating-application-instance">
+</div>
+<div class="section" id="phase-1-creating-application-instance">
 <h2><span class="section-number">6.3. </span>Phase 1 - creating Application instance<a class="headerlink" href="#phase-1-creating-application-instance" title="Permalink to this headline"></a></h2>
 <p>This phase is not doing too much. It is executed when the Application instance
 is created. It sets up the Application instance, so from now on, you can start
 the Application. This is the <code class="docutils literal notranslate"><span class="pre">__init__</span></code> method of the Application class, so
 if you want to extend this phase, you should overwrite this method.</p>
-</section>
-<section id="phase-2-starting-application">
+</div>
+<div class="section" id="phase-2-starting-application">
 <h2><span class="section-number">6.4. </span>Phase 2 - starting Application<a class="headerlink" href="#phase-2-starting-application" title="Permalink to this headline"></a></h2>
 <p>This is where all the main stuff happen. This phase will start the plugins
 (by start, I mean attach some data to the application). The plugins are started
@@ -120,15 +119,15 @@ the same arguments, you will have the same objects. It is because you can not be
 sure when the Application will be started, and debbuing two different instances
 of Application will be very hard if they are different.</p>
 <p>From now on, you can use application as context manager.</p>
-</section>
-<section id="extending-phases">
+</div>
+<div class="section" id="extending-phases">
 <h2><span class="section-number">6.5. </span>Extending Phases<a class="headerlink" href="#extending-phases" title="Permalink to this headline"></a></h2>
 <p>You can create your own phases on top of the existing ones. For example, if you
 have Celery and Pyramid application, you would need to have pyramid phase. This
 phase would execute tha Phase 2 at the beggining, and then run all the plugins,
 with the new phase. So now, the Celery application would not start web plugins.</p>
-</section>
-<section id="context-phase-start">
+</div>
+<div class="section" id="context-phase-start">
 <h2><span class="section-number">6.6. </span>Context Phase Start<a class="headerlink" href="#context-phase-start" title="Permalink to this headline"></a></h2>
 <p>This is where the application will be used as the context manager. This is the
 enter step. Application will execute .start method on all the Plugins in order
@@ -136,8 +135,8 @@ of add order from <code class="docutils literal notranslate"><span class="pre">c
 is to add vars into the Application object.
 For example, database plugin will start the session here in paste the session
 into the application instance.</p>
-</section>
-<section id="context-phase-end">
+</div>
+<div class="section" id="context-phase-end">
 <h2><span class="section-number">6.7. </span>Context Phase End<a class="headerlink" href="#context-phase-end" title="Permalink to this headline"></a></h2>
 <p>This is the exit step. Application will execute .exit method on all the Plugins in REVERSED
 order of add order from <code class="docutils literal notranslate"><span class="pre">create_plugins</span></code> method.
@@ -145,8 +144,8 @@ For exampple, database plugin will start the session before another plugin will
 us it. The exit will close th session.
 So the database plun should start before other plugin and end after the other
 plugin. That is why the Phase End will execute plugins in reversed order.</p>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

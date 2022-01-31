@@ -1,6 +1,7 @@
 from unittest.mock import MagicMock
 
 from pytest import fixture
+from pytest import mark
 from pytest import raises
 
 from qq import ApplicationNotStartedError
@@ -128,6 +129,15 @@ class TestInitializeInjectors:
 
         return InjectApplication(app)(example_fun)
 
+    @fixture
+    def coroutine(self, app):
+        async def example_fun(
+            first, second, third=SimpleInjector("settings"), fourth=injected_fun
+        ):
+            return [first, second, third, fourth]
+
+        return InjectApplication(app, for_coroutine=True)(example_fun)
+
     def test_when_arguments_provided(self, fun):
         assert fun(1, 2, 3, 4) == [1, 2, 3, 4]
 
@@ -155,3 +165,56 @@ class TestInitializeInjectors:
         app.start("default_settings")
         with raises(InjectorNotInicialized):
             errorfun(1, 2)
+
+
+@mark.asyncio
+class TestInitializeInjectorsForCoroutine:
+    @fixture
+    def app(self):
+        return ExampleApplication()
+
+    @fixture
+    def fun(self, app):
+        async def example_fun(
+            first, second, third=SimpleInjector("settings"), fourth=injected_fun
+        ):
+            return [first, second, third, fourth]
+
+        return InjectApplication(app, for_coroutine=True)(example_fun)
+
+    @fixture
+    def errorfun(self, app):
+        async def example_fun(
+            first, second, third=SimpleInjector, fourth=injected_fun
+        ):
+            return [first, second, third, fourth]
+
+        return InjectApplication(app, for_coroutine=True)(example_fun)
+
+    async def test_when_arguments_provided(self, fun):
+        assert await fun(1, 2, 3, 4) == [1, 2, 3, 4]
+
+    async def test_when_arguments_not_provided_and_app_not_started(self, fun):
+        with raises(ApplicationNotStartedError):
+            await fun(1, 2)
+
+    async def test_when_arguments_not_provided_and_app_started(self, app, fun):
+        app.start("default_settings")
+        result = await fun(1, 2)
+        assert result[0] == 1
+        assert result[1] == 2
+        assert result[2] == {"settings": True}
+        assert getattr(result[3], QQ_PARAMETER) == app
+
+    async def test_swap_application(self, fun):
+        secondfun = injector_runner(fun, None)
+        assert getattr(secondfun, QQ_PARAMETER) is None
+
+    async def test_when_not_initialized(self, app, errorfun):
+        """
+        Injected function should raise InjectorNotInicialized error when
+        the Injector is wrongly used.
+        """
+        app.start("default_settings")
+        with raises(InjectorNotInicialized):
+            await errorfun(1, 2)

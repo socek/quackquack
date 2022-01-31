@@ -1,4 +1,5 @@
 from contextlib import suppress
+from copy import copy
 from functools import wraps
 from inspect import BoundArguments
 from inspect import signature
@@ -22,37 +23,56 @@ class DefaultEmptyVar:
     pass
 
 
-def injector_runner(method: Callable, application: Application = None):
+def parse_parameters(application, method, args, kwargs):
+    kwargs = copy(kwargs)
+    injectors = list(get_injectors(method, args, kwargs))
+    for name, injector in injectors:
+        kwargs[name] = injector.start(application)
+
+    runners = list(get_runners(method, args, kwargs))
+    for name, runner in runners:
+        kwargs[name] = injector_runner(runner, application)
+    return kwargs, injectors
+
+
+def injector_runner(
+    method: Callable,
+    application: Application = None,
+    for_coroutine: bool = False,
+):
     if getattr(method, QQ_PARAMETER, None):
         setattr(method, QQ_PARAMETER, application)
         return method
 
     @wraps(method)
     def wrapper(*args, **kwargs):
-        injectors = list(get_injectors(method, args, kwargs))
-        for name, injector in injectors:
-            kwargs[name] = injector.start(application)
-
-        runners = list(get_runners(method, args, kwargs))
-        for name, runner in runners:
-            kwargs[name] = injector_runner(runner, application)
-
+        kwargs, injectors = parse_parameters(application, method, args, kwargs)
         try:
             return method(*args, **kwargs)
         finally:
             for name, injector in reversed(injectors):
                 injector.end()
 
+    @wraps(method)
+    async def coroutine_wrapper(*args, **kwargs):
+        kwargs, injectors = parse_parameters(application, method, args, kwargs)
+
+        try:
+            return await method(*args, **kwargs)
+        finally:
+            for name, injector in reversed(injectors):
+                injector.end()
+
     setattr(wrapper, QQ_PARAMETER, application)
-    return wrapper
+    return coroutine_wrapper if for_coroutine else wrapper
 
 
-def InjectApplication(application: Application) -> Callable:
+def InjectApplication(application: Application, for_coroutine: bool = False) -> Callable:
     def wrapper(method: Callable) -> Callable:
         """
         If function has injectors in the defaults of arguments, then init them.
         """
-        runner = injector_runner(method, application)
+        runner = injector_runner(method, application, for_coroutine)
         return wraps(method)(runner)
 
     return wrapper
@@ -124,8 +144,12 @@ def is_injector_ready(parameter: Any, name: str, bound_args: BoundArguments):
     """
     Is parameter an injector and the value is not provided in the call.
     """
-    is_injector = isinstance(parameter._default, Injector)
-    return is_injector and name not in bound_args.arguments
+    value = (
+        bound_args.arguments[name]
+        if name in bound_args.arguments
+        else parameter._default
+    )
+    return isinstance(value, Injector)
 
 
 def is_injected_ready(parameter: Any, name: str, bound_args: BoundArguments):

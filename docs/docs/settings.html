@@ -1,8 +1,7 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>4.1. Settings &mdash; Quack Quack 1.0.4 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -89,9 +88,9 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="settings">
+  <div class="section" id="settings">
 <h1><span class="section-number">4.1. </span>Settings<a class="headerlink" href="#settings" title="Permalink to this headline"></a></h1>
-<section id="history-and-concept">
+<div class="section" id="history-and-concept">
 <h2><span class="section-number">4.1.1. </span>History and concept<a class="headerlink" href="#history-and-concept" title="Permalink to this headline"></a></h2>
 <p>Settings plugin was designed to make object of all the settings of the application,
 which can be gather during the start of the application. There are many different
@@ -107,8 +106,8 @@ does not gives us such flexability.</p>
 many Django’s setting files I have seen code, that would be not accetable in
 other places due to the code smell (like dynamic imports, strange indentations
 and so on).</p>
-</section>
-<section id="implementing-settings">
+</div>
+<div class="section" id="implementing-settings">
 <h2><span class="section-number">4.1.2. </span>Implementing settings<a class="headerlink" href="#implementing-settings" title="Permalink to this headline"></a></h2>
 <p>Simple Python’s dict should be enough to serve as settings container. It should
 be generated in one place so reading the settings will be simple. Spliting code
@@ -182,8 +181,8 @@ more info.</p>
 </div>
 <p>Also, the settings can be retrived from the application.globals[“settings”]. This was
 added because plugins will also need access to the settings.</p>
-</section>
-<section id="other-plugins-that-uses-settings">
+</div>
+<div class="section" id="other-plugins-that-uses-settings">
 <h2><span class="section-number">4.1.3. </span>Other plugins that uses settings<a class="headerlink" href="#other-plugins-that-uses-settings" title="Permalink to this headline"></a></h2>
 <p>Settings should be divided into dicts, so every plugin should have it’s own dict
 for settings. For example, if you have 3 plugins (and Settings plugin) looking
@@ -234,8 +233,8 @@ like this:</p>
         <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_my_settings</span><span class="p">(</span><span class="n">context</span><span class="p">)</span> <span class="o">==</span> <span class="p">{</span><span class="s2">&quot;options&quot;</span><span class="p">:</span> <span class="s2">&quot;something&quot;</span><span class="p">}</span>
 </pre></div>
 </div>
-</section>
-<section id="implementing-paths-settings">
+</div>
+<div class="section" id="implementing-paths-settings">
 <h2><span class="section-number">4.1.4. </span>Implementing paths settings<a class="headerlink" href="#implementing-paths-settings" title="Permalink to this headline"></a></h2>
 <p>If you wish to configure paths to settings, a simple dict can not be enough.
 Our proposition is to have prefixed dict, in which you specify prefix once,
@@ -254,12 +253,12 @@ and all paths will be prefixed.</p>
     <span class="k">return</span> <span class="n">settings</span>
 </pre></div>
 </div>
-</section>
-<section id="settings-injector">
+</div>
+<div class="section" id="settings-injector">
 <h2><span class="section-number">4.1.5. </span>Settings Injector<a class="headerlink" href="#settings-injector" title="Permalink to this headline"></a></h2>
 <p>Most of the cases the developer do not need access to whole</p>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

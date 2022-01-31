@@ -91,7 +91,6 @@ InjectApplication decorator.
 
 .. code-block:: python
 
-
    from qq import InjectApplication, SimpleInjector
 
    app = MyApplication()
@@ -109,6 +108,23 @@ InjectApplication decorator.
    from unittest.mock import MagicMock
    fun("something", MagicMock())
    fun("something", settings=MagicMock())
+
+If the method is a coroutine, you need to inform the InjectApplication, by passing
+for_coroutine as True.
+
+.. code-block:: python
+
+   from qq import InjectApplication, SimpleInjector
+
+   app = MyApplication()
+
+
+   @InjectApplication(app, for_coroutine=True)
+   async def fun(something, settings = SimpleInjector("settings")):
+       print(settings)
+
+   app.start()
+   await fun("something")
 
 Creating Plugins
 ----------------
