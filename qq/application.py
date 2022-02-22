@@ -43,3 +43,15 @@ class Application(ApplicationType):
     @property
     def context_var_key(self):
         return f"{KEY_PREFIX}_{self.__class__.__name__}"
+
+    def __getstate__(self):
+        return dict(
+            is_started=False,
+            startpoint=None,
+            extra={},
+        )
+
+    def __setstate__(self, state):
+        self.is_started = state["is_started"]
+        self.startpoint = state["startpoint"]
+        self.extra = state["extra"]

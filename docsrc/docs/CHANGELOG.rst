@@ -7,6 +7,12 @@ All notable changes to this project will be documented in this file.
 The format is based on `Keep a Changelog <http://keepachangelog.com/>`_ and this project adheres to [Semantic Versioning]
 (http://semver.org/).
 
+Version: 1.1.1
+==============
+
+* Fixed
+    * Added Pickling of the Application object, so FastAPI will no longer crash when tried to log a request.
+
 Version: 1.1.0
 ==============
 

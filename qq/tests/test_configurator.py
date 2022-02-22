@@ -1,3 +1,5 @@
+from pickle import dumps
+from pickle import loads
 from unittest.mock import MagicMock
 from unittest.mock import sentinel
 
@@ -61,3 +63,11 @@ class TestApplication:
         assert app.globals == {}
         assert app.startpoint is None
         assert app.plugins == {}
+
+    def test_pickling(self, app):
+        pickle = dumps(app)
+        unpickle = loads(pickle)
+
+        assert app.is_started == unpickle.is_started
+        assert app.startpoint == unpickle.startpoint
+        assert app.extra == unpickle.extra
