@@ -1,2 +1,0 @@
-class UnknownObjectError(RuntimeError):
-    pass

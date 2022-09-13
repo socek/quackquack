@@ -225,18 +225,6 @@ python-versions = ">=2.7,!=3.0.*,!=3.1.*,!=3.2.*,!=3.3.*,!=3.4.*"
 docs = ["sphinx"]
 
 [[package]]
-name = "hupper"
-version = "1.10.3"
-description = "Integrated process monitor for developing and reloading daemons."
-category = "main"
-optional = true
-python-versions = ">=2.7,!=3.0.*,!=3.1.*,!=3.2.*,!=3.3.*"
-
-[package.extras]
-docs = ["watchdog", "sphinx", "pylons-sphinx-themes"]
-testing = ["watchdog", "pytest", "pytest-cov", "mock"]
-
-[[package]]
 name = "icecream"
 version = "2.1.3"
 description = "Never use print() to debug again; inspect variables, expressions, and program execution with a single, simple function call."
@@ -481,18 +469,6 @@ qa = ["flake8 (==3.8.3)", "mypy (==0.782)"]
 testing = ["docopt", "pytest (<6.0.0)"]
 
 [[package]]
-name = "pastedeploy"
-version = "2.1.1"
-description = "Load, configure, and compose WSGI applications and servers"
-category = "main"
-optional = true
-python-versions = "*"
-
-[package.extras]
-docs = ["pylons-sphinx-themes", "Sphinx (>=1.7.5)"]
-paste = ["paste"]
-
-[[package]]
 name = "pexpect"
 version = "4.8.0"
 description = "Pexpect allows easy control of interactive console applications."
@@ -510,33 +486,6 @@ description = "Tiny 'shelve'-like database with concurrency support"
 category = "dev"
 optional = false
 python-versions = "*"
-
-[[package]]
-name = "plaster"
-version = "1.0"
-description = "A loader interface around multiple config file formats."
-category = "main"
-optional = true
-python-versions = ">=2.7,!=3.0.*,!=3.1.*,!=3.2.*,!=3.3.*"
-
-[package.extras]
-docs = ["sphinx", "pylons-sphinx-themes"]
-testing = ["pytest", "pytest-cov"]
-
-[[package]]
-name = "plaster-pastedeploy"
-version = "0.7"
-description = "A loader implementing the PasteDeploy syntax to be used by plaster."
-category = "main"
-optional = true
-python-versions = ">=2.7,!=3.0.*,!=3.1.*,!=3.2.*,!=3.3.*"
-
-[package.dependencies]
-PasteDeploy = ">=2.0"
-plaster = ">=0.5"
-
-[package.extras]
-testing = ["pytest-cov", "pytest"]
 
 [[package]]
 name = "pluggy"
@@ -598,28 +547,6 @@ python-versions = ">=3.6.8"
 
 [package.extras]
 diagrams = ["railroad-diagrams", "jinja2"]
-
-[[package]]
-name = "pyramid"
-version = "1.10.8"
-description = "The Pyramid Web Framework, a Pylons project"
-category = "main"
-optional = true
-python-versions = ">=2.7,!=3.0.*,!=3.1.*,!=3.2.*,!=3.3.*"
-
-[package.dependencies]
-hupper = ">=1.5"
-plaster = "*"
-plaster-pastedeploy = "*"
-translationstring = ">=0.4"
-venusian = ">=1.0"
-webob = ">=1.8.3"
-"zope.deprecation" = ">=3.5.0"
-"zope.interface" = ">=3.8.0"
-
-[package.extras]
-docs = ["Sphinx (>=3.0.0)", "docutils", "pylons-sphinx-themes (>=1.0.8)", "pylons-sphinx-latesturl", "repoze.sphinx.autointerface", "sphinxcontrib-autoprogram"]
-testing = ["webtest (>=1.3.1)", "zope.component (>=4.0)", "coverage", "nose", "virtualenv"]
 
 [[package]]
 name = "pytest"
@@ -791,17 +718,6 @@ python-versions = ">=3.7"
 test = ["pre-commit", "pytest"]
 
 [[package]]
-name = "translationstring"
-version = "1.4"
-description = "Utility library for i18n relied on by various Repoze and Pyramid packages"
-category = "main"
-optional = true
-python-versions = "*"
-
-[package.extras]
-docs = ["pylons-sphinx-themes", "docutils", "Sphinx (>=1.3.1)"]
-
-[[package]]
 name = "typing-extensions"
 version = "4.3.0"
 description = "Backported and Experimental Type Hints for Python 3.7+"
@@ -822,18 +738,6 @@ mypy-extensions = ">=0.3.0"
 typing-extensions = ">=3.7.4"
 
 [[package]]
-name = "venusian"
-version = "3.0.0"
-description = "A library for deferring decorator actions"
-category = "main"
-optional = true
-python-versions = ">=3.5"
-
-[package.extras]
-testing = ["coverage", "pytest-cov", "pytest"]
-docs = ["repoze.sphinx.autointerface", "sphinx"]
-
-[[package]]
 name = "vine"
 version = "5.0.0"
 description = "Promises, promises, promises."
@@ -850,18 +754,6 @@ optional = false
 python-versions = "*"
 
 [[package]]
-name = "webob"
-version = "1.8.7"
-description = "WSGI request and response object"
-category = "main"
-optional = true
-python-versions = ">=2.7,!=3.0.*,!=3.1.*,!=3.2.*"
-
-[package.extras]
-docs = ["Sphinx (>=1.7.5)", "pylons-sphinx-themes"]
-testing = ["pytest (>=3.1.0)", "coverage", "pytest-cov", "pytest-xdist"]
-
-[[package]]
 name = "zipp"
 version = "3.8.1"
 description = "Backport of pathlib-compatible object wrapper for zip files"
@@ -873,43 +765,17 @@ python-versions = ">=3.7"
 docs = ["sphinx", "jaraco.packaging (>=9)", "rst.linker (>=1.9)", "jaraco.tidelift (>=1.4)"]
 testing = ["pytest (>=6)", "pytest-checkdocs (>=2.4)", "pytest-flake8", "pytest-cov", "pytest-enabler (>=1.3)", "jaraco.itertools", "func-timeout", "pytest-black (>=0.3.7)", "pytest-mypy (>=0.9.1)"]
 
-[[package]]
-name = "zope.deprecation"
-version = "4.4.0"
-description = "Zope Deprecation Infrastructure"
-category = "main"
-optional = true
-python-versions = "*"
-
-[package.extras]
-docs = ["sphinx"]
-test = ["zope.testrunner"]
-
-[[package]]
-name = "zope.interface"
-version = "5.4.0"
-description = "Interfaces for Python"
-category = "main"
-optional = true
-python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*"
-
-[package.extras]
-docs = ["sphinx", "repoze.sphinx.autointerface"]
-test = ["coverage (>=5.0.3)", "zope.event", "zope.testing"]
-testing = ["coverage (>=5.0.3)", "zope.event", "zope.testing"]
-
 [extras]
 alembic = ["alembic"]
 celery = ["celery"]
-developer = ["alembic", "sqlalchemy", "pyramid", "redis", "celery"]
-pyramid = ["pyramid"]
+developer = ["alembic", "sqlalchemy", "redis", "celery"]
 redis = ["redis"]
 sqlalchemy = ["sqlalchemy"]
 
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.8"
-content-hash = "0cfdef21a2f4cc6dc9a42b4a8b6b262a094e19f2e2c5d8243cc6c2de983c5ccb"
+content-hash = "d53a23a7cf9cfd983629ce8b493088d110f682706b26da99b5a51226ffd50b5c"
 
 [metadata.files]
 alembic = []
@@ -929,7 +795,6 @@ coverage = []
 decorator = []
 executing = []
 greenlet = []
-hupper = []
 icecream = []
 importlib-metadata = []
 importlib-resources = []
@@ -946,18 +811,14 @@ matplotlib-inline = []
 mypy-extensions = []
 packaging = []
 parso = []
-pastedeploy = []
 pexpect = []
 pickleshare = []
-plaster = []
-plaster-pastedeploy = []
 pluggy = []
 prompt-toolkit = []
 ptyprocess = []
 py = []
 pygments = []
 pyparsing = []
-pyramid = []
 pytest = []
 pytest-async = []
 pytest-asyncio = []
@@ -971,13 +832,8 @@ sqlalchemy = []
 toml = []
 tomli = []
 traitlets = []
-translationstring = []
 typing-extensions = []
 typing-inspect = []
-venusian = []
 vine = []
 wcwidth = []
-webob = []
 zipp = []
-"zope.deprecation" = []
-"zope.interface" = []
