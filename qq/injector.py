@@ -31,11 +31,11 @@ def parse_parameters(application, method, args, kwargs):
 
     runners = list(get_runners(method, args, kwargs))
     for name, runner in runners:
-        kwargs[name] = injector_runner(runner, application)
+        kwargs[name] = application_runner(runner, application)
     return kwargs, injectors
 
 
-def injector_runner(
+def application_runner(
     method: Callable,
     application: Application = None,
     for_coroutine: bool = False,
@@ -67,12 +67,12 @@ def injector_runner(
     return coroutine_wrapper if for_coroutine else wrapper
 
 
-def InjectApplication(application: Application, for_coroutine: bool = False) -> Callable:
+def CreateApplicationDecorator(application: Application, for_coroutine: bool = False) -> Callable:
     def wrapper(method: Callable) -> Callable:
         """
         If function has injectors in the defaults of arguments, then init them.
         """
-        runner = injector_runner(method, application, for_coroutine)
+        runner = application_runner(method, application, for_coroutine)
         return wraps(method)(runner)
 
     return wrapper
@@ -97,7 +97,7 @@ class Injector:
             raise InjectorNotInicialized()
         self.context = Context(application)
         self.entered = self.context.__enter__()
-        self.result = injector_runner(self.fun, application)(
+        self.result = application_runner(self.fun, application)(
             self.entered, *self.args, **self.kwargs
         )
         if _is_generator(self.result):
