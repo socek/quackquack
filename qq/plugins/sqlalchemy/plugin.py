@@ -35,19 +35,23 @@ class SqlAlchemyPlugin(SettingsBasedPlugin):
         self.sessionmaker = sessionmaker(
             autoflush=False, autocommit=False, bind=self.engine
         )
+        self.session = None
+        self.session_index = 0
         return {
             ENGINE_KEY: self.engine,
             SESSIONMAKER_KEY: self.sessionmaker,
         }
 
     def enter(self, context: Context) -> Session:
-        self.session = self.sessionmaker()
+        if not self.session:
+            self.session = self.sessionmaker()
+        self.session_index += 1
         return self.session
 
     def exit(self, context, exc_type, exc_value, traceback):
-        if exc_type or self._settings.get("tests", False):
-            self.session.rollback()
-        self.session.close()
+        if self.session_index == 1:
+            self.session.close()
+        self.session_index -= 1
 
     def create_engine(self) -> Engine:
         return create_engine(self.url, **self._settings.get(OPTIONS_KEY, {}))
