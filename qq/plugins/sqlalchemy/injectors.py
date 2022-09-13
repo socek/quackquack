@@ -8,7 +8,25 @@ from qq.plugins.settings import SettingsInjector
 from qq.plugins.types import Settings
 
 
-class TransactionRunner:
+class TransactionContext:
+    def __init__(self, session: Session, settings: Settings):
+        self.session = session
+        self.settings = settings
+
+    def __enter__(self):
+        pass
+
+    def __exit__(self, exc_type, exc, exc_tb):
+        # TODO: self.session is not the same session!
+        if exc_type:
+            self.session.rollback()
+        elif self.settings.get(TESTS_KEY, False):
+            self.session.flush()
+        else:
+            self.session.commit()
+
+
+class TransactionWrapper:
     def __init__(
         self,
         application: Application,
@@ -25,14 +43,7 @@ class TransactionRunner:
             *args,
             **kwargs,
         ):
-            try:
-                result = self.runner(method)(*args, **kwargs)
-                if settings.get(TESTS_KEY, False):
-                    settings.flush()
-                else:
-                    settings.commit()
-                return result
-            except Exception:
-                session.rollback()
+            with TransactionContext(session, settings):
+                return self.runner(method)(*args, **kwargs)
 
         return self.runner(wrapper)
