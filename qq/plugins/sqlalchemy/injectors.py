@@ -1,37 +1,38 @@
 from sqlalchemy.orm import Session
 
-from qq.context import Context
-from qq.injector import ContextManagerInjector
-from qq.injector import Injector
+from qq.application import Application
+from qq.injector import InjectApplication
+from qq.injector import SimpleInjector
 from qq.plugins.settings import TESTS_KEY
-from qq.plugins.settings import SettingsPlugin
+from qq.plugins.settings import SettingsInjector
+from qq.plugins.types import Settings
 
 
-@Injector
-def SAQuery(context: Context, key: str) -> Session:
-    return context[key]
-
-
-class SACommand(ContextManagerInjector):
+class TransactionRunner:
     def __init__(
-        self, key: str
+        self,
+        application: Application,
+        key: str,
     ):
         super().__init__()
         self.key = key
+        self.runner = InjectApplication(application, False)
 
-    def __enter__(self, context) -> Session:
-        return context[self.key]
+    def __call__(self, method):
+        def wrapper(
+            session: Session = SimpleInjector(self.key),
+            settings: Settings = SettingsInjector(self.key),
+            *args,
+            **kwargs,
+        ):
+            try:
+                result = self.runner(method)(*args, **kwargs)
+                if settings.get(TESTS_KEY, False):
+                    settings.flush()
+                else:
+                    settings.commit()
+                return result
+            except Exception:
+                session.rollback()
 
-    def __exit__(
-        self,
-        exc_type,
-        exc_value,
-        traceback,
-        context,
-    ):
-        settings = context[SettingsPlugin.key][self.key]
-        db = context[self.key]
-        if settings.get(TESTS_KEY, False):
-            db.flush()
-        elif not exc_type:
-            db.commit()
+        return self.runner(wrapper)
