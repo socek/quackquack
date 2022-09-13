@@ -1,5 +1,2 @@
-from qq.types import CustomBaseType
-
-
-class Settings(dict, CustomBaseType):
+class Settings(dict):
     pass

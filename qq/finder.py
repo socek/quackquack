@@ -7,8 +7,6 @@ from logging import getLogger
 from pkgutil import walk_packages
 from typing import List
 
-from qq.types import CustomBaseType
-
 logger = getLogger(__name__)
 
 
@@ -90,8 +88,3 @@ class ObjectFinder(ABC):
 class DataclassFinder(ObjectFinder):
     def is_collectable(self, element: object):
         return is_dataclass(element)
-
-
-class CustomBaseTypeFinder(ObjectFinder):
-    def is_collectable(self, element: object):
-        return issubclass(element, CustomBaseType)

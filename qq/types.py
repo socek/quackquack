@@ -1,11 +1,7 @@
 from abc import ABC
 
 
-class CustomBaseType:
-    pass
-
-
-class PluginKey(str, CustomBaseType):
+class PluginKey(str):
     pass
 
 
