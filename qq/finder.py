@@ -1,6 +1,5 @@
 from abc import ABC
 from abc import abstractmethod
-from dataclasses import is_dataclass
 from importlib import import_module
 from inspect import getmodule
 from logging import getLogger
@@ -83,8 +82,3 @@ class ObjectFinder(ABC):
     @abstractmethod
     def is_collectable(self, element: object):
         pass  # pragma: no cover
-
-
-class DataclassFinder(ObjectFinder):
-    def is_collectable(self, element: object):
-        return is_dataclass(element)
