@@ -2,6 +2,7 @@ from contextlib import suppress
 from copy import copy
 from functools import wraps
 from inspect import BoundArguments
+from inspect import iscoroutinefunction
 from inspect import signature
 from sys import exc_info
 from types import GeneratorType
@@ -35,44 +36,60 @@ def parse_parameters(application, method, args, kwargs):
     return kwargs, injectors
 
 
+class InjectorsContextManager:
+    def __init__(self, application, method, args, kwargs):
+        self.application = application
+        self.method = method
+        self.args = args
+        self.kwargs = kwargs
+
+    def __enter__(self):
+        kwargs, self.injectors = parse_parameters(
+            self.application,
+            self.method,
+            self.args,
+            self.kwargs,
+        )
+        return kwargs
+
+    def __exit__(self, exc_type, exc_value, traceback):
+        for name, injector in reversed(self.injectors):
+            injector.end()
+
+
 def application_runner(
     method: Callable,
     application: Application = None,
-    for_coroutine: bool = False,
 ):
     if getattr(method, QQ_PARAMETER, None):
         setattr(method, QQ_PARAMETER, application)
         return method
 
     @wraps(method)
-    def wrapper(*args, **kwargs):
-        kwargs, injectors = parse_parameters(application, method, args, kwargs)
-        try:
+    def qqfunction(*args, **kwargs):
+        with InjectorsContextManager(
+            application, method, args, kwargs
+        ) as kwargs:
             return method(*args, **kwargs)
-        finally:
-            for name, injector in reversed(injectors):
-                injector.end()
 
     @wraps(method)
-    async def coroutine_wrapper(*args, **kwargs):
-        kwargs, injectors = parse_parameters(application, method, args, kwargs)
-
-        try:
+    async def qqcoroutine(*args, **kwargs):
+        with InjectorsContextManager(
+            application, method, args, kwargs
+        ) as kwargs:
             return await method(*args, **kwargs)
-        finally:
-            for name, injector in reversed(injectors):
-                injector.end()
 
-    setattr(wrapper, QQ_PARAMETER, application)
-    return coroutine_wrapper if for_coroutine else wrapper
+    setattr(qqfunction, QQ_PARAMETER, application)
+    setattr(qqcoroutine, QQ_PARAMETER, application)
+    return qqcoroutine if iscoroutinefunction(method) else qqfunction
 
 
-def CreateApplicationDecorator(application: Application, for_coroutine: bool = False) -> Callable:
+def CreateApplicationDecorator(application: Application) -> Callable:
     def wrapper(method: Callable) -> Callable:
         """
         If function has injectors in the defaults of arguments, then init them.
         """
-        runner = application_runner(method, application, for_coroutine)
+        runner = application_runner(method, application)
         return wraps(method)(runner)
 
     return wrapper

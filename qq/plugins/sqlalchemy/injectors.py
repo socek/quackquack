@@ -33,7 +33,7 @@ class TransactionDecorator:
     ):
         super().__init__()
         self.key = key
-        self.app_wrapper = CreateApplicationDecorator(application, False)
+        self.app_wrapper = CreateApplicationDecorator(application)
 
     def __call__(self, method):
         def wrapper(

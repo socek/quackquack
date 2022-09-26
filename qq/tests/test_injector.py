@@ -136,7 +136,7 @@ class TestInitializeInjectors:
         ):
             return [first, second, third, fourth]
 
-        return CreateApplicationDecorator(app, for_coroutine=True)(example_fun)
+        return CreateApplicationDecorator(app)(example_fun)
 
     def test_when_arguments_provided(self, fun):
         assert fun(1, 2, 3, 4) == [1, 2, 3, 4]
@@ -180,7 +180,7 @@ class TestInitializeInjectorsForCoroutine:
         ):
             return [first, second, third, fourth]
 
-        return CreateApplicationDecorator(app, for_coroutine=True)(example_fun)
+        return CreateApplicationDecorator(app)(example_fun)
 
     @fixture
     def errorfun(self, app):
@@ -189,7 +189,7 @@ class TestInitializeInjectorsForCoroutine:
         ):
             return [first, second, third, fourth]
 
-        return CreateApplicationDecorator(app, for_coroutine=True)(example_fun)
+        return CreateApplicationDecorator(app)(example_fun)
 
     async def test_when_arguments_provided(self, fun):
         assert await fun(1, 2, 3, 4) == [1, 2, 3, 4]
@@ -208,7 +208,7 @@ class TestInitializeInjectorsForCoroutine:
 
     async def test_swap_application(self, fun):
         secondfun = application_runner(fun, None)
-        assert getattr(secondfun, QQ_PARAMETER) is None
+        assert getattr(secondfun, QQ_PARAMETER, None) is None
 
     async def test_when_not_initialized(self, app, errorfun):
         """
