@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Session
 
 from qq.application import Application
-from qq.injector import CreateApplicationDecorator
+from qq.initializers import ApplicationInitializer
 from qq.injector import SimpleInjector
 from qq.plugins.settings import TESTS_KEY
 from qq.plugins.settings import SettingsInjector
@@ -33,7 +33,7 @@ class TransactionDecorator:
     ):
         super().__init__()
         self.key = key
-        self.app_wrapper = CreateApplicationDecorator(application)
+        self.app_wrapper = ApplicationInitializer(application)
 
     def __call__(self, method):
         def wrapper(
