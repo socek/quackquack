@@ -5,8 +5,8 @@ from unittest.mock import sentinel
 from pytest import fixture
 
 from qq.context import Context
+from qq.initializers import ApplicationInitializer
 from qq.injector import ContextManagerInjector
-from qq.injector import CreateApplicationDecorator
 from qq.injector import Injector
 
 
@@ -54,7 +54,7 @@ class TestReturnInjector(Fixtures):
             assert data["name"] == 1
             return obj
 
-        return CreateApplicationDecorator(mapp)(fun)
+        return ApplicationInitializer(mapp)(fun)
 
     def test_yielding(self, data, examplefun):
         assert data["name"] == 0
@@ -79,7 +79,7 @@ class TestYieldInjector(Fixtures):
             assert data["name"] == 1
             return obj
 
-        return CreateApplicationDecorator(mapp)(fun)
+        return ApplicationInitializer(mapp)(fun)
 
     def test_yielding(self, data, examplefun):
         assert data["name"] == 0
@@ -106,7 +106,7 @@ class TestContextManagerInjector(Fixtures):
             assert data["name"] == 1
             return obj
 
-        return CreateApplicationDecorator(mapp)(fun)
+        return ApplicationInitializer(mapp)(fun)
 
     def test_context_manager(self, data, examplefun):
         assert data["name"] == 0

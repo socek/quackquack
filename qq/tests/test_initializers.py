@@ -1,25 +1,39 @@
 from unittest.mock import MagicMock
 
 from pytest import fixture
-from pytest import mark
 from pytest import raises
 
 from qq import ApplicationNotStartedError
 from qq import Context
-from qq import CreateApplicationDecorator
 from qq import SimpleInjector
 from qq.application import Application
 from qq.errors import InjectorNotInicialized
-from qq.injector import QQ_PARAMETER
+from qq.initializers import QQ_PARAMETER
+from qq.initializers import ApplicationInitializer
+from qq.initializers import get_initializers
+from qq.initializers import get_injectors
+from qq.initializers import is_initializer
+from qq.initializers import is_injector
 from qq.injector import Injector
-from qq.injector import application_runner
-from qq.injector import get_injectors
-from qq.injector import get_runners
-from qq.injector import is_injector_ready
 from qq.plugins import SettingsPlugin
 
+app = Application()
 
-class TestIsInjectorReady:
+
+def not_injected_fun():
+    pass
+
+
+injected_fun = ApplicationInitializer(None)(not_injected_fun)
+
+
+def example_fun(
+    first, second, third=SimpleInjector(app, "key"), fourth=injected_fun
+):
+    return [first, second, third, fourth]
+
+
+class TestIsInjector:
     @fixture
     def mparameter(self):
         return MagicMock()
@@ -31,34 +45,18 @@ class TestIsInjectorReady:
         return args
 
     def test_when_parameter_is_not_an_injector(self, mparameter, mbound_args):
-        assert is_injector_ready(mparameter, "key", mbound_args) is False
+        assert is_injector(mparameter, "key", mbound_args) is False
 
     def test_when_parameter_is_already_provided(self, mparameter, mbound_args):
         mbound_args.arguments["key"] = 1
         mparameter._default = Injector(None)
 
-        assert is_injector_ready(mparameter, "key", mbound_args) is False
+        assert is_injector(mparameter, "key", mbound_args) is False
 
     def test_when_parameter_is_not_provided(self, mparameter, mbound_args):
         mparameter._default = Injector(None)
-        result = is_injector_ready(mparameter, "key", mbound_args)
+        result = is_injector(mparameter, "key", mbound_args)
         assert result is True
-
-
-app = Application()
-
-
-def not_injected_fun():
-    pass
-
-
-injected_fun = CreateApplicationDecorator(None)(not_injected_fun)
-
-
-def example_fun(
-    first, second, third=SimpleInjector(app, "key"), fourth=injected_fun
-):
-    return [first, second, third, fourth]
 
 
 class TestInjectors:
@@ -81,7 +79,7 @@ class TestInjectors:
 
 class TestInjectedApplication:
     def test_when_arguments_provided(self):
-        assert list(get_runners(example_fun, [1, 2, 3, 4], {})) == []
+        assert list(get_initializers(example_fun, [1, 2, 3, 4], {})) == []
 
     def test_when_arguments_not_provided(self):
         """
@@ -91,7 +89,7 @@ class TestInjectedApplication:
         context = Context(Application())
         context.values["key"] = 333
 
-        name, value = list(get_runners(example_fun, [1, 2], {}))[0]
+        name, value = list(get_initializers(example_fun, [1, 2], {}))[0]
 
         assert name == "fourth"
         assert value == injected_fun
@@ -103,7 +101,7 @@ def default_settings():
 
 class ExampleApplication(Application):
     def create_plugins(self):
-        self.plugins["settings"] = SettingsPlugin("qq.tests.test_injector")
+        self.plugins["settings"] = SettingsPlugin("qq.tests.test_initializers")
 
 
 class TestInitializeInjectors:
@@ -118,7 +116,7 @@ class TestInitializeInjectors:
         ):
             return [first, second, third, fourth]
 
-        return CreateApplicationDecorator(app)(example_fun)
+        return ApplicationInitializer(app)(example_fun)
 
     @fixture
     def errorfun(self, app):
@@ -127,7 +125,7 @@ class TestInitializeInjectors:
         ):
             return [first, second, third, fourth]
 
-        return CreateApplicationDecorator(app)(example_fun)
+        return ApplicationInitializer(app)(example_fun)
 
     @fixture
     def coroutine(self, app):
@@ -136,7 +134,7 @@ class TestInitializeInjectors:
         ):
             return [first, second, third, fourth]
 
-        return CreateApplicationDecorator(app)(example_fun)
+        return ApplicationInitializer(app)(example_fun)
 
     def test_when_arguments_provided(self, fun):
         assert fun(1, 2, 3, 4) == [1, 2, 3, 4]
@@ -154,7 +152,7 @@ class TestInitializeInjectors:
         assert getattr(result[3], QQ_PARAMETER) == app
 
     def test_swap_application(self, fun):
-        secondfun = application_runner(fun, None)
+        secondfun = ApplicationInitializer(None)(fun)
         assert getattr(secondfun, QQ_PARAMETER) is None
 
     def test_when_not_initialized(self, app, errorfun):
@@ -167,7 +165,6 @@ class TestInitializeInjectors:
             errorfun(1, 2)
 
 
-@mark.asyncio
 class TestInitializeInjectorsForCoroutine:
     @fixture
     def app(self):
@@ -180,7 +177,7 @@ class TestInitializeInjectorsForCoroutine:
         ):
             return [first, second, third, fourth]
 
-        return CreateApplicationDecorator(app)(example_fun)
+        return ApplicationInitializer(app)(example_fun)
 
     @fixture
     def errorfun(self, app):
@@ -189,7 +186,7 @@ class TestInitializeInjectorsForCoroutine:
         ):
             return [first, second, third, fourth]
 
-        return CreateApplicationDecorator(app)(example_fun)
+        return ApplicationInitializer(app)(example_fun)
 
     async def test_when_arguments_provided(self, fun):
         assert await fun(1, 2, 3, 4) == [1, 2, 3, 4]
@@ -207,7 +204,7 @@ class TestInitializeInjectorsForCoroutine:
         assert getattr(result[3], QQ_PARAMETER) == app
 
     async def test_swap_application(self, fun):
-        secondfun = application_runner(fun, None)
+        secondfun = ApplicationInitializer(None)(fun)
         assert getattr(secondfun, QQ_PARAMETER, None) is None
 
     async def test_when_not_initialized(self, app, errorfun):

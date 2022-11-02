@@ -1,6 +1,10 @@
 from abc import ABC
 
 
+class BaseInjector:
+    pass
+
+
 class PluginKey(str):
     pass
 
