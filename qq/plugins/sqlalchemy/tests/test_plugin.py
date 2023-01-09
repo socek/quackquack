@@ -46,21 +46,19 @@ class TestSqlAlchemyPlugin:
         return MagicMock()
 
     def test_start(
-        self, plugin, mapp, msessionmaker, mcreate_engine, mget_my_settings
+        self,
+        plugin,
+        mapp,
+        mget_my_settings,
     ):
         """
         .start should create proper sqlalchemy engine.
         """
         plugin.start(mapp)
 
-        mcreate_engine.assert_called_once_with(
-            "sqlite:///tmp.first.db", optionkey="option value"
-        )
-
-        assert plugin.sessionmaker == msessionmaker.return_value
-        msessionmaker.assert_called_once_with(
-            autoflush=False, autocommit=False, bind=mcreate_engine.return_value
-        )
+        assert plugin.engine is None
+        assert plugin.session is None
+        assert plugin.sessionmaker is None
 
     def test_enter_when_session_exists(self, plugin):
         """
@@ -74,40 +72,47 @@ class TestSqlAlchemyPlugin:
         assert plugin.enter(mcontext) == plugin.session
         assert plugin.session_index == 2
 
-    def test_enter_when_session_not_exists(self, plugin):
+    def test_enter_when_session_not_exists(
+        self, plugin, msessionmaker, mcreate_engine
+    ):
         """
         .enter should create new database session and assign it to the context
         """
         mcontext = MagicMock()
-        plugin.sessionmaker = MagicMock()
-        plugin.engine = MagicMock()
         plugin.session = None
         plugin.session_index = 0
-
-        assert plugin.enter(mcontext) == plugin.sessionmaker.return_value
-        assert plugin.session_index == 1
-
-    def test_exit(self, plugin):
-        """
-        .exit should close the database session.
-        """
-        plugin.session = MagicMock()
-        plugin.session_index = 1
         plugin._settings = {
             "url": "sqlite:///tmp.first.db",
             "options": {"optionkey": "option value"},
         }
 
+        assert plugin.enter(mcontext) == msessionmaker.return_value.return_value
+        assert plugin.session_index == 1
+        assert plugin.session == msessionmaker.return_value.return_value
+        assert plugin.engine == mcreate_engine.return_value
+
+    def test_exit(self, plugin):
+        """
+        .exit should close the database session.
+        """
+        mengine = MagicMock()
+        msession = MagicMock()
+        plugin.engine = mengine
+        plugin.session = msession
+        plugin.session_index = 1
+
         plugin.exit(None, None, None, None)
 
-        assert not plugin.session.rollback.called
-        plugin.session.close.assert_called_once_with()
+        assert not msession.rollback.called
+        msession.close.assert_called_once_with()
         assert plugin.session_index == 0
+        mengine.dispose.assert_called_once_with()
 
     def test_exit_of_many_sessions(self, plugin):
         """
         .exit should decrease the index by one
         """
+        plugin.engine = MagicMock()
         plugin.session = MagicMock()
         plugin.session_index = 2
 
@@ -121,15 +126,21 @@ class TestSqlAlchemyPlugin:
         .exit should rollback and close the database session when exception
         occured.
         """
-        plugin.session = MagicMock()
+        mengine = MagicMock()
+        msession = MagicMock()
+        plugin.engine = mengine
+        plugin.session = msession
         plugin.session_index = 1
 
         plugin.exit(None, True, None, None)
 
-        plugin.session.close.assert_called_once_with()
+        msession.close.assert_called_once_with()
         assert plugin.session_index == 0
+        mengine.dispose.assert_called_once_with()
 
-    def test_dbname(self, plugin, mapp, msessionmaker, mcreate_engine, mget_my_settings):
+    def test_dbname(
+        self, plugin, mapp, msessionmaker, mcreate_engine, mget_my_settings
+    ):
         """
         .dbname should return name of the database made from the db url
         """
@@ -146,7 +157,9 @@ class TestSqlAlchemyPlugin:
         with raises(SettingMissing):
             plugin.start(mapp)
 
-    def test_recreate(self, plugin, metadata, mcreate_engine, mapp, mget_my_settings):
+    def test_recreate(
+        self, plugin, metadata, mcreate_engine, mapp, mget_my_settings
+    ):
         """
         .recreate should drop all and create all tables using provided metadata.
         """

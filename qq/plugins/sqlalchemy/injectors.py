@@ -9,6 +9,7 @@ from qq.plugins.types import Settings
 
 
 class TransactionContextManager:
+    #TODO: nesting !!!
     def __init__(self, session: Session, settings: Settings):
         self.session = session
         self.settings = settings

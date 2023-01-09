@@ -9,9 +9,7 @@ from sqlalchemy.orm import sessionmaker
 from qq.application import Application
 from qq.context import Context
 from qq.plugins.settings import SettingsBasedPlugin
-from qq.plugins.sqlalchemy.consts import ENGINE_KEY
 from qq.plugins.sqlalchemy.consts import OPTIONS_KEY
-from qq.plugins.sqlalchemy.consts import SESSIONMAKER_KEY
 from qq.plugins.sqlalchemy.consts import URL_KEY
 from qq.plugins.sqlalchemy.exceptions import SettingMissing
 
@@ -31,19 +29,18 @@ class SqlAlchemyPlugin(SettingsBasedPlugin):
     def start(self, application: Application) -> Dict:
         self._settings = self.get_my_settings(application)
         self._validate_settings()
-        self.engine = self.create_engine()
-        self.sessionmaker = sessionmaker(
-            autoflush=False, autocommit=False, bind=self.engine
-        )
+        self.engine = None
+        self.sessionmaker = None
         self.session = None
         self.session_index = 0
-        return {
-            ENGINE_KEY: self.engine,
-            SESSIONMAKER_KEY: self.sessionmaker,
-        }
 
     def enter(self, context: Context) -> Session:
         if not self.session:
+            self.engine = self.create_engine()
+            self.sessionmaker = sessionmaker(
+                autoflush=False, autocommit=False, bind=self.engine
+            )
+            self.session_index = 0
             self.session = self.sessionmaker()
         self.session_index += 1
         return self.session
@@ -51,6 +48,10 @@ class SqlAlchemyPlugin(SettingsBasedPlugin):
     def exit(self, context, exc_type, exc_value, traceback):
         if self.session_index == 1:
             self.session.close()
+            self.engine.dispose()
+            self.session = None
+            self.engine = None
+            self.sessionmaker = None
         self.session_index -= 1
 
     def create_engine(self) -> Engine:
