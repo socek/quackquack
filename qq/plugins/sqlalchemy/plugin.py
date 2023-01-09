@@ -47,6 +47,8 @@ class SqlAlchemyPlugin(SettingsBasedPlugin):
 
     def exit(self, context, exc_type, exc_value, traceback):
         if self.session_index == 1:
+            if exc_type:
+                self.session.rollback()
             self.session.close()
             self.engine.dispose()
             self.session = None
