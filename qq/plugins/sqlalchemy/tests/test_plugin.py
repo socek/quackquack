@@ -23,8 +23,8 @@ class TestSqlAlchemyPlugin:
         return mocker.patch(f"{PREFIX}.make_url")
 
     @fixture
-    def msessionmaker(self, mocker):
-        return mocker.patch(f"{PREFIX}.sessionmaker")
+    def msession(self, mocker):
+        return mocker.patch(f"{PREFIX}.Session")
 
     @fixture
     def plugin(self):
@@ -58,7 +58,6 @@ class TestSqlAlchemyPlugin:
 
         assert plugin.engine is None
         assert plugin.session is None
-        assert plugin.sessionmaker is None
 
     def test_enter_when_session_exists(self, plugin):
         """
@@ -67,28 +66,28 @@ class TestSqlAlchemyPlugin:
         mcontext = MagicMock()
         plugin.engine = MagicMock()
         plugin.session = MagicMock()
-        plugin.session_index = 1
+        plugin.nest_index = 1
 
         assert plugin.enter(mcontext) == plugin.session
-        assert plugin.session_index == 2
+        assert plugin.nest_index == 2
 
     def test_enter_when_session_not_exists(
-        self, plugin, msessionmaker, mcreate_engine
+        self, plugin, mcreate_engine, msession
     ):
         """
         .enter should create new database session and assign it to the context
         """
         mcontext = MagicMock()
         plugin.session = None
-        plugin.session_index = 0
+        plugin.nest_index = 0
         plugin._settings = {
             "url": "sqlite:///tmp.first.db",
             "options": {"optionkey": "option value"},
         }
 
-        assert plugin.enter(mcontext) == msessionmaker.return_value.return_value
-        assert plugin.session_index == 1
-        assert plugin.session == msessionmaker.return_value.return_value
+        assert plugin.enter(mcontext) == msession.return_value
+        assert plugin.nest_index == 1
+        assert plugin.session == msession.return_value
         assert plugin.engine == mcreate_engine.return_value
 
     def test_exit(self, plugin):
@@ -99,13 +98,13 @@ class TestSqlAlchemyPlugin:
         msession = MagicMock()
         plugin.engine = mengine
         plugin.session = msession
-        plugin.session_index = 1
+        plugin.nest_index = 1
 
         plugin.exit(None, None, None, None)
 
         assert not msession.rollback.called
         msession.close.assert_called_once_with()
-        assert plugin.session_index == 0
+        assert plugin.nest_index == 0
         mengine.dispose.assert_called_once_with()
 
     def test_exit_of_many_sessions(self, plugin):
@@ -114,12 +113,12 @@ class TestSqlAlchemyPlugin:
         """
         plugin.engine = MagicMock()
         plugin.session = MagicMock()
-        plugin.session_index = 2
+        plugin.nest_index = 2
 
         plugin.exit(None, True, None, None)
 
         assert plugin.session.close.called is False
-        assert plugin.session_index == 1
+        assert plugin.nest_index == 1
 
     def test_exit_with_traceback(self, plugin):
         """
@@ -130,16 +129,21 @@ class TestSqlAlchemyPlugin:
         msession = MagicMock()
         plugin.engine = mengine
         plugin.session = msession
-        plugin.session_index = 1
+        plugin.nest_index = 1
 
         plugin.exit(None, True, None, None)
 
         msession.close.assert_called_once_with()
-        assert plugin.session_index == 0
+        assert plugin.nest_index == 0
         mengine.dispose.assert_called_once_with()
 
     def test_dbname(
-        self, plugin, mapp, msessionmaker, mcreate_engine, mget_my_settings
+        self,
+        plugin,
+        mapp,
+        mcreate_engine,
+        mget_my_settings,
+        msession,
     ):
         """
         .dbname should return name of the database made from the db url

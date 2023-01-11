@@ -4,7 +4,7 @@ from sqlalchemy.engine import Engine
 from sqlalchemy.engine import create_engine
 from sqlalchemy.engine.url import make_url
 from sqlalchemy.orm import Session
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.pool import NullPool
 
 from qq.application import Application
 from qq.context import Context
@@ -30,34 +30,37 @@ class SqlAlchemyPlugin(SettingsBasedPlugin):
         self._settings = self.get_my_settings(application)
         self._validate_settings()
         self.engine = None
-        self.sessionmaker = None
         self.session = None
-        self.session_index = 0
+        self.nest_index = 0
 
     def enter(self, context: Context) -> Session:
         if not self.session:
             self.engine = self.create_engine()
-            self.sessionmaker = sessionmaker(
-                autoflush=False, autocommit=False, bind=self.engine
+            self.session = Session(
+                autoflush=False,
+                autocommit=False,
+                bind=self.engine,
             )
-            self.session_index = 0
-            self.session = self.sessionmaker()
-        self.session_index += 1
+            self.nest_index = 0
+        self.nest_index += 1
         return self.session
 
     def exit(self, context, exc_type, exc_value, traceback):
-        if self.session_index == 1:
+        if self.nest_index == 1:
             if exc_type:
                 self.session.rollback()
             self.session.close()
             self.engine.dispose()
             self.session = None
             self.engine = None
-            self.sessionmaker = None
-        self.session_index -= 1
+        self.nest_index -= 1
 
     def create_engine(self) -> Engine:
-        return create_engine(self.url, **self._settings.get(OPTIONS_KEY, {}))
+        return create_engine(
+            self.url,
+            **self._settings.get(OPTIONS_KEY, {}),
+            poolclass=NullPool,
+        )
 
     def recreate(self, metadata):
         engine = self.create_engine()

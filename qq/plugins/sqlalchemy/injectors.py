@@ -9,7 +9,7 @@ from qq.plugins.types import Settings
 
 
 class TransactionContextManager:
-    #TODO: nesting !!!
+    # TODO: nesting ?
     def __init__(self, session: Session, settings: Settings):
         self.session = session
         self.settings = settings
@@ -20,10 +20,17 @@ class TransactionContextManager:
     def __exit__(self, exc_type, exc, exc_tb):
         if exc_type:
             self.session.rollback()
-        elif self.settings.get(TESTS_KEY, False):
-            self.session.flush()
-        else:
-            self.session.commit()
+            return
+        try:
+            if self.settings.get(TESTS_KEY, False):
+                self.session.flush()
+            else:
+                self.session.commit()
+        except Exception:
+            # If something has crashed during flush / commit, then automaticly
+            # rollback, and rerise
+            self.session.rollback()
+            raise
 
 
 class TransactionDecorator:
