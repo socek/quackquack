@@ -45,11 +45,13 @@ class SqlAlchemyPlugin(SettingsBasedPlugin):
     def enter(self, context: Context) -> Session:
         if not self.session:
             self.session = self.sessionmaker()
+            self.session.rollback()
         self.session_index += 1
         return self.session
 
     def exit(self, context, exc_type, exc_value, traceback):
         if self.session_index == 1:
+            self.session.rollback()
             self.session.close()
         self.session_index -= 1
 
