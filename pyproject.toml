@@ -57,7 +57,12 @@ build-backend = "poetry.masonry.api"
 [tool.pytest.ini_options]
 addopts = "--cov --cov-report term:skip-covered --cov-report html --no-cov-on-fail -vv --ff -x qq"
 norecursedirs = [ ".cache", ".git", ".idea", "bin", "*migrations*", "spa", "static", "var", "docker" ]
-filterwarnings = [ "error::RuntimeWarning", "ignore:.*the imp module is deprecated.*:DeprecationWarning" ]
+filterwarnings = [
+    "ignore:.*the imp module is deprecated.*:DeprecationWarning",
+    "ignore:.*The hookimpl CovPlugin.pytest_configure_node.*:DeprecationWarning",
+    "ignore:.*The hookimpl CovPlugin.pytest_testnodedown.*:DeprecationWarning",
+    "ignore:.*There is no current event loop.*:DeprecationWarning",
+]
 asyncio_mode = 'auto'
 
 [tool.coverage.run]

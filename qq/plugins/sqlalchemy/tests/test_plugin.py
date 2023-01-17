@@ -62,37 +62,22 @@ class TestSqlAlchemyPlugin:
             autoflush=False, autocommit=False, bind=mcreate_engine.return_value
         )
 
-    def test_enter_when_session_exists(self, plugin):
-        """
-        .enter should create new database session and assign it to the context
-        """
-        mcontext = MagicMock()
-        plugin.engine = MagicMock()
-        plugin.session = MagicMock()
-        plugin.session_index = 1
-
-        assert plugin.enter(mcontext) == plugin.session
-        assert plugin.session_index == 2
-
-    def test_enter_when_session_not_exists(self, plugin):
+    def test_enter(self, plugin):
         """
         .enter should create new database session and assign it to the context
         """
         mcontext = MagicMock()
         plugin.sessionmaker = MagicMock()
         plugin.engine = MagicMock()
-        plugin.session = None
-        plugin.session_index = 0
 
         assert plugin.enter(mcontext) == plugin.sessionmaker.return_value
-        assert plugin.session_index == 1
+        plugin.sessionmaker.assert_called_once_with()
 
     def test_exit(self, plugin):
         """
         .exit should close the database session.
         """
         plugin.session = MagicMock()
-        plugin.session_index = 1
         plugin._settings = {
             "url": "sqlite:///tmp.first.db",
             "options": {"optionkey": "option value"},
@@ -102,19 +87,16 @@ class TestSqlAlchemyPlugin:
 
         assert not plugin.session.rollback.called
         plugin.session.close.assert_called_once_with()
-        assert plugin.session_index == 0
 
     def test_exit_of_many_sessions(self, plugin):
         """
         .exit should decrease the index by one
         """
         plugin.session = MagicMock()
-        plugin.session_index = 2
 
         plugin.exit(None, True, None, None)
 
-        assert plugin.session.close.called is False
-        assert plugin.session_index == 1
+        plugin.session.close.assert_called_once_with()
 
     def test_exit_with_traceback(self, plugin):
         """
@@ -122,12 +104,10 @@ class TestSqlAlchemyPlugin:
         occured.
         """
         plugin.session = MagicMock()
-        plugin.session_index = 1
 
         plugin.exit(None, True, None, None)
 
         plugin.session.close.assert_called_once_with()
-        assert plugin.session_index == 0
 
     def test_dbname(self, plugin, mapp, msessionmaker, mcreate_engine, mget_my_settings):
         """
