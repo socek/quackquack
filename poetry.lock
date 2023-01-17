@@ -1,6 +1,6 @@
 [[package]]
 name = "alembic"
-version = "1.9.1"
+version = "1.9.2"
 description = "A database migration tool for SQLAlchemy."
 category = "main"
 optional = true
@@ -501,7 +501,7 @@ plugins = ["importlib-metadata"]
 
 [[package]]
 name = "pytest"
-version = "7.2.0"
+version = "7.2.1"
 description = "pytest: simple powerful testing with Python"
 category = "dev"
 optional = false
@@ -584,7 +584,7 @@ six = ">=1.5"
 
 [[package]]
 name = "pytz"
-version = "2022.7"
+version = "2022.7.1"
 description = "World timezone definitions, modern and historical"
 category = "main"
 optional = true
@@ -679,7 +679,7 @@ python-versions = ">=3.6"
 
 [[package]]
 name = "wcwidth"
-version = "0.2.5"
+version = "0.2.6"
 description = "Measures the displayed width of unicode strings in a terminal"
 category = "main"
 optional = false
