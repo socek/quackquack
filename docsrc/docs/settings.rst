@@ -201,4 +201,26 @@ Example:
 Settings Injector
 -----------------
 
-Most of the cases the developer do not need access to whole
+Most of the cases the developer do not need access to all of the settings, but
+rather settings depending on the module of the code it is using. So, you can
+use the SettingsInjector, like this:
+
+.. code-block:: python
+
+    from qq.plugins.settings import SettingsInjector
+
+    @app
+    def somemethod(argument, jwt_settings = SettingsInjector("jwt")):
+        ...
+
+
+But, you can always get the all settings if you want:
+
+.. code-block:: python
+
+    from qq.injector import SimpleInjector
+
+    @app
+    def somemethod(argument, all_settings = SimpleInjector("settings")):
+        ...
+

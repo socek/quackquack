@@ -5,8 +5,8 @@ Tools
 This section provide documentation for some small classes and functions that
 comes along with the Quack Quack framework.
 
-Finders (ObjectFinder, DataclassFinder, CustomBaseTypeFinder)
-=============================================================
+Finders (ObjectFinder)
+======================
 
 This class is designed in order to auto import all the needed objects. This is
 very helpful, for example, when you need to import all the dataclasses used in
@@ -52,19 +52,6 @@ True to the method.
 .. code-block:: python
 
     finder.find(force=True)
-
-
-DataclassFinder
----------------
-
-This finder will search for all the dataclasses in the project. It is used by
-the `JsonPlugin` for finding all the objects that can be serialized.
-
-CustomBaseTypeFinder
---------------------
-
-This finder will search for all the CustomBaseType's in the project. It is used
-by the `JsonPlugin` for finding all the objects that can be serialized.
 
 
 Creating custom Finder

@@ -11,6 +11,8 @@ Dependencies
 ------------
 
 * SettingsPlugin
+* SqlAlchemy
+* Alembic
 
 Example implementation
 ----------------------
@@ -23,8 +25,8 @@ Example implementation
 
    class MyApplication(Application):
        def create_plugins(self):
-           self.plugins["settings"] = SettingsPlugin("myapp.application.settings")
-           self.plugins["dbsession"] = SqlAlchemyPlugin()
+           self.plugins(SettingsPlugin("myapp.application.settings"))
+           self.plugins["database"] = SqlAlchemyPlugin()
 
 
 Before you cane use this code, you need to make proper settings. Example:
@@ -33,7 +35,7 @@ Before you cane use this code, you need to make proper settings. Example:
 
    def default() -> Settings:
        settings = Settings()
-       settings["dbsession"] = database()
+       settings["database"] = database()
        return settings
 
    def database() -> Settings:
@@ -63,11 +65,11 @@ Settings description
 Defining sql table
 ------------------
 
-All tables should be defined using SqlAchemy's ORM. Code below is a simple
-definition of base table.
+All tables can be defined using SqlAchemy's ORM. Code below is a simple
+definition of such base table.
 
 Also it implements TableFinder which is used for searching all defined tables
-in our package. This will be used in the Alembic integration.
+in our package. This will be used in the Alembic integration later.
 
 .. code-block:: python
 
@@ -117,46 +119,72 @@ in our package. This will be used in the Alembic integration.
    SqlTable = declarative_base(cls=Base, metadata=metadata)
 
 
-Using in context
-----------------
+Using in the context
+--------------------
 
 In order to use the database in the context, just get the main key from the
-context like this (assuming your main key is "dbsession"):
+context like this (assuming your main key is "database"):
 
 .. code-block:: python
 
 
    with app as context:
-     context["dbsession"].query(User).all()
+     context["database"].query(User).all()
 
 
-Using injectors
----------------
+Injectors
+---------
 
-SQL like database has transactions. In order to use this transactions in efficent
-way the plugin comes with two injectors:
-
-
-* ``qq.plugins.sqlalchemy.injectors.SAQuery`` - which gives the
-    ``sqlalchemy.orm.Session`` object, which is ready to use
-* ``qq.plugins.sqlalchemy.injectors.SACommand`` - which gives the
-    ``sqlalchemy.orm.Session`` object as well, but after the function is completed
-    it will commit the changes (or do only the .flush() if the ``tests`` option is
-    set to True)
+There was no point in creating additional injectors, so you need to create your
+own, for example:
 
 .. code-block:: python
 
-   from qq.plugins.sqlalchemy.injectors import SAQuery
-   from qq.plugins.sqlalchemy.injectors import SACommand
+    from qq.injector import SimpleInjector
 
-   query = SAQuery("dbsession")
-   command = SACommand("dbsession")
+    ISession = SimpleInjector("database")
 
-   def example_query(db = query):
-       return db.query(User).all()
 
-   def example_command(db = command):
-       db.add(User())
+And use it like this:
+
+
+.. code-block:: python
+
+    from sqlalchemy.orm.session import Session
+
+    @app
+    def get_items(psql: Session = ISession):
+        ...
+
+
+Transactions and commiting
+--------------------------
+
+Normally, the commit should be done manually. But you can use TransactionDecorator
+in order to have this done automaticly. First, you need to create the decorator:
+
+.. code-block:: python
+
+    from qq.plugins.sqlalchemy.injectors import TransactionDecorator
+
+    Transaction = TransactionDecorator(application, "database")
+
+And after that you can just decorate your function (no @app decorator needed here).
+Example:
+
+.. code-block:: python
+
+    @Transaction
+    def clear_reports(
+        from_date: date = None,
+        to_date: date = None,
+        psql: Session = ISession,
+    ) -> int:
+        stmt = delete(SomeTable).where(
+            BillingReportsTable.day >= from_date, BillingReportsTable.day < to_date
+        )
+        return psql.execute(stmt).rowcount
+
 
 
 Integrate with Alembic

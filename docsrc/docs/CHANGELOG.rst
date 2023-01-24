@@ -7,6 +7,20 @@ All notable changes to this project will be documented in this file.
 The format is based on `Keep a Changelog <http://keepachangelog.com/>`_ and this project adheres to [Semantic Versioning]
 (http://semver.org/).
 
+Version: 1.2.0
+==============
+
+* Add
+    * Injectors - new way of dependency injection
+    * async functions support
+* Renamed
+    * Rename InjectApplication into ApplicationInitializer.
+* Removed
+    * Remove SAQuery (in favour of SessionInjector) and SACommand (in favour of TransactionDecorator).
+    * Drop pyramid support.
+    * Remove jsonhack
+    * Remove DataclassFinder.
+
 Version: 1.1.1
 ==============
 

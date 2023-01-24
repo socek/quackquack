@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>4.5. SQLAlchemy Plugin &mdash; Quack Quack 1.0.4 documentation</title>
+  <title>4.4. SQLAlchemy Plugin &mdash; Quack Quack 1.0.4 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -13,12 +14,14 @@
         <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../_static/doctools.js"></script>
+        <script src="../_static/sphinx_highlight.js"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="4.6. Celery Plugin" href="celery.html" />
-    <link rel="prev" title="4.4. Pyramid Plugin" href="pyramid.html" /> 
+    <link rel="next" title="4.5. Celery Plugin" href="celery.html" />
+    <link rel="prev" title="4.3. Redis" href="redis.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -45,19 +48,19 @@
 <li class="toctree-l2"><a class="reference internal" href="settings.html">4.1. Settings</a></li>
 <li class="toctree-l2"><a class="reference internal" href="logging.html">4.2. Logging</a></li>
 <li class="toctree-l2"><a class="reference internal" href="redis.html">4.3. Redis</a></li>
-<li class="toctree-l2"><a class="reference internal" href="pyramid.html">4.4. Pyramid Plugin</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">4.5. SQLAlchemy Plugin</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#about">4.5.1. About</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#dependencies">4.5.2. Dependencies</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#example-implementation">4.5.3. Example implementation</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#settings-description">4.5.4. Settings description</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#defining-sql-table">4.5.5. Defining sql table</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#using-in-context">4.5.6. Using in context</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#using-injectors">4.5.7. Using injectors</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#integrate-with-alembic">4.5.8. Integrate with Alembic</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">4.4. SQLAlchemy Plugin</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#about">4.4.1. About</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#dependencies">4.4.2. Dependencies</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#example-implementation">4.4.3. Example implementation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#settings-description">4.4.4. Settings description</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#defining-sql-table">4.4.5. Defining sql table</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#using-in-the-context">4.4.6. Using in the context</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#injectors">4.4.7. Injectors</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#transactions-and-commiting">4.4.8. Transactions and commiting</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#integrate-with-alembic">4.4.9. Integrate with Alembic</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="celery.html">4.6. Celery Plugin</a></li>
+<li class="toctree-l2"><a class="reference internal" href="celery.html">4.5. Celery Plugin</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="tools.html">5. Tools</a></li>
@@ -79,9 +82,9 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
-          <li><a href="plugins.html"><span class="section-number">4. </span>Plugins</a> &raquo;</li>
-      <li><span class="section-number">4.5. </span>SQLAlchemy Plugin</li>
+      <li><a href="../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="plugins.html"><span class="section-number">4. </span>Plugins</a></li>
+      <li class="breadcrumb-item active"><span class="section-number">4.4. </span>SQLAlchemy Plugin</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../_sources/docs/sqlalchemy.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -91,35 +94,37 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <div class="section" id="sqlalchemy-plugin">
-<h1><span class="section-number">4.5. </span>SQLAlchemy Plugin<a class="headerlink" href="#sqlalchemy-plugin" title="Permalink to this headline"></a></h1>
-<div class="section" id="about">
-<h2><span class="section-number">4.5.1. </span>About<a class="headerlink" href="#about" title="Permalink to this headline"></a></h2>
+  <section id="sqlalchemy-plugin">
+<h1><span class="section-number">4.4. </span>SQLAlchemy Plugin<a class="headerlink" href="#sqlalchemy-plugin" title="Permalink to this heading"></a></h1>
+<section id="about">
+<h2><span class="section-number">4.4.1. </span>About<a class="headerlink" href="#about" title="Permalink to this heading"></a></h2>
 <p>SQLAlchemy plugin is just a wrapper for SQLAlchemy. This plugin allows starting
 database session at context phase start and closing it at context phase end.</p>
-</div>
-<div class="section" id="dependencies">
-<h2><span class="section-number">4.5.2. </span>Dependencies<a class="headerlink" href="#dependencies" title="Permalink to this headline"></a></h2>
+</section>
+<section id="dependencies">
+<h2><span class="section-number">4.4.2. </span>Dependencies<a class="headerlink" href="#dependencies" title="Permalink to this heading"></a></h2>
 <ul class="simple">
 <li><p>SettingsPlugin</p></li>
+<li><p>SqlAlchemy</p></li>
+<li><p>Alembic</p></li>
 </ul>
-</div>
-<div class="section" id="example-implementation">
-<h2><span class="section-number">4.5.3. </span>Example implementation<a class="headerlink" href="#example-implementation" title="Permalink to this headline"></a></h2>
+</section>
+<section id="example-implementation">
+<h2><span class="section-number">4.4.3. </span>Example implementation<a class="headerlink" href="#example-implementation" title="Permalink to this heading"></a></h2>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">qq</span> <span class="kn">import</span> <span class="n">Application</span>
 <span class="kn">from</span> <span class="nn">qq.plugins.settings</span> <span class="kn">import</span> <span class="n">SettingsPlugin</span>
 <span class="kn">from</span> <span class="nn">qq.plugins.sqlalchemy.plugin</span> <span class="kn">import</span> <span class="n">SqlAlchemyPlugin</span>
 
 <span class="k">class</span> <span class="nc">MyApplication</span><span class="p">(</span><span class="n">Application</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">create_plugins</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">plugins</span><span class="p">[</span><span class="s2">&quot;settings&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">SettingsPlugin</span><span class="p">(</span><span class="s2">&quot;myapp.application.settings&quot;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">plugins</span><span class="p">[</span><span class="s2">&quot;dbsession&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">SqlAlchemyPlugin</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">plugins</span><span class="p">(</span><span class="n">SettingsPlugin</span><span class="p">(</span><span class="s2">&quot;myapp.application.settings&quot;</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">plugins</span><span class="p">[</span><span class="s2">&quot;database&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">SqlAlchemyPlugin</span><span class="p">()</span>
 </pre></div>
 </div>
 <p>Before you cane use this code, you need to make proper settings. Example:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">default</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Settings</span><span class="p">:</span>
     <span class="n">settings</span> <span class="o">=</span> <span class="n">Settings</span><span class="p">()</span>
-    <span class="n">settings</span><span class="p">[</span><span class="s2">&quot;dbsession&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">database</span><span class="p">()</span>
+    <span class="n">settings</span><span class="p">[</span><span class="s2">&quot;database&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">database</span><span class="p">()</span>
     <span class="k">return</span> <span class="n">settings</span>
 
 <span class="k">def</span> <span class="nf">database</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Settings</span><span class="p">:</span>
@@ -138,21 +143,21 @@ database session at context phase start and closing it at context phase end.</p>
     <span class="p">}</span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="settings-description">
-<h2><span class="section-number">4.5.4. </span>Settings description<a class="headerlink" href="#settings-description" title="Permalink to this headline"></a></h2>
+</section>
+<section id="settings-description">
+<h2><span class="section-number">4.4.4. </span>Settings description<a class="headerlink" href="#settings-description" title="Permalink to this heading"></a></h2>
 <ul class="simple">
 <li><p>url - sqlalchemy url for the database</p></li>
 <li><p>options - dict of options which will be passed to a <code class="docutils literal notranslate"><span class="pre">sqlalchemy.engine.create_engine</span></code>.
 For more info visit <a class="reference external" href="http://docs.sqlalchemy.org/en/latest/core/engines.html#sqlalchemy.create_engine">SQLAlchemy docs</a></p></li>
 </ul>
-</div>
-<div class="section" id="defining-sql-table">
-<h2><span class="section-number">4.5.5. </span>Defining sql table<a class="headerlink" href="#defining-sql-table" title="Permalink to this headline"></a></h2>
-<p>All tables should be defined using SqlAchemy’s ORM. Code below is a simple
-definition of base table.</p>
+</section>
+<section id="defining-sql-table">
+<h2><span class="section-number">4.4.5. </span>Defining sql table<a class="headerlink" href="#defining-sql-table" title="Permalink to this heading"></a></h2>
+<p>All tables can be defined using SqlAchemy’s ORM. Code below is a simple
+definition of such base table.</p>
 <p>Also it implements TableFinder which is used for searching all defined tables
-in our package. This will be used in the Alembic integration.</p>
+in our package. This will be used in the Alembic integration later.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
 <span class="kn">from</span> <span class="nn">uuid</span> <span class="kn">import</span> <span class="n">uuid4</span>
 
@@ -199,50 +204,60 @@ in our package. This will be used in the Alembic integration.</p>
 <span class="n">SqlTable</span> <span class="o">=</span> <span class="n">declarative_base</span><span class="p">(</span><span class="bp">cls</span><span class="o">=</span><span class="n">Base</span><span class="p">,</span> <span class="n">metadata</span><span class="o">=</span><span class="n">metadata</span><span class="p">)</span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="using-in-context">
-<h2><span class="section-number">4.5.6. </span>Using in context<a class="headerlink" href="#using-in-context" title="Permalink to this headline"></a></h2>
+</section>
+<section id="using-in-the-context">
+<h2><span class="section-number">4.4.6. </span>Using in the context<a class="headerlink" href="#using-in-the-context" title="Permalink to this heading"></a></h2>
 <p>In order to use the database in the context, just get the main key from the
-context like this (assuming your main key is “dbsession”):</p>
+context like this (assuming your main key is “database”):</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">app</span> <span class="k">as</span> <span class="n">context</span><span class="p">:</span>
-  <span class="n">context</span><span class="p">[</span><span class="s2">&quot;dbsession&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">User</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+  <span class="n">context</span><span class="p">[</span><span class="s2">&quot;database&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">User</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="using-injectors">
-<h2><span class="section-number">4.5.7. </span>Using injectors<a class="headerlink" href="#using-injectors" title="Permalink to this headline"></a></h2>
-<p>SQL like database has transactions. In order to use this transactions in efficent
-way the plugin comes with two injectors:</p>
-<ul class="simple">
-<li><dl class="simple">
-<dt><code class="docutils literal notranslate"><span class="pre">qq.plugins.sqlalchemy.injectors.SAQuery</span></code> - which gives the</dt><dd><p><code class="docutils literal notranslate"><span class="pre">sqlalchemy.orm.Session</span></code> object, which is ready to use</p>
-</dd>
-</dl>
-</li>
-<li><dl class="simple">
-<dt><code class="docutils literal notranslate"><span class="pre">qq.plugins.sqlalchemy.injectors.SACommand</span></code> - which gives the</dt><dd><p><code class="docutils literal notranslate"><span class="pre">sqlalchemy.orm.Session</span></code> object as well, but after the function is completed
-it will commit the changes (or do only the .flush() if the <code class="docutils literal notranslate"><span class="pre">tests</span></code> option is
-set to True)</p>
-</dd>
-</dl>
-</li>
-</ul>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">qq.plugins.sqlalchemy.injectors</span> <span class="kn">import</span> <span class="n">SAQuery</span>
-<span class="kn">from</span> <span class="nn">qq.plugins.sqlalchemy.injectors</span> <span class="kn">import</span> <span class="n">SACommand</span>
+</section>
+<section id="injectors">
+<h2><span class="section-number">4.4.7. </span>Injectors<a class="headerlink" href="#injectors" title="Permalink to this heading"></a></h2>
+<p>There was no point in creating additional injectors, so you need to create your
+own, for example:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">qq.injector</span> <span class="kn">import</span> <span class="n">SimpleInjector</span>
 
-<span class="n">query</span> <span class="o">=</span> <span class="n">SAQuery</span><span class="p">(</span><span class="s2">&quot;dbsession&quot;</span><span class="p">)</span>
-<span class="n">command</span> <span class="o">=</span> <span class="n">SACommand</span><span class="p">(</span><span class="s2">&quot;dbsession&quot;</span><span class="p">)</span>
-
-<span class="k">def</span> <span class="nf">example_query</span><span class="p">(</span><span class="n">db</span> <span class="o">=</span> <span class="n">query</span><span class="p">):</span>
-    <span class="k">return</span> <span class="n">db</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">User</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
-
-<span class="k">def</span> <span class="nf">example_command</span><span class="p">(</span><span class="n">db</span> <span class="o">=</span> <span class="n">command</span><span class="p">):</span>
-    <span class="n">db</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">User</span><span class="p">())</span>
+<span class="n">ISession</span> <span class="o">=</span> <span class="n">SimpleInjector</span><span class="p">(</span><span class="s2">&quot;database&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
+<p>And use it like this:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">sqlalchemy.orm.session</span> <span class="kn">import</span> <span class="n">Session</span>
+
+<span class="nd">@app</span>
+<span class="k">def</span> <span class="nf">get_items</span><span class="p">(</span><span class="n">psql</span><span class="p">:</span> <span class="n">Session</span> <span class="o">=</span> <span class="n">ISession</span><span class="p">):</span>
+    <span class="o">...</span>
+</pre></div>
 </div>
-<div class="section" id="integrate-with-alembic">
-<h2><span class="section-number">4.5.8. </span>Integrate with Alembic<a class="headerlink" href="#integrate-with-alembic" title="Permalink to this headline"></a></h2>
+</section>
+<section id="transactions-and-commiting">
+<h2><span class="section-number">4.4.8. </span>Transactions and commiting<a class="headerlink" href="#transactions-and-commiting" title="Permalink to this heading"></a></h2>
+<p>Normally, the commit should be done manually. But you can use TransactionDecorator
+in order to have this done automaticly. First, you need to create the decorator:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">qq.plugins.sqlalchemy.injectors</span> <span class="kn">import</span> <span class="n">TransactionDecorator</span>
+
+<span class="n">Transaction</span> <span class="o">=</span> <span class="n">TransactionDecorator</span><span class="p">(</span><span class="n">application</span><span class="p">,</span> <span class="s2">&quot;database&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>And after that you can just decorate your function (no &#64;app decorator needed here).
+Example:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@Transaction</span>
+<span class="k">def</span> <span class="nf">clear_reports</span><span class="p">(</span>
+    <span class="n">from_date</span><span class="p">:</span> <span class="n">date</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">to_date</span><span class="p">:</span> <span class="n">date</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">psql</span><span class="p">:</span> <span class="n">Session</span> <span class="o">=</span> <span class="n">ISession</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+    <span class="n">stmt</span> <span class="o">=</span> <span class="n">delete</span><span class="p">(</span><span class="n">SomeTable</span><span class="p">)</span><span class="o">.</span><span class="n">where</span><span class="p">(</span>
+        <span class="n">BillingReportsTable</span><span class="o">.</span><span class="n">day</span> <span class="o">&gt;=</span> <span class="n">from_date</span><span class="p">,</span> <span class="n">BillingReportsTable</span><span class="o">.</span><span class="n">day</span> <span class="o">&lt;</span> <span class="n">to_date</span>
+    <span class="p">)</span>
+    <span class="k">return</span> <span class="n">psql</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">stmt</span><span class="p">)</span><span class="o">.</span><span class="n">rowcount</span>
+</pre></div>
+</div>
+</section>
+<section id="integrate-with-alembic">
+<h2><span class="section-number">4.4.9. </span>Integrate with Alembic<a class="headerlink" href="#integrate-with-alembic" title="Permalink to this heading"></a></h2>
 <p>Alembic is a library to manage migrations. Alembic makes a folder for the version
 changes. This folder contains “env.py” file, which we need to change like this:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">qq.plugins.sqlalchemy.alembic</span> <span class="kn">import</span> <span class="n">run_migrations</span>
@@ -260,15 +275,15 @@ changes. This folder contains “env.py” file, which we need to change like th
 ORM. Also, you need to import all the models in this file, if you want to use
 “–autogenerate”. Last, but not least you need to run AlembicScript.</p>
 <p>For more info, you can go to the Alembic <a class="reference external" href="http://alembic.zzzcomputing.com/en/latest/">documentation</a></p>
-</div>
-</div>
+</section>
+</section>
 
 
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="pyramid.html" class="btn btn-neutral float-left" title="4.4. Pyramid Plugin" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="celery.html" class="btn btn-neutral float-right" title="4.6. Celery Plugin" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="redis.html" class="btn btn-neutral float-left" title="4.3. Redis" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="celery.html" class="btn btn-neutral float-right" title="4.5. Celery Plugin" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

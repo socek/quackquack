@@ -5,7 +5,7 @@ Models details
 Application
 ===========
 
-Application class is very simple. The purpose of this class is to start all the
+Application class is very simple. The purpose of that class is to start all the
 plugins. The two places where this is used are `create_plugins`  and `start`.
 
 Create plugins
@@ -18,8 +18,13 @@ here is important, so you can not create a simple dict. As of Python 3.6, for th
 CPython implementation of Python, dictionaries remember the order of items inserted,
 but this is implementation detail, that is why the OrderDict is used here.
 
-Dict keys of these plugins is used later on, so it is important not to overwrite
+Dict keys of these plugins is used later on, so it is important not t o overwrite
 already created plugin.
+
+There are two types of plugins. One is the plugin that the name is harcoded, so
+there will be only one instance of plugin. Those plugins needs to be inserted
+by calling the `self.plugins`. Other plugins can have more instances (for example
+if you need to have 2 databases )
 
 .. code-block:: python
 
@@ -38,7 +43,7 @@ in Application.globals.
     print(app.globals["settings"])
 
 More about the places where the data of the plugins is stored can be found in
-the :ref:`Plugins` section.
+the Plugins section.
 
 
 Application Start
@@ -52,7 +57,7 @@ object by simply calling the `start` method.
     app = MyApplication()
     app.start("startpoint")
 
-`start` method needs at least one argument: startpoint. This is a name of the
+`start` method has only one argument: startpoint. This is a name of the
 "start place", which can be used later on. For example, if you have normal
 startup and a test run, you can use different startpoint name. This startpoint
 value will be used in :doc:`SettingsPlugin <settings>` in order to choose proper
@@ -78,10 +83,6 @@ in the `Application.extra` dict for plugins to use.
 
     assert app.extra["anothervalue"] == 12
 
-Context
-=======
-
-.. _plugins:
 
 Plugin
 ======
@@ -122,10 +123,10 @@ is used to close connections or handle exceptions. Please, remember that `start`
 is run in order of creating in `create_plugins`, but `exit` plugins is run in
 reversed order.
 
-Injectors and InjectApplication
-===============================
+Injectors and ApplicationInitializer
+====================================
 
-This feature is designed as a dependency injection. Injector is a function that
+This feature is designed as a dependency injection. Injector is an object that
 gets a context and return something. This function needs to be decorated with
 `Injector` function.
 
@@ -133,28 +134,30 @@ Example:
 
 .. code-block:: python
 
-    from qq.injector import Injector
+    from qq import Injector
 
     @Injector
     def SimpleInjector(context: Context, key: str):
         return context[key]
 
 In order to use the `injector`, it needs to be provided as a default var in a
-function. Also, the `InjectApplication` needs to be used for that function.
+function. Also, the `ApplicationInitializer` needs to be used for that function.
+The `ApplicationInitializer` is responsible for "starting" the injectors.
 
 Example:
 
 .. code-block:: python
 
-    from qq.injector import InjectApplication
+    from qq import ApplicationInitializer
 
-    @InjectApplication(application)
+    @ApplicationInitializer(application)
     def fun(settings = SimpleInjector("settings")):
         ...
 
 
-The `InjectApplication` decorator is used to initialize the injectors with
-provided application. There is no need of using `Application` as a context manager,
+The `ApplicationInitializer` decorator is used to initialize the injectors with
+provided application. There is no need of using `Application` as a context manager
+here,
 the function will be used under a with statement. For example, above code can be
 Implemented like this:
 
@@ -171,14 +174,14 @@ Implemented like this:
 
 The advandtage of the injectors is that you do not need to pass the context value
 everywhere or use the `with` statement. So it mitigate the boilerplate. Also,
-you can pass arguments instead of default values in functions. This is very
-helpful in implementation of tests.
+you can pass arguments instead of default values in functions. This dependency
+injection is very helpful in implementation of tests.
 
 Example:
 
 .. code-block:: python
 
-    @InjectApplication(application)
+    @ApplicationInitializer(application)
     def fun(settings = SimpleInjector("settings")):
         return settings
 
@@ -187,7 +190,7 @@ Example:
         assert fun(mock) == mock
 
 
-The `InjectApplication` function can overwrite the application var, so you
+The `ApplicationInitializer` function can overwrite the application var, so you
 can create a function with injectors in a library, but add the application var
 later.
 
@@ -195,15 +198,15 @@ Example:
 
 .. code-block:: python
 
-    from qq.injector import InjectApplication
+    from qq import ApplicationInitializer
 
-    @InjectApplication(None)
+    @ApplicationInitializer(None)
     def fun(settings = SimpleInjector("settings")):
         ...
 
-    fun2 = InjectApplication(application)(fun)
+    fun2 = ApplicationInitializer(application)(fun)
 
-The `InjectApplication` will overwrite the `application` value in all injectors.
+The `ApplicationInitializer` will overwrite the `application` value in all injectors.
 If those injectors would have it's own injectors in the arguments, those injectors
 will have the new `application` value as well.
 

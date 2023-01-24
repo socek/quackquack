@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>4. Plugins &mdash; Quack Quack 1.0.4 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -13,7 +14,9 @@
         <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../_static/doctools.js"></script>
+        <script src="../_static/sphinx_highlight.js"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -45,9 +48,8 @@
 <li class="toctree-l2"><a class="reference internal" href="settings.html">4.1. Settings</a></li>
 <li class="toctree-l2"><a class="reference internal" href="logging.html">4.2. Logging</a></li>
 <li class="toctree-l2"><a class="reference internal" href="redis.html">4.3. Redis</a></li>
-<li class="toctree-l2"><a class="reference internal" href="pyramid.html">4.4. Pyramid Plugin</a></li>
-<li class="toctree-l2"><a class="reference internal" href="sqlalchemy.html">4.5. SQLAlchemy Plugin</a></li>
-<li class="toctree-l2"><a class="reference internal" href="celery.html">4.6. Celery Plugin</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sqlalchemy.html">4.4. SQLAlchemy Plugin</a></li>
+<li class="toctree-l2"><a class="reference internal" href="celery.html">4.5. Celery Plugin</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="tools.html">5. Tools</a></li>
@@ -69,8 +71,8 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
-      <li><span class="section-number">4. </span>Plugins</li>
+      <li><a href="../index.html" class="icon icon-home"></a></li>
+      <li class="breadcrumb-item active"><span class="section-number">4. </span>Plugins</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../_sources/docs/plugins.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -80,8 +82,8 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <div class="section" id="plugins">
-<h1><span class="section-number">4. </span>Plugins<a class="headerlink" href="#plugins" title="Permalink to this headline"></a></h1>
+  <section id="plugins">
+<h1><span class="section-number">4. </span>Plugins<a class="headerlink" href="#plugins" title="Permalink to this heading"></a></h1>
 <div class="toctree-wrapper compound">
 <p class="caption" role="heading"><span class="caption-text">Plugins</span></p>
 <ul>
@@ -95,34 +97,28 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="logging.html">4.2. Logging</a></li>
 <li class="toctree-l1"><a class="reference internal" href="redis.html">4.3. Redis</a></li>
-<li class="toctree-l1"><a class="reference internal" href="pyramid.html">4.4. Pyramid Plugin</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="pyramid.html#about">4.4.1. About</a></li>
-<li class="toctree-l2"><a class="reference internal" href="pyramid.html#id1">4.4.2. Extended Configurator</a></li>
-<li class="toctree-l2"><a class="reference internal" href="pyramid.html#id2">4.4.3. Routing Wrapper</a></li>
-<li class="toctree-l2"><a class="reference internal" href="pyramid.html#id3">4.4.4. Views</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sqlalchemy.html">4.4. SQLAlchemy Plugin</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="sqlalchemy.html#about">4.4.1. About</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sqlalchemy.html#dependencies">4.4.2. Dependencies</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sqlalchemy.html#example-implementation">4.4.3. Example implementation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sqlalchemy.html#settings-description">4.4.4. Settings description</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sqlalchemy.html#defining-sql-table">4.4.5. Defining sql table</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sqlalchemy.html#using-in-the-context">4.4.6. Using in the context</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sqlalchemy.html#injectors">4.4.7. Injectors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sqlalchemy.html#transactions-and-commiting">4.4.8. Transactions and commiting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sqlalchemy.html#integrate-with-alembic">4.4.9. Integrate with Alembic</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="sqlalchemy.html">4.5. SQLAlchemy Plugin</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="sqlalchemy.html#about">4.5.1. About</a></li>
-<li class="toctree-l2"><a class="reference internal" href="sqlalchemy.html#dependencies">4.5.2. Dependencies</a></li>
-<li class="toctree-l2"><a class="reference internal" href="sqlalchemy.html#example-implementation">4.5.3. Example implementation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="sqlalchemy.html#settings-description">4.5.4. Settings description</a></li>
-<li class="toctree-l2"><a class="reference internal" href="sqlalchemy.html#defining-sql-table">4.5.5. Defining sql table</a></li>
-<li class="toctree-l2"><a class="reference internal" href="sqlalchemy.html#using-in-context">4.5.6. Using in context</a></li>
-<li class="toctree-l2"><a class="reference internal" href="sqlalchemy.html#using-injectors">4.5.7. Using injectors</a></li>
-<li class="toctree-l2"><a class="reference internal" href="sqlalchemy.html#integrate-with-alembic">4.5.8. Integrate with Alembic</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="celery.html">4.6. Celery Plugin</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="celery.html#about">4.6.1. About</a></li>
-<li class="toctree-l2"><a class="reference internal" href="celery.html#dependencies">4.6.2. Dependencies</a></li>
-<li class="toctree-l2"><a class="reference internal" href="celery.html#integration-implementation">4.6.3. Integration &amp; implementation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="celery.html#example-task">4.6.4. Example task</a></li>
+<li class="toctree-l1"><a class="reference internal" href="celery.html">4.5. Celery Plugin</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="celery.html#about">4.5.1. About</a></li>
+<li class="toctree-l2"><a class="reference internal" href="celery.html#dependencies">4.5.2. Dependencies</a></li>
+<li class="toctree-l2"><a class="reference internal" href="celery.html#integration-implementation">4.5.3. Integration &amp; implementation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="celery.html#example-task">4.5.4. Example task</a></li>
 </ul>
 </li>
 </ul>
 </div>
-</div>
+</section>
 
 
            </div>

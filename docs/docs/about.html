@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>1. About &mdash; Quack Quack 1.0.4 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -13,7 +14,9 @@
         <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../_static/doctools.js"></script>
+        <script src="../_static/sphinx_highlight.js"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -66,8 +69,8 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
-      <li><span class="section-number">1. </span>About</li>
+      <li><a href="../index.html" class="icon icon-home"></a></li>
+      <li class="breadcrumb-item active"><span class="section-number">1. </span>About</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../_sources/docs/about.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -77,54 +80,75 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <div class="section" id="about">
-<h1><span class="section-number">1. </span>About<a class="headerlink" href="#about" title="Permalink to this headline"></a></h1>
-<div class="section" id="overview">
-<h2><span class="section-number">1.1. </span>Overview<a class="headerlink" href="#overview" title="Permalink to this headline"></a></h2>
+  <section id="about">
+<h1><span class="section-number">1. </span>About<a class="headerlink" href="#about" title="Permalink to this heading"></a></h1>
+<section id="overview">
+<h2><span class="section-number">1.1. </span>Overview<a class="headerlink" href="#overview" title="Permalink to this heading"></a></h2>
 <p>This project aims to resolve problem of configuring an application, which needs to
 have initialization step (for example: for gathering settings or establishing
-connections) and use Python style code (context managers and decorators) and
+connections) and use Python style code (context managers and decorators) with
 dependency injection to get those data.</p>
-<p>For example, normally you would need to use two separate mechanism for settings
-in celery application and web application, because you should not use web
-application startup process in the celery app. This package provide a solution
-for this problem, by giving one simple and independent of other frameworks
-mechanism to implement everywhere.</p>
-</div>
-<div class="section" id="quick-using-example">
-<h2><span class="section-number">1.2. </span>Quick Using Example<a class="headerlink" href="#quick-using-example" title="Permalink to this headline"></a></h2>
+<p>For example, normally you would need to use two separate mechanism for connection
+to the database (one for web, and one for celery). Mostly it uses the web framework
+configuration, to use in the celery code. It is fine, until a third sub-application
+arrives. Or you have many microservices, where web frameworks are different
+depending on the microservice purpose.</p>
+<p>Second goal was to make synchronized code without any globals or magic. That is
+why using Quack Quack you know when the application is initialized (started),
+or where to look for code you are using.</p>
+<p>In order to use QQ, you don’t need to use hacks in some starting files, like
+importing something from django, starting the application, and the import the
+rest.</p>
+</section>
+<section id="quick-using-example">
+<h2><span class="section-number">1.2. </span>Quick Using Example<a class="headerlink" href="#quick-using-example" title="Permalink to this heading"></a></h2>
 <p>To use Quack Quack you need to create the application class (inherited from
-<code class="docutils literal notranslate"><span class="pre">qq.Application</span></code>) in which you need to add plugins. After configuring, you need to “start”
-the application. After that you can use the configurator as context manager.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">qq</span> <span class="kn">import</span> <span class="n">Application</span><span class="p">,</span> <span class="n">Context</span><span class="p">,</span> <span class="n">InjectApplication</span><span class="p">,</span> <span class="n">SimpleInjector</span>
+<code class="docutils literal notranslate"><span class="pre">qq.Application</span></code>) in which you need to add plugins. After configuring, you
+need to “start” (initialize)
+the application. After that you can use the application as context manager.
+Also, you can make simple decorator, so you can use injectors (dependency
+injection) in function’s arguments.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">qq</span> <span class="kn">import</span> <span class="n">Application</span>
+<span class="kn">from</span> <span class="nn">qq</span> <span class="kn">import</span> <span class="n">ApplicationInitializer</span>
+<span class="kn">from</span> <span class="nn">qq</span> <span class="kn">import</span> <span class="n">Context</span>
+<span class="kn">from</span> <span class="nn">qq</span> <span class="kn">import</span> <span class="n">SimpleInjector</span>
 <span class="kn">from</span> <span class="nn">qq.plugins</span> <span class="kn">import</span> <span class="n">SettingsPlugin</span>
 <span class="kn">from</span> <span class="nn">qq.plugins.types</span> <span class="kn">import</span> <span class="n">Settings</span>
 
+
 <span class="k">class</span> <span class="nc">MyApplication</span><span class="p">(</span><span class="n">Application</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">create_plugins</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">plugins</span><span class="p">[</span><span class="s2">&quot;settings&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">SettingsPlugin</span><span class="p">(</span><span class="s1">&#39;settings&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">plugins</span><span class="p">[</span><span class="s2">&quot;settings&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">SettingsPlugin</span><span class="p">(</span><span class="s2">&quot;settings&quot;</span><span class="p">)</span>
+
 
 <span class="n">application</span> <span class="o">=</span> <span class="n">MyApplication</span><span class="p">()</span>
-<span class="n">application</span><span class="o">.</span><span class="n">start</span><span class="p">(</span><span class="s1">&#39;application&#39;</span><span class="p">)</span>
+<span class="n">application</span><span class="o">.</span><span class="n">start</span><span class="p">(</span><span class="s2">&quot;application&quot;</span><span class="p">)</span>
 
 <span class="k">with</span> <span class="n">Context</span><span class="p">(</span><span class="n">application</span><span class="p">)</span> <span class="k">as</span> <span class="n">ctx</span><span class="p">:</span>
     <span class="nb">print</span><span class="p">(</span><span class="n">ctx</span><span class="p">[</span><span class="s2">&quot;settings&quot;</span><span class="p">])</span>
 
-<span class="nd">@InjectApplication</span><span class="p">(</span><span class="n">application</span><span class="p">)</span>
+<span class="n">app</span> <span class="o">=</span> <span class="n">ApplicationInitializer</span><span class="p">(</span><span class="n">application</span><span class="p">)</span>
+
+
+<span class="nd">@app</span>
 <span class="k">def</span> <span class="nf">samplefun</span><span class="p">(</span><span class="n">settings</span><span class="p">:</span> <span class="n">Settings</span> <span class="o">=</span> <span class="n">SimpleInjector</span><span class="p">(</span><span class="s2">&quot;settings&quot;</span><span class="p">)):</span>
     <span class="nb">print</span><span class="p">(</span><span class="n">settings</span><span class="p">)</span>
+
+
+<span class="n">samplefun</span><span class="p">()</span>
+<span class="n">samplefun</span><span class="p">({</span><span class="s2">&quot;info&quot;</span><span class="p">:</span> <span class="s2">&quot;fake settings&quot;</span><span class="p">})</span>  <span class="c1"># dependency injection !!</span>
 </pre></div>
 </div>
-<p><code class="docutils literal notranslate"><span class="pre">context.settings</span></code> in above example is variable made by the SettingsPlugin.
+<p><code class="docutils literal notranslate"><span class="pre">context[&quot;settings&quot;]</span></code> in above example, is a variable made by the SettingsPlugin.
 If you would like to know more, please go to the <a class="reference external" href="docs/tutorial.md">Tutorial</a></p>
-</div>
-<div class="section" id="installation">
-<h2><span class="section-number">1.3. </span>Installation<a class="headerlink" href="#installation" title="Permalink to this headline"></a></h2>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip install quackquack
+</section>
+<section id="installation">
+<h2><span class="section-number">1.3. </span>Installation<a class="headerlink" href="#installation" title="Permalink to this heading"></a></h2>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>quackquack
 </pre></div>
 </div>
-</div>
-</div>
+</section>
+</section>
 
 
            </div>

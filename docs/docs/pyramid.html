@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>4.4. Pyramid Plugin &mdash; Quack Quack 1.0.4 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -13,7 +14,9 @@
         <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../_static/doctools.js"></script>
+        <script src="../_static/sphinx_highlight.js"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -89,9 +92,9 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
-          <li><a href="plugins.html"><span class="section-number">4. </span>Plugins</a> &raquo;</li>
-      <li><span class="section-number">4.4. </span>Pyramid Plugin</li>
+      <li><a href="../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="plugins.html"><span class="section-number">4. </span>Plugins</a></li>
+      <li class="breadcrumb-item active"><span class="section-number">4.4. </span>Pyramid Plugin</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../_sources/docs/pyramid.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -101,10 +104,10 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <div class="section" id="pyramid-plugin">
-<h1><span class="section-number">4.4. </span>Pyramid Plugin<a class="headerlink" href="#pyramid-plugin" title="Permalink to this headline"></a></h1>
-<div class="section" id="about">
-<h2><span class="section-number">4.4.1. </span>About<a class="headerlink" href="#about" title="Permalink to this headline"></a></h2>
+  <section id="pyramid-plugin">
+<h1><span class="section-number">4.4. </span>Pyramid Plugin<a class="headerlink" href="#pyramid-plugin" title="Permalink to this heading"></a></h1>
+<section id="about">
+<h2><span class="section-number">4.4.1. </span>About<a class="headerlink" href="#about" title="Permalink to this heading"></a></h2>
 <p>Pyramid Plugin is a simple set of features:</p>
 <ul class="simple">
 <li><dl class="simple">
@@ -120,15 +123,15 @@
 <li><p><a class="reference external" href="#views">Views</a> - view classes with support of http methods</p></li>
 </ul>
 <p>All these features can be used separately.</p>
-</div>
-<div class="section" id="id1">
-<h2><span class="section-number">4.4.2. </span>Extended Configurator<a class="headerlink" href="#id1" title="Permalink to this headline"></a></h2>
+</section>
+<section id="id1">
+<h2><span class="section-number">4.4.2. </span>Extended Configurator<a class="headerlink" href="#id1" title="Permalink to this heading"></a></h2>
 <p>Pyramid Framework gives you ability to create wsgi application, which can be
 used by the uwsgi/gunicorn/etc. frameworks. Pyramid is using Paster to configure
 the wsgi application, this means you need to configure some stuff in the
 Paster/Pyramid way.</p>
-<div class="section" id="application-implementation">
-<h3><span class="section-number">4.4.2.1. </span>Application Implementation<a class="headerlink" href="#application-implementation" title="Permalink to this headline"></a></h3>
+<section id="application-implementation">
+<h3><span class="section-number">4.4.2.1. </span>Application Implementation<a class="headerlink" href="#application-implementation" title="Permalink to this heading"></a></h3>
 <p>Implementing of the Application is pretty simple. The only thing which needed to be done
 is to inherited your Application class from <code class="docutils literal notranslate"><span class="pre">PyramidApplication</span></code> insted of the
 normal configurator. The new Configurator will be responsible for running
@@ -150,9 +153,9 @@ Pyramid Plugin.</p>
 </div>
 <p>As you can see, you can use normal plugins along with the Pyramid’s specifyc
 ones. More about plugins can be found <a class="reference external" href="#creating-plugins">here</a></p>
-</div>
-<div class="section" id="implement-startpoint">
-<h3><span class="section-number">4.4.2.2. </span>Implement Startpoint<a class="headerlink" href="#implement-startpoint" title="Permalink to this headline"></a></h3>
+</section>
+<section id="implement-startpoint">
+<h3><span class="section-number">4.4.2.2. </span>Implement Startpoint<a class="headerlink" href="#implement-startpoint" title="Permalink to this heading"></a></h3>
 <p>Second step of implementing Pyramid’s Plugin is to create a startpoint. It needs
 to be a function which will return an wsgi object, which will be used by uwsgi
 and paster. In order to do that we need to start the Configurator.</p>
@@ -167,22 +170,22 @@ and paster. In order to do that we need to start the Configurator.</p>
 </div>
 <p>The settings argument is not used here. It is something that will be passed to
 the function by the uwsgi or paster, but Sapp Settings does not use it at all.</p>
-</div>
-<div class="section" id="configuring-paste-and-gunicorn">
-<h3><span class="section-number">4.4.2.3. </span>Configuring Paste and Gunicorn<a class="headerlink" href="#configuring-paste-and-gunicorn" title="Permalink to this headline"></a></h3>
+</section>
+<section id="configuring-paste-and-gunicorn">
+<h3><span class="section-number">4.4.2.3. </span>Configuring Paste and Gunicorn<a class="headerlink" href="#configuring-paste-and-gunicorn" title="Permalink to this heading"></a></h3>
 <p>Last file to create is an app.ini. This file is an configuration for paste and
 gunicorn.</p>
-<div class="highlight-ini notranslate"><div class="highlight"><pre><span></span><span class="k">[app:main]</span><span class="w"></span>
-<span class="w">    </span><span class="na">use</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">call:{PY_URL}:wsgifunction</span><span class="w"></span>
+<div class="highlight-ini notranslate"><div class="highlight"><pre><span></span><span class="k">[app:main]</span>
+<span class="w">    </span><span class="na">use</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">call:{PY_URL}:wsgifunction</span>
 
-<span class="k">[server:main]</span><span class="w"></span>
-<span class="w">    </span><span class="na">use</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">egg:gunicorn#main</span><span class="w"></span>
-<span class="w">    </span><span class="na">host</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">0.0.0.0</span><span class="w"></span>
-<span class="w">    </span><span class="na">port</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">8000</span><span class="w"></span>
+<span class="k">[server:main]</span>
+<span class="w">    </span><span class="na">use</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">egg:gunicorn</span><span class="c1">#main</span>
+<span class="w">    </span><span class="na">host</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">0.0.0.0</span>
+<span class="w">    </span><span class="na">port</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">8000</span>
 
-<span class="k">[pipeline:main]</span><span class="w"></span>
-<span class="w">    </span><span class="na">pipeline</span><span class="w"> </span><span class="o">=</span><span class="w"></span>
-<span class="w">        </span><span class="na">main</span><span class="w"></span>
+<span class="k">[pipeline:main]</span>
+<span class="w">    </span><span class="na">pipeline</span><span class="w"> </span><span class="o">=</span>
+<span class="w">        </span><span class="na">main</span>
 </pre></div>
 </div>
 <p><code class="docutils literal notranslate"><span class="pre">[app:main]</span></code> section is here to tell the paste which function to use in order to
@@ -196,18 +199,18 @@ the SettingsPlugin, so we leave this section empty.</p>
 <li><p><a class="reference external" href="https://docs.pylonsproject.org/projects/pyramid-cookbook/en/latest/pylons/launch.html">Launching the Application</a></p></li>
 <li><p><a class="reference external" href="https://docs.pylonsproject.org/projects/pyramid-cookbook/en/latest/pylons/ini_file.html">INI File</a></p></li>
 </ul>
-</div>
-<div class="section" id="starting-development-server">
-<h3><span class="section-number">4.4.2.4. </span>Starting development server<a class="headerlink" href="#starting-development-server" title="Permalink to this headline"></a></h3>
+</section>
+<section id="starting-development-server">
+<h3><span class="section-number">4.4.2.4. </span>Starting development server<a class="headerlink" href="#starting-development-server" title="Permalink to this heading"></a></h3>
 <p>In order to start the development server you need to run pserve with a path for
 <code class="docutils literal notranslate"><span class="pre">app.ini</span></code> file. It is usefull also to add <code class="docutils literal notranslate"><span class="pre">--reload</span></code> switch, so the server will
 be restarting every time the python files will change.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pserve app.ini --reload
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pserve<span class="w"> </span>app.ini<span class="w"> </span>--reload
 </pre></div>
 </div>
-</div>
-<div class="section" id="creating-plugins-for-pyramid">
-<h3><span class="section-number">4.4.2.5. </span>Creating Plugins for Pyramid<a class="headerlink" href="#creating-plugins-for-pyramid" title="Permalink to this headline"></a></h3>
+</section>
+<section id="creating-plugins-for-pyramid">
+<h3><span class="section-number">4.4.2.5. </span>Creating Plugins for Pyramid<a class="headerlink" href="#creating-plugins-for-pyramid" title="Permalink to this heading"></a></h3>
 <p><code class="docutils literal notranslate"><span class="pre">PyramidApplication</span></code> will run <code class="docutils literal notranslate"><span class="pre">start_pyramid(pyramid)</span></code> method for all
 plugins when running <code class="docutils literal notranslate"><span class="pre">.make_wsgi_app</span></code>. Of corse, if the application will not
 find the <code class="docutils literal notranslate"><span class="pre">start_pyramid</span></code> method, it will not raise any error, because otherwise
@@ -222,7 +225,7 @@ instance.</p>
         <span class="bp">self</span><span class="o">.</span><span class="n">settings</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_my_settings</span><span class="p">(</span><span class="n">application</span><span class="p">)</span>
 
 <span class="k">class</span> <span class="nc">CsrfPlugin</span><span class="p">(</span><span class="n">BasePyramidPlugin</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Add csrf mechanism to the pyramid app.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">policy_cls</span><span class="p">):</span>
@@ -235,12 +238,12 @@ instance.</p>
             <span class="n">token</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="p">[</span><span class="s2">&quot;csrf_token_key&quot;</span><span class="p">],</span>
 </pre></div>
 </div>
-</div>
-</div>
-<div class="section" id="id2">
-<h2><span class="section-number">4.4.3. </span>Routing Wrapper<a class="headerlink" href="#id2" title="Permalink to this headline"></a></h2>
-<div class="section" id="why-we-need-a-router-wrapper">
-<h3><span class="section-number">4.4.3.1. </span>Why we need a router wrapper<a class="headerlink" href="#why-we-need-a-router-wrapper" title="Permalink to this headline"></a></h3>
+</section>
+</section>
+<section id="id2">
+<h2><span class="section-number">4.4.3. </span>Routing Wrapper<a class="headerlink" href="#id2" title="Permalink to this heading"></a></h2>
+<section id="why-we-need-a-router-wrapper">
+<h3><span class="section-number">4.4.3.1. </span>Why we need a router wrapper<a class="headerlink" href="#why-we-need-a-router-wrapper" title="Permalink to this heading"></a></h3>
 <p><code class="docutils literal notranslate"><span class="pre">qq.plugins.pyramid.routing.Routing</span></code> was designed to simplify creating of
 routes. In normal Pyramid, the developer needs to configure the route in one
 place and the view in another. Also, configuring is made by &#64;view_config
@@ -250,9 +253,9 @@ configuration variables across all the views.</p>
 <p>Another disadvantage of normal pyramid’s routing is that the linking of the
 route and the view is made by name which is not very sophisticated and it
 is very buggable.</p>
-</div>
-<div class="section" id="how-to-implement-routing">
-<h3><span class="section-number">4.4.3.2. </span>How to implement Routing<a class="headerlink" href="#how-to-implement-routing" title="Permalink to this headline"></a></h3>
+</section>
+<section id="how-to-implement-routing">
+<h3><span class="section-number">4.4.3.2. </span>How to implement Routing<a class="headerlink" href="#how-to-implement-routing" title="Permalink to this heading"></a></h3>
 <p>First step is to implement Routing class inherited from
 <code class="docutils literal notranslate"><span class="pre">qq.plugins.pyramid.routing.Routing</span></code> and make a <code class="docutils literal notranslate"><span class="pre">make(self)</span></code> method.
 This is our wrapper for normal pyramid routing. It will help us, but if you want
@@ -295,10 +298,10 @@ method. All the kwargs for this method will be taken from the view class.</p>
         <span class="k">return</span> <span class="p">{}</span>
 </pre></div>
 </div>
-</div>
-</div>
-<div class="section" id="id3">
-<h2><span class="section-number">4.4.4. </span>Views<a class="headerlink" href="#id3" title="Permalink to this headline"></a></h2>
+</section>
+</section>
+<section id="id3">
+<h2><span class="section-number">4.4.4. </span>Views<a class="headerlink" href="#id3" title="Permalink to this heading"></a></h2>
 <p>Quack Quack comes with base class for every View.</p>
 <p>Main reason to implement an view is to generate response proper response.
 The simples way to return the data is to implement <code class="docutils literal notranslate"><span class="pre">.get(self)</span></code> method and
@@ -362,13 +365,13 @@ way:</p>
 </li>
 </ul>
 <p>More info about HTTP methods can be found <a class="reference external" href="https://en.wikipedia.org/wiki/Hypertext_Transfer_Protocol#Request_methods">here</a></p>
-<div class="section" id="restfulview">
-<h3><span class="section-number">4.4.4.1. </span>RestfulView<a class="headerlink" href="#restfulview" title="Permalink to this headline"></a></h3>
+<section id="restfulview">
+<h3><span class="section-number">4.4.4.1. </span>RestfulView<a class="headerlink" href="#restfulview" title="Permalink to this heading"></a></h3>
 <p>RestfulView is a View, with JSON as renderer. So it will be more suitable for RESTful views.
 Name of methods are the same as in View class.</p>
-</div>
-</div>
-</div>
+</section>
+</section>
+</section>
 
 
            </div>
