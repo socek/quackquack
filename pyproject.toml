@@ -19,7 +19,7 @@ python-dateutil = "^2.8.2"
 [tool.poetry.dev-dependencies]
 pytest-cov = { version = "^2.10.1" }
 pytest-mock = { version = "^3.2.0" }
-ipython = { version = "^7.31.1" }
+ipython = { version = "^8.10.0" }
 ipdb = { version = "^0.13.3" }
 icecream = { version = "^2.1.1" }
 pytest_async = "^0.1.1"
