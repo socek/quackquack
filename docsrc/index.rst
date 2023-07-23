@@ -7,7 +7,7 @@
 Quack Quack
 ***********
 
-If it quacks like a quack, then it's a Quack Quack.
+A simple application initializator.
 
 Version: 1.2.0
 
