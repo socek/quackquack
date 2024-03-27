@@ -54,3 +54,16 @@ Exapmle of the configuration:
            }
        }
 
+
+And of course you need to add the plugin:
+
+.. code-block:: python
+
+    from qq.plugins.logging import LoggingPlugin
+    from qq.plugins import SettingsPlugin
+    from qq import Application
+
+    class MyApplication(Application):
+        def create_plugins(self):
+            self.plugins(SettingsPlugin("settings"))
+            self.plugins(LoggingPlugin())

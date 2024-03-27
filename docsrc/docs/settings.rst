@@ -207,10 +207,11 @@ use the SettingsInjector, like this:
 
 .. code-block:: python
 
-    from qq.plugins.settings import SettingsInjector
+    from qq.injectors import ArgsInjector
+    from qq.plugins.settings import SettingsInicjator
 
-    @app
-    def somemethod(argument, jwt_settings = SettingsInjector("jwt")):
+    @ArgsInjector(app, {"jwt_settings": SettingsInjector("jwt")})
+    def somemethod(argument, jwt_settings):
         ...
 
 
@@ -218,9 +219,10 @@ But, you can always get the all settings if you want:
 
 .. code-block:: python
 
-    from qq.injector import SimpleInjector
+    from qq.injectors import ArgsInjector
+    from qq.injectors import ContextInicjator
 
-    @app
-    def somemethod(argument, all_settings = SimpleInjector("settings")):
+    @ArgsInjector(app, {"all_settings": ContextInicjator("settings")})
+    def somemethod(argument, all_settings):
         ...
 

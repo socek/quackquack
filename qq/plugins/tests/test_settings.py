@@ -11,7 +11,7 @@ from qq import Application
 from qq import Context
 from qq.plugins.settings import PrefixedStringsDict
 from qq.plugins.settings import SettingsBasedPlugin
-from qq.plugins.settings import SettingsInjector
+from qq.plugins.settings import SettingsInicjator
 from qq.plugins.settings import SettingsPlugin
 from qq.plugins.settings import _import
 from qq.testing import PluginFixtures
@@ -141,7 +141,7 @@ class TestSettingsBasedPlugin:
         assert plugin.get_my_settings(context) == sentinel.settings
 
 
-class TestSettingsInjector:
+class TestSettingsInicjator:
     PLUGINKEY = "ksdyuwyta"
 
     @fixture
@@ -154,5 +154,7 @@ class TestSettingsInjector:
         context = {
             SettingsPlugin.key: {self.PLUGINKEY: sentinel.pluginsettings}
         }
-        result = SettingsInjector.fun(context=context, key=self.PLUGINKEY)
+        inicjator = SettingsInicjator(self.PLUGINKEY)
+        inicjator.init(context, None)
+        result = inicjator.start()
         assert result == sentinel.pluginsettings

@@ -2,7 +2,7 @@ from os.path import dirname
 
 from qq.application import Application
 from qq.context import Context
-from qq.injector import Injector
+from qq.injectors import ContextInicjator
 from qq.plugin import Plugin
 
 TESTS_KEY = "tests"
@@ -64,6 +64,6 @@ class SettingsBasedPlugin(Plugin):
         return source.globals[SettingsPlugin.key][self.key]
 
 
-@Injector
-def SettingsInjector(context: Context, key: str):
-    return context[SettingsPlugin.key][key]
+class SettingsInicjator(ContextInicjator):
+    def start(self):
+        return self.context[SettingsPlugin.key][self.key]

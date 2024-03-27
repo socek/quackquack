@@ -30,7 +30,7 @@ if you need to have 2 databases )
 
     class MyApplication(Application):
         def create_plugins(self):
-            self.plugins["settings"] = SettingsPlugin()
+            self.plugins(SettingsPlugin('path.to.settings'))
 
 Plugins can return data in couple of places. Plugin's key is used to gather those
 return values. For example, data from `start` method of the plugin can be found
@@ -134,11 +134,11 @@ Example:
 
 .. code-block:: python
 
-    from qq import Injector
+    from qq.injectors import ContextInicjator
 
-    @Injector
-    def SimpleInjector(context: Context, key: str):
-        return context[key]
+    class SimpleInicjator(ContextInicjator):
+        def start(self):
+            return self.context[self.key]
 
 In order to use the `injector`, it needs to be provided as a default var in a
 function. Also, the `ApplicationInitializer` needs to be used for that function.
@@ -148,10 +148,10 @@ Example:
 
 .. code-block:: python
 
-    from qq import ApplicationInitializer
+    from qq.injectors import ArgsInjector
 
-    @ApplicationInitializer(application)
-    def fun(settings = SimpleInjector("settings")):
+    @ArgsInjector(application, {"settings": SimpleInicjator("settings")})
+    def fun(settings):
         ...
 
 
@@ -181,8 +181,8 @@ Example:
 
 .. code-block:: python
 
-    @ApplicationInitializer(application)
-    def fun(settings = SimpleInjector("settings")):
+    @ArgsInjector(application, {"settings": SimpleInicjator("settings")})
+    def fun(settings):
         return settings
 
     def test_flow():
@@ -200,11 +200,11 @@ Example:
 
     from qq import ApplicationInitializer
 
-    @ApplicationInitializer(None)
-    def fun(settings = SimpleInjector("settings")):
+    @ArgsInjector(None, {"settings": SimpleInicjator("settings")})
+    def fun(settings):
         ...
 
-    fun2 = ApplicationInitializer(application)(fun)
+    fun2 = ArgsInjector(application)(fun)
 
 The `ApplicationInitializer` will overwrite the `application` value in all injectors.
 If those injectors would have it's own injectors in the arguments, those injectors

@@ -98,7 +98,7 @@ ended.
 .. code-block:: python
 
    app = MyApplication()
-   app.start("pyramid")
+   app.start()
 
    with Context(app) as c1: # this is where context is initialized
        with Context(app) as c2:
@@ -118,9 +118,10 @@ ApplicationInitializer decorator.
 .. code-block:: python
 
     from qq import Application
-    from qq import ApplicationInitializer
     from qq import SimpleInjector
     from qq.plugins import SettingsPlugin
+    from qq.injectors import ArgsInjector
+    from qq.injectors import ContextInicjator
 
 
     class MyApplication(Application):
@@ -129,11 +130,10 @@ ApplicationInitializer decorator.
 
 
     application = MyApplication()
-    app = ApplicationInitializer(application)
 
 
-    @app
-    def fun(something, settings=SimpleInjector("settings")):
+    @ArgsInjector(application, configuration=dict(settings=ContextInicjator("settings")))
+    def fun(something, settings):
         print(something, settings)
 
 
@@ -154,9 +154,9 @@ If the method is a coroutine, you don't need to do nothing. It will work the sam
     from asyncio import run
 
     from qq import Application
-    from qq import ApplicationInitializer
-    from qq import SimpleInjector
+    from qq.injectors import ArgsInjector
     from qq.plugins import SettingsPlugin
+    from qq.injectors import ContextInicjator
 
 
     class MyApplication(Application):
@@ -165,11 +165,10 @@ If the method is a coroutine, you don't need to do nothing. It will work the sam
 
 
     application = MyApplication()
-    app = ApplicationInitializer(application)
 
 
-    @app
-    async def fun(something, settings=SimpleInjector("settings")):
+    @ArgsInjector(application, configuration=dict(settings=ContextInicjator("settings")))
+    async def fun(something, settings):
         print(something, settings)
 
 

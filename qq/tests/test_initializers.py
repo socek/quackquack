@@ -5,7 +5,6 @@ from pytest import raises
 
 from qq import ApplicationNotStartedError
 from qq import Context
-from qq import SimpleInjector
 from qq.application import Application
 from qq.errors import InjectorNotInicialized
 from qq.initializers import QQ_PARAMETER
@@ -14,7 +13,8 @@ from qq.initializers import get_initializers
 from qq.initializers import get_injectors
 from qq.initializers import is_initializer
 from qq.initializers import is_injector
-from qq.injector import Injector
+from qq.injectors import ArgsInjector
+from qq.injectors import ContextInicjator
 from qq.plugins import SettingsPlugin
 
 app = Application()
@@ -27,8 +27,9 @@ def not_injected_fun():
 injected_fun = ApplicationInitializer(None)(not_injected_fun)
 
 
+@ArgsInjector(configuration={"third": ContextInicjator("key"), "fourth":})
 def example_fun(
-    first, second, third=SimpleInjector(app, "key"), fourth=injected_fun
+    first, second, third, fourth=injected_fun
 ):
     return [first, second, third, fourth]
 
@@ -112,7 +113,7 @@ class TestInitializeInjectors:
     @fixture
     def fun(self, app):
         def example_fun(
-            first, second, third=SimpleInjector("settings"), fourth=injected_fun
+            first, second, third=ContextInicjator("settings"), fourth=injected_fun
         ):
             return [first, second, third, fourth]
 
@@ -121,7 +122,7 @@ class TestInitializeInjectors:
     @fixture
     def errorfun(self, app):
         def example_fun(
-            first, second, third=SimpleInjector, fourth=injected_fun
+            first, second, third=ContextInicjator, fourth=injected_fun
         ):
             return [first, second, third, fourth]
 
@@ -130,7 +131,7 @@ class TestInitializeInjectors:
     @fixture
     def coroutine(self, app):
         async def example_fun(
-            first, second, third=SimpleInjector("settings"), fourth=injected_fun
+            first, second, third=ContextInicjator("settings"), fourth=injected_fun
         ):
             return [first, second, third, fourth]
 
@@ -173,7 +174,7 @@ class TestInitializeInjectorsForCoroutine:
     @fixture
     def fun(self, app):
         async def example_fun(
-            first, second, third=SimpleInjector("settings"), fourth=injected_fun
+            first, second, third=ContextInicjator("settings"), fourth=injected_fun
         ):
             return [first, second, third, fourth]
 
@@ -182,7 +183,7 @@ class TestInitializeInjectorsForCoroutine:
     @fixture
     def errorfun(self, app):
         async def example_fun(
-            first, second, third=SimpleInjector, fourth=injected_fun
+            first, second, third=ContextInicjator, fourth=injected_fun
         ):
             return [first, second, third, fourth]
 
