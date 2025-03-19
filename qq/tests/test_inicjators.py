@@ -8,6 +8,7 @@ from qq import Application
 from qq import Context
 from qq.errors import ApplicationNotStartedError
 from qq.injectors import ContextInicjator
+from qq.injectors import Inicjator
 from qq.injectors import SetApplication
 from qq.injectors import SetInicjator
 from qq.plugin import Plugin
@@ -49,6 +50,17 @@ class MyApplication(Application):
     def create_plugins(self):
         self.plugins(SamplePlugin("one"))
         self.plugins["second"] = SecondSamplePlugin("two")
+
+
+class AsyncContextInicjator(Inicjator):
+    def __init__(self, key: str):
+        self.key = key
+
+    async def start(self):
+        return self.context[self.key]
+
+    async def finish(self, er=None):
+        pass
 
 
 application = MyApplication()
@@ -127,3 +139,44 @@ def test_repr():
         pass
 
     assert repr(SetApplication(application)(mytest)) == repr(mytest)
+
+
+async def test_async_inicjator():
+    @SetApplication(application)
+    @SetInicjator("first", ContextInicjator("first"))
+    @SetInicjator("second", AsyncContextInicjator("second"))
+    async def mytest(first, second):
+        return first, second
+
+    assert await mytest() == ({"data": "one"}, {"data": "two"})
+
+
+async def test_async_inicjator_error():
+    @SetApplication(application)
+    @SetInicjator("first", ContextInicjator("first"))
+    @SetInicjator("second", AsyncContextInicjator("second"))
+    async def mytest(first, second):
+        raise RuntimeError("x")
+
+    with raises(RuntimeError):
+        await mytest()
+
+
+async def test_dependency_injection_async():
+    @SetApplication(application)
+    @SetInicjator("first", ContextInicjator("first"))
+    @SetInicjator("second", ContextInicjator("second"))
+    async def mytest(first, second):
+        return first, second
+
+    assert await mytest("one", "two") == ("one", "two")
+
+
+async def test_dependency_injection_async_kwargs():
+    @SetApplication(application)
+    @SetInicjator("first", ContextInicjator("first"))
+    @SetInicjator("second", ContextInicjator("second"))
+    async def mytest(first, second):
+        return first, second
+
+    assert await mytest(second="two", first="one") == ("one", "two")

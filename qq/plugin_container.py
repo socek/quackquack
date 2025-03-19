@@ -14,7 +14,6 @@ class PluginContainer(OrderedDict):
         self[plugin.key] = plugin
 
     def __setitem__(self, key: PluginKey, plugin: Plugin):
-        print(key, plugin)
         if plugin.key and plugin.key != key:
             raise WrongKeyForPluginError()
         if key in self:

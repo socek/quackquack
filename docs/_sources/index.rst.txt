@@ -9,7 +9,7 @@ Quack Quack
 
 A simple application initializator.
 
-Version: 1.3.0
+Version: 1.3.1
 
 .. toctree::
    :caption: Table of Contents
