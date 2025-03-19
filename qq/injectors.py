@@ -1,5 +1,7 @@
 from copy import copy
+from functools import update_wrapper
 from functools import wraps
+from inspect import iscoroutinefunction
 from inspect import signature
 from typing import Any
 from typing import Callable
@@ -13,11 +15,8 @@ class Inicjator:
         self.context = context
         self.arguments = arguments
 
-    def start(self) -> Any:
-        ...
-
-    def finish(self, er=None):
-        ...
+    def start(self) -> Any: ...  # pragma: no cover
+    def finish(self, er=None): ...  # pragma: no cover
 
 
 class ContextInicjator(Inicjator):
@@ -28,28 +27,20 @@ class ContextInicjator(Inicjator):
         return self.context[self.key]
 
 
-class QQFunctionWrapper(Inicjator):
+class FunctionWrapper:
     def __init__(self, fun: Callable):
         self.application = None
-        self.configuration = None
+        self.inicjators = {}
         self.fun = fun
-
-    def init(self, context: Context, arguments: dict[str, Any]):
-        self.application = context.application
-
-    def start(self):
-        return self
+        update_wrapper(self, fun)
 
     def __call__(self, *args, **kwargs):
-        assert self.configuration
-        assert self.application
-
         sig = signature(self.fun)
         arguments = sig.bind_partial(*args, **kwargs).arguments
         inicjators = []
         with Context(self.application) as context:
             for key in sig.parameters.keys():
-                inicjator = self.configuration.get(key)
+                inicjator = self.inicjators.get(key)
                 if key not in arguments and inicjator:
                     inicjator = copy(inicjator)
                     inicjators.append(inicjator)
@@ -57,40 +48,45 @@ class QQFunctionWrapper(Inicjator):
                     arguments[key] = inicjator.start()
 
         try:
+            error = None
             result = self.fun(**arguments)
         except Exception as er:
-            for conf in reversed(inicjators):
-                conf.finish(er)
+            error = er
             raise
-
-        for conf in reversed(inicjators):
-            conf.finish()
+        finally:
+            for injector in reversed(inicjators):
+                injector.finish(error)
 
         return result
 
-
-class ArgsInjector:
-    def __init__(
-        self,
-        application: Application | None = None,
-        configuration: dict[str, Inicjator | Callable] | None = None,
-    ):
+    def set_application(self, application):
         self.application = application
-        self.configuration = configuration
 
-    def __call__(self, fun: Callable | QQFunctionWrapper) -> Callable:
-        """
-        If function has injectors in the defaults of arguments, then init them.
-        """
-        fun = (
-            fun
-            if isinstance(fun, QQFunctionWrapper)
-            else wraps(fun)(QQFunctionWrapper(fun))
-        )
-        assert isinstance(fun, QQFunctionWrapper)
+    def set_injector(self, key, injector):
+        self.inicjators[key] = injector
 
-        if self.application:
-            fun.application = self.application
-        if self.configuration:
-            fun.configuration = self.configuration
+    def __repr__(self):
+        return repr(self.fun)
+
+
+class SetApplication:
+    def __init__(self, application):
+        self.application = application
+
+    def __call__(self, fun):
+        if not isinstance(fun, FunctionWrapper):
+            fun = FunctionWrapper(fun)
+        fun.set_application(self.application)
+        return fun
+
+
+class SetInicjator:
+    def __init__(self, key, inicjator):
+        self.key = key
+        self.inicjator = inicjator
+
+    def __call__(self, fun):
+        if not isinstance(fun, FunctionWrapper):
+            fun = FunctionWrapper(fun)
+        fun.set_injector(self.key, self.inicjator)
         return fun

@@ -132,17 +132,17 @@ context like this (assuming your main key is "database"):
      context["database"].query(User).all()
 
 
-Injectors
----------
+Inicjators
+----------
 
 There was no point in creating additional injectors, so you need to create your
 own, for example:
 
 .. code-block:: python
 
-    from qq.injector import SimpleInjector
+    from qq.plugins.sqlalchemy.injectors import SesssionInicjator
 
-    ISession = SimpleInjector("database")
+    Query = SesssionInicjator("database")
 
 
 And use it like this:
@@ -152,8 +152,12 @@ And use it like this:
 
     from sqlalchemy.orm.session import Session
 
-    @app
-    def get_items(psql: Session = ISession):
+    @ArgsInjector(
+        configuration={
+            "psql": Query,
+        }
+    )
+    def get_items(psql: Session):
         ...
 
 
@@ -165,7 +169,7 @@ in order to have this done automaticly. First, you need to create the decorator:
 
 .. code-block:: python
 
-    from qq.plugins.sqlalchemy.injectors import TransactionDecorator
+
 
     Transaction = TransactionDecorator(application, "database")
 
@@ -174,16 +178,22 @@ Example:
 
 .. code-block:: python
 
-    @Transaction
+    from qq.plugins.sqlalchemy.injectors import TransactionInicjator
+
+    @ArgsInjector(
+        configuration={
+            "transaction": TransactionInicjator(),
+        }
+    )
     def clear_reports(
-        from_date: date = None,
-        to_date: date = None,
-        psql: Session = ISession,
+        from_date: date,
+        to_date: date,
+        transaction: Session,
     ) -> int:
         stmt = delete(SomeTable).where(
             BillingReportsTable.day >= from_date, BillingReportsTable.day < to_date
         )
-        return psql.execute(stmt).rowcount
+        return transaction.execute(stmt).rowcount
 
 
 

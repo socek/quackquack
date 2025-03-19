@@ -17,7 +17,7 @@ class Context:
         return self.application.extra
 
     def __enter__(self):
-        if not self.application.is_started:
+        if not self.application or not self.application.is_started:
             raise ApplicationNotStartedError(
                 "Application is not started! Use Application.start(startpoint)"
             )

@@ -7,10 +7,7 @@ from qq.plugins.settings import SettingsBasedPlugin
 class CeleryPlugin(SettingsBasedPlugin):
     key = "celery"
 
-    def __init__(
-        self,
-        celeryapp: Celery,
-    ):
+    def __init__(self, celeryapp: Celery):
         super().__init__()
         self.celeryapp = celeryapp
 

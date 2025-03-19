@@ -23,7 +23,18 @@ class SampleFinder(ObjectFinder):
         self.process_cache = {}
 
     def is_collectable(self, element):
-        return getattr(element, "is_collectable") or False
+        return getattr(element, "is_collectable", False)
+
+
+class FakePackage:
+    class First:
+        is_collectable = True
+
+    class Second:
+        is_collectable = True
+
+    class Third:
+        is_collectable = False
 
 
 class TestObjectFinder:
@@ -42,6 +53,10 @@ class TestObjectFinder:
     @fixture
     def mfind_in_package(self, mocker, finder):
         return mocker.patch.object(finder, "_find_in_package")
+
+    @fixture
+    def mis_defined_in(self, mocker, finder):
+        return mocker.patch("qq.finder.is_defined_in")
 
     @fixture
     def mimport_module(self, mocker):
@@ -155,3 +170,8 @@ class TestObjectFinder:
             call("parent"),
             call("parent.one"),
         ]
+
+    def test_find_in_package(self, finder, mis_defined_in):
+        mis_defined_in.return_value = True
+        result = list(finder._find_in_package(FakePackage))
+        assert result == [FakePackage.First, FakePackage.Second]

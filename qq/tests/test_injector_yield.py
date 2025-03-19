@@ -5,9 +5,6 @@ from unittest.mock import sentinel
 from pytest import fixture
 
 from qq.context import Context
-from qq.initializers import ApplicationInitializer
-from qq.injector import ContextManagerInjector
-from qq.injector import Injector
 
 
 class Fixtures:
@@ -36,79 +33,3 @@ class Fixtures:
     @fixture
     def context(self, mapp):
         return Context(mapp)
-
-
-class TestReturnInjector(Fixtures):
-    @fixture
-    def exampleinjector(self, data):
-        @Injector
-        def fun(context, key):
-            data[key] = 1
-            return context[key]
-
-        return fun
-
-    @fixture
-    def examplefun(self, exampleinjector, mapp, data):
-        def fun(obj=exampleinjector("name")):
-            assert data["name"] == 1
-            return obj
-
-        return ApplicationInitializer(mapp)(fun)
-
-    def test_yielding(self, data, examplefun):
-        assert data["name"] == 0
-        assert examplefun() == sentinel.name
-        assert data["name"] == 1
-
-
-class TestYieldInjector(Fixtures):
-    @fixture
-    def exampleinjector(self, data):
-        @Injector
-        def fun(context, key):
-            data[key] = 1
-            yield context[key]
-            data[key] = 2
-
-        return fun
-
-    @fixture
-    def examplefun(self, exampleinjector, mapp, data):
-        def fun(obj=exampleinjector("name")):
-            assert data["name"] == 1
-            return obj
-
-        return ApplicationInitializer(mapp)(fun)
-
-    def test_yielding(self, data, examplefun):
-        assert data["name"] == 0
-        assert examplefun() == sentinel.name
-        assert data["name"] == 2
-
-
-class TestContextManagerInjector(Fixtures):
-    @fixture
-    def exampleinjector(self, data):
-        class cls(ContextManagerInjector):
-            def __enter__(self, context, key):
-                data[key] = 1
-                return context[key]
-
-            def __exit__(self, exc_type, exc_value, traceback, context, key):
-                data[key] = 2
-
-        return cls
-
-    @fixture
-    def examplefun(self, exampleinjector, mapp, data):
-        def fun(obj=exampleinjector("name")):
-            assert data["name"] == 1
-            return obj
-
-        return ApplicationInitializer(mapp)(fun)
-
-    def test_context_manager(self, data, examplefun):
-        assert data["name"] == 0
-        assert examplefun() == sentinel.name
-        assert data["name"] == 2

@@ -9,7 +9,6 @@ from pytest import raises
 
 from qq import Application
 from qq import Context
-from qq.plugins.settings import PrefixedStringsDict
 from qq.plugins.settings import SettingsBasedPlugin
 from qq.plugins.settings import SettingsInicjator
 from qq.plugins.settings import SettingsPlugin
@@ -31,11 +30,6 @@ class TestSettingsPlugin(PluginFixtures):
     @fixture
     def mstring_dict(self):
         return {}
-
-    @fixture
-    def mpaths(self):
-        with patch(f"{PREFIX}.PrefixedStringsDict") as mock:
-            yield mock
 
     @fixture
     def mapp(self):
@@ -70,47 +64,6 @@ class TestSettingsPlugin(PluginFixtures):
         mimport.return_value.myapp.assert_called_once_with()
 
         assert result == mimport.return_value.myapp.return_value
-
-
-class TestPrefixedStringsDict:
-    @fixture
-    def paths(self):
-        return PrefixedStringsDict()
-
-    def test_set_prefix(self, paths):
-        """
-        .set_prefix should set prefix on the paths.
-        """
-        paths["name"] = "come"
-        assert paths["name"] == "come"
-
-        paths.set_prefix("myprefix/")
-        assert paths["name"] == "myprefix/come"
-
-    def test_setitem_with_bad_value(self, paths):
-        """
-        PrefixedStringsDict can be set only by the str objects.
-        """
-        paths["name"] = "key"
-
-        with raises(ValueError):
-            paths["name"] = 12
-
-    def test_set_prefix_from_module(self, paths):
-        """
-        .set_prefix_from_module should set prefix from module dir path
-        """
-        paths.set_prefix_from_module(os)
-
-        assert paths.prefix == dirname(os.__file__)
-
-    def test_init_set_prefix_from_module(self):
-        """
-        init should allow to set prefix from module's dir
-        """
-        paths = PrefixedStringsDict(module=os)
-
-        assert paths.prefix == dirname(os.__file__)
 
 
 class TestSettingsBasedPlugin:

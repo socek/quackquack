@@ -12,27 +12,6 @@ def _import(modulepath):
     return __import__(modulepath, globals(), locals(), [""])
 
 
-class PrefixedStringsDict(dict):
-    def __init__(self, prefix="", module=None):
-        self.prefix = prefix
-        if module:
-            self.set_prefix_from_module(module)
-
-    def set_prefix(self, prefix):
-        self.prefix = prefix
-
-    def __getitem__(self, key):
-        return self.prefix + super().__getitem__(key)
-
-    def __setitem__(self, key, value):
-        if not isinstance(value, str):
-            raise ValueError("PrefixedStringsDict can be set only by strings!")
-        return super().__setitem__(key, value)
-
-    def set_prefix_from_module(self, module):
-        self.prefix = dirname(module.__file__)
-
-
 class SettingsPlugin(Plugin):
     """
     This class will generate settings for different startpoints. `modulepath`
