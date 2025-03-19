@@ -9,9 +9,6 @@ from qq.types import PluginKey
 class Plugin(PluginType):
     key: PluginKey = None
 
-    def __init__(self):
-        self.key = getattr(self, "key", None)
-
     def init(self, key: PluginKey):
         """
         Initialize the plugin during creation.

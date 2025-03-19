@@ -7,6 +7,15 @@ All notable changes to this project will be documented in this file.
 The format is based on `Keep a Changelog <http://keepachangelog.com/>`_ and this project adheres to [Semantic Versioning]
 (http://semver.org/).
 
+Version: 1.3.0
+==============
+
+* Add
+    * Injectors - new way of dependency injection (with @SetApplication and @SetInjector)
+* Removed
+    * Removed ApplicationInitializer
+
+
 Version: 1.2.1
 ==============
 

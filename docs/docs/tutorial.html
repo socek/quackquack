@@ -1,22 +1,21 @@
+
+
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="en">
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>2. Tutorial &mdash; Quack Quack 1.0.4 documentation</title>
-      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
-  <!--[if lt IE 9]>
-    <script src="../_static/js/html5shiv.min.js"></script>
-  <![endif]-->
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+
   
-        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
-        <script src="../_static/jquery.js"></script>
-        <script src="../_static/underscore.js"></script>
-        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script src="../_static/doctools.js"></script>
-        <script src="../_static/sphinx_highlight.js"></script>
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=535dfbd7"></script>
+      <script src="../_static/doctools.js?v=888ff710"></script>
+      <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -29,11 +28,15 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="../index.html" class="icon icon-home"> Quack Quack
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Quack Quack
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -71,7 +74,7 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../index.html" class="icon icon-home"></a></li>
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
       <li class="breadcrumb-item active"><span class="section-number">2. </span>Tutorial</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../_sources/docs/tutorial.rst.txt" rel="nofollow"> View page source</a>
@@ -90,11 +93,11 @@
 inheriting from <code class="docutils literal notranslate"><span class="pre">qq.Application</span></code>. Bare Application almost does nothing, so it
 needs plugins to work. In order to do that, you need to overwrite <code class="docutils literal notranslate"><span class="pre">create_plugins</span></code>
 method and add some plugins. For the sake of tutorial, we just add one: Setting’s Plugin</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">qq</span> <span class="kn">import</span> <span class="n">Application</span>
-<span class="kn">from</span> <span class="nn">qq.plugins</span> <span class="kn">import</span> <span class="n">SettingsPlugin</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">qq</span><span class="w"> </span><span class="kn">import</span> <span class="n">Application</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qq.plugins</span><span class="w"> </span><span class="kn">import</span> <span class="n">SettingsPlugin</span>
 
-<span class="k">class</span> <span class="nc">MyApplication</span><span class="p">(</span><span class="n">Application</span><span class="p">):</span>
-    <span class="k">def</span> <span class="nf">create_plugins</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">MyApplication</span><span class="p">(</span><span class="n">Application</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">create_plugins</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">plugins</span><span class="p">(</span><span class="n">SettingsPlugin</span><span class="p">(</span><span class="s1">&#39;path.to.settings&#39;</span><span class="p">))</span>
 
 <span class="n">application</span> <span class="o">=</span> <span class="n">MyApplication</span><span class="p">()</span>
@@ -117,40 +120,40 @@ second for the tests, with mocked database. First we need to name the starts.
 Those are called “startpoints” and the default name is just “default”.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">application</span> <span class="o">=</span> <span class="n">MyApplication</span><span class="p">()</span>
 
-<span class="k">def</span> <span class="nf">start_for_pyramid</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">start_for_pyramid</span><span class="p">():</span>
     <span class="n">application</span><span class="o">.</span><span class="n">start</span><span class="p">(</span><span class="s1">&#39;pyramid&#39;</span><span class="p">)</span>
 
- <span class="k">def</span> <span class="nf">start_for_celery</span><span class="p">():</span>
+ <span class="k">def</span><span class="w"> </span><span class="nf">start_for_celery</span><span class="p">():</span>
     <span class="n">application</span><span class="o">.</span><span class="n">start</span><span class="p">(</span><span class="s1">&#39;celery&#39;</span><span class="p">)</span>
 
- <span class="k">def</span> <span class="nf">start_for_tests</span><span class="p">():</span>
+ <span class="k">def</span><span class="w"> </span><span class="nf">start_for_tests</span><span class="p">():</span>
      <span class="n">application</span><span class="o">.</span><span class="n">start</span><span class="p">(</span><span class="s1">&#39;tests&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Those start points are used mainly by settings plugin, so the settings can be
 switchable. Example for above start points:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">default</span><span class="p">():</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">default</span><span class="p">():</span>
      <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;default&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">}</span>
 
- <span class="k">def</span> <span class="nf">pyramid</span><span class="p">():</span>
+ <span class="k">def</span><span class="w"> </span><span class="nf">pyramid</span><span class="p">():</span>
      <span class="n">settings</span> <span class="o">=</span> <span class="n">default</span><span class="p">()</span>
      <span class="n">settings</span><span class="p">[</span><span class="s2">&quot;pyramid&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
      <span class="k">return</span> <span class="n">settings</span>
 
- <span class="k">def</span> <span class="nf">celery</span><span class="p">():</span>
+ <span class="k">def</span><span class="w"> </span><span class="nf">celery</span><span class="p">():</span>
      <span class="n">settings</span> <span class="o">=</span> <span class="n">default</span><span class="p">()</span>
      <span class="n">settings</span><span class="p">[</span><span class="s2">&quot;celery&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;yes&#39;</span>
 
- <span class="k">def</span> <span class="nf">tests</span><span class="p">():</span>
+ <span class="k">def</span><span class="w"> </span><span class="nf">tests</span><span class="p">():</span>
      <span class="n">settings</span> <span class="o">=</span> <span class="n">default</span><span class="p">()</span>
-     <span class="n">settings</span><span class="p">[</span><span class="s2">&quot;tests&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span> <span class="ow">is</span> <span class="kc">True</span>
+     <span class="n">settings</span><span class="p">[</span><span class="s2">&quot;tests&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
 </pre></div>
 </div>
 </section>
 <section id="using-context">
 <h2><span class="section-number">2.3. </span>Using Context<a class="headerlink" href="#using-context" title="Permalink to this heading"></a></h2>
 <p>After starting the application, we can use it as a context manager.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">qq</span> <span class="kn">import</span> <span class="n">Context</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">qq</span><span class="w"> </span><span class="kn">import</span> <span class="n">Context</span>
 
 <span class="n">app</span> <span class="o">=</span> <span class="n">MyApplication</span><span class="p">()</span>
 <span class="n">app</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
@@ -166,7 +169,7 @@ only when the value is called by name (so you can call it lazy initialization).<
 generated once with the first <code class="docutils literal notranslate"><span class="pre">with</span></code> statement and ended with the same statement
 ended.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">app</span> <span class="o">=</span> <span class="n">MyApplication</span><span class="p">()</span>
-<span class="n">app</span><span class="o">.</span><span class="n">start</span><span class="p">(</span><span class="s2">&quot;pyramid&quot;</span><span class="p">)</span>
+<span class="n">app</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
 
 <span class="k">with</span> <span class="n">Context</span><span class="p">(</span><span class="n">app</span><span class="p">)</span> <span class="k">as</span> <span class="n">c1</span><span class="p">:</span> <span class="c1"># this is where context is initialized</span>
     <span class="k">with</span> <span class="n">Context</span><span class="p">(</span><span class="n">app</span><span class="p">)</span> <span class="k">as</span> <span class="n">c2</span><span class="p">:</span>
@@ -183,23 +186,25 @@ to the function as default arguments, so if you need to inject dependecy (for
 example in tests), you can just pass the argument when calling. In order to
 initialize the injectors, you need to to decorate function with
 ApplicationInitializer decorator.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">qq</span> <span class="kn">import</span> <span class="n">Application</span>
-<span class="kn">from</span> <span class="nn">qq</span> <span class="kn">import</span> <span class="n">ApplicationInitializer</span>
-<span class="kn">from</span> <span class="nn">qq</span> <span class="kn">import</span> <span class="n">SimpleInjector</span>
-<span class="kn">from</span> <span class="nn">qq.plugins</span> <span class="kn">import</span> <span class="n">SettingsPlugin</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">qq</span><span class="w"> </span><span class="kn">import</span> <span class="n">Application</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qq</span><span class="w"> </span><span class="kn">import</span> <span class="n">SimpleInjector</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qq.plugins</span><span class="w"> </span><span class="kn">import</span> <span class="n">SettingsPlugin</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qq.injectors</span><span class="w"> </span><span class="kn">import</span> <span class="n">SetApplication</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qq.injectors</span><span class="w"> </span><span class="kn">import</span> <span class="n">SetInicjator</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qq.injectors</span><span class="w"> </span><span class="kn">import</span> <span class="n">ContextInicjator</span>
 
 
-<span class="k">class</span> <span class="nc">MyApplication</span><span class="p">(</span><span class="n">Application</span><span class="p">):</span>
-    <span class="k">def</span> <span class="nf">create_plugins</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">MyApplication</span><span class="p">(</span><span class="n">Application</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">create_plugins</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">plugins</span><span class="p">(</span><span class="n">SettingsPlugin</span><span class="p">(</span><span class="s2">&quot;settings&quot;</span><span class="p">))</span>
 
 
 <span class="n">application</span> <span class="o">=</span> <span class="n">MyApplication</span><span class="p">()</span>
-<span class="n">app</span> <span class="o">=</span> <span class="n">ApplicationInitializer</span><span class="p">(</span><span class="n">application</span><span class="p">)</span>
 
 
-<span class="nd">@app</span>
-<span class="k">def</span> <span class="nf">fun</span><span class="p">(</span><span class="n">something</span><span class="p">,</span> <span class="n">settings</span><span class="o">=</span><span class="n">SimpleInjector</span><span class="p">(</span><span class="s2">&quot;settings&quot;</span><span class="p">)):</span>
+<span class="nd">@SetApplication</span><span class="p">(</span><span class="n">application</span><span class="p">)</span>
+<span class="nd">@SetInicjator</span><span class="p">(</span><span class="s2">&quot;settings&quot;</span><span class="p">,</span> <span class="n">ContextInicjator</span><span class="p">(</span><span class="s2">&quot;settings&quot;</span><span class="p">))</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">fun</span><span class="p">(</span><span class="n">something</span><span class="p">,</span> <span class="n">settings</span><span class="p">):</span>
     <span class="nb">print</span><span class="p">(</span><span class="n">something</span><span class="p">,</span> <span class="n">settings</span><span class="p">)</span>
 
 
@@ -207,31 +212,31 @@ ApplicationInitializer decorator.</p>
 <span class="n">fun</span><span class="p">(</span><span class="s2">&quot;something&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">unittest.mock</span> <span class="kn">import</span> <span class="n">MagicMock</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">unittest.mock</span><span class="w"> </span><span class="kn">import</span> <span class="n">MagicMock</span>
 <span class="n">fun</span><span class="p">(</span><span class="s2">&quot;something&quot;</span><span class="p">,</span> <span class="n">MagicMock</span><span class="p">())</span>
 <span class="n">fun</span><span class="p">(</span><span class="s2">&quot;something&quot;</span><span class="p">,</span> <span class="n">settings</span><span class="o">=</span><span class="n">MagicMock</span><span class="p">())</span>
 </pre></div>
 </div>
 <p>If the method is a coroutine, you don’t need to do nothing. It will work the same.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">asyncio</span> <span class="kn">import</span> <span class="n">run</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">asyncio</span><span class="w"> </span><span class="kn">import</span> <span class="n">run</span>
 
-<span class="kn">from</span> <span class="nn">qq</span> <span class="kn">import</span> <span class="n">Application</span>
-<span class="kn">from</span> <span class="nn">qq</span> <span class="kn">import</span> <span class="n">ApplicationInitializer</span>
-<span class="kn">from</span> <span class="nn">qq</span> <span class="kn">import</span> <span class="n">SimpleInjector</span>
-<span class="kn">from</span> <span class="nn">qq.plugins</span> <span class="kn">import</span> <span class="n">SettingsPlugin</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qq</span><span class="w"> </span><span class="kn">import</span> <span class="n">Application</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qq.injectors</span><span class="w"> </span><span class="kn">import</span> <span class="n">ArgsInjector</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qq.plugins</span><span class="w"> </span><span class="kn">import</span> <span class="n">SettingsPlugin</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qq.injectors</span><span class="w"> </span><span class="kn">import</span> <span class="n">ContextInicjator</span>
 
 
-<span class="k">class</span> <span class="nc">MyApplication</span><span class="p">(</span><span class="n">Application</span><span class="p">):</span>
-    <span class="k">def</span> <span class="nf">create_plugins</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">MyApplication</span><span class="p">(</span><span class="n">Application</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">create_plugins</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">plugins</span><span class="p">(</span><span class="n">SettingsPlugin</span><span class="p">(</span><span class="s2">&quot;settings&quot;</span><span class="p">))</span>
 
 
 <span class="n">application</span> <span class="o">=</span> <span class="n">MyApplication</span><span class="p">()</span>
-<span class="n">app</span> <span class="o">=</span> <span class="n">ApplicationInitializer</span><span class="p">(</span><span class="n">application</span><span class="p">)</span>
 
 
-<span class="nd">@app</span>
-<span class="k">async</span> <span class="k">def</span> <span class="nf">fun</span><span class="p">(</span><span class="n">something</span><span class="p">,</span> <span class="n">settings</span><span class="o">=</span><span class="n">SimpleInjector</span><span class="p">(</span><span class="s2">&quot;settings&quot;</span><span class="p">)):</span>
+<span class="nd">@SetApplication</span><span class="p">(</span><span class="n">application</span><span class="p">)</span>
+<span class="nd">@SetInicjator</span><span class="p">(</span><span class="s2">&quot;settings&quot;</span><span class="p">,</span> <span class="n">ContextInicjator</span><span class="p">(</span><span class="s2">&quot;settings&quot;</span><span class="p">))</span>
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">fun</span><span class="p">(</span><span class="n">something</span><span class="p">,</span> <span class="n">settings</span><span class="p">):</span>
     <span class="nb">print</span><span class="p">(</span><span class="n">something</span><span class="p">,</span> <span class="n">settings</span><span class="p">)</span>
 
 
@@ -246,31 +251,31 @@ ApplicationInitializer decorator.</p>
 plugins should be responsible for all the features (like settings plugin). So the
 only thing you need to do is inherit from <code class="docutils literal notranslate"><span class="pre">qq.Plugin</span></code>. This class should be self
 explantory:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span>
 
-<span class="kn">from</span> <span class="nn">qq.context</span> <span class="kn">import</span> <span class="n">Context</span>
-<span class="kn">from</span> <span class="nn">qq.types</span> <span class="kn">import</span> <span class="n">Application</span>
-<span class="kn">from</span> <span class="nn">qq.types</span> <span class="kn">import</span> <span class="n">Plugin</span> <span class="k">as</span> <span class="n">PluginType</span>
-<span class="kn">from</span> <span class="nn">qq.types</span> <span class="kn">import</span> <span class="n">PluginKey</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qq.context</span><span class="w"> </span><span class="kn">import</span> <span class="n">Context</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qq.types</span><span class="w"> </span><span class="kn">import</span> <span class="n">Application</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qq.types</span><span class="w"> </span><span class="kn">import</span> <span class="n">Plugin</span> <span class="k">as</span> <span class="n">PluginType</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qq.types</span><span class="w"> </span><span class="kn">import</span> <span class="n">PluginKey</span>
 
 
-<span class="k">class</span> <span class="nc">Plugin</span><span class="p">(</span><span class="n">PluginType</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">Plugin</span><span class="p">(</span><span class="n">PluginType</span><span class="p">):</span>
     <span class="n">key</span><span class="p">:</span> <span class="n">PluginKey</span> <span class="o">=</span> <span class="kc">None</span>
 
-    <span class="k">def</span> <span class="nf">init</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="n">PluginKey</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">init</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="n">PluginKey</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Initialize the plugin during creation.</span>
 <span class="sd">        key - key which is used in the Application.plugins dict for this plugin.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">key</span> <span class="o">=</span> <span class="n">key</span>
 
-    <span class="k">def</span> <span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">application</span><span class="p">:</span> <span class="n">Application</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">application</span><span class="p">:</span> <span class="n">Application</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        This method will be called at the start of the Application. It will be</span>
 <span class="sd">        called only once and the result will be set in the Application.globals.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">enter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="n">Context</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">enter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="n">Context</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        This method will be called when the Application will be used as context</span>
 <span class="sd">        manager, but only when the plugin will be called. This is the enter phase.</span>
@@ -278,7 +283,7 @@ explantory:</p>
 <span class="sd">        that dict.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">exit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="n">Context</span><span class="p">,</span> <span class="n">exc_type</span><span class="p">,</span> <span class="n">exc_value</span><span class="p">,</span> <span class="n">traceback</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">exit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="n">Context</span><span class="p">,</span> <span class="n">exc_type</span><span class="p">,</span> <span class="n">exc_value</span><span class="p">,</span> <span class="n">traceback</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        This method will be called when the Application will be used as context</span>
 <span class="sd">        manager. This is the exit phase.</span>

@@ -70,7 +70,7 @@ switchable. Example for above start points:
 
     def tests():
         settings = default()
-        settings["tests"] = True is True
+        settings["tests"] = True
 
 Using Context
 -------------
@@ -120,7 +120,8 @@ ApplicationInitializer decorator.
     from qq import Application
     from qq import SimpleInjector
     from qq.plugins import SettingsPlugin
-    from qq.injectors import ArgsInjector
+    from qq.injectors import SetApplication
+    from qq.injectors import SetInicjator
     from qq.injectors import ContextInicjator
 
 
@@ -132,7 +133,8 @@ ApplicationInitializer decorator.
     application = MyApplication()
 
 
-    @ArgsInjector(application, configuration=dict(settings=ContextInicjator("settings")))
+    @SetApplication(application)
+    @SetInicjator("settings", ContextInicjator("settings"))
     def fun(something, settings):
         print(something, settings)
 
@@ -167,7 +169,8 @@ If the method is a coroutine, you don't need to do nothing. It will work the sam
     application = MyApplication()
 
 
-    @ArgsInjector(application, configuration=dict(settings=ContextInicjator("settings")))
+    @SetApplication(application)
+    @SetInicjator("settings", ContextInicjator("settings"))
     async def fun(something, settings):
         print(something, settings)
 

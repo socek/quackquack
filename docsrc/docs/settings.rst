@@ -175,29 +175,6 @@ Implementing custom plugins with settings is also simple. You need to inherit fr
            assert self.get_my_settings(context) == {"options": "something"}
 
 
-Implementing paths settings
----------------------------
-
-If you wish to configure paths to settings, a simple dict can not be enough.
-Our proposition is to have prefixed dict, in which you specify prefix once,
-and all paths will be prefixed.
-
-Example:
-
-.. code-block:: python
-
-   from qq.plugins.settings import PrefixedStringsDict
-
-   def default():
-       paths = PrefixedStringsDict('/code/')
-       paths['app.ini'] = 'app.ini'
-       assert paths['app.ini'] == '/code/app.ini'
-
-       settings = {
-           'paths': paths,
-       }
-       return settings
-
 Settings Injector
 -----------------
 
@@ -207,10 +184,12 @@ use the SettingsInjector, like this:
 
 .. code-block:: python
 
-    from qq.injectors import ArgsInjector
+    from qq.injectors import SetApplication
+    from qq.injectors import SetInicjator
     from qq.plugins.settings import SettingsInicjator
 
-    @ArgsInjector(app, {"jwt_settings": SettingsInjector("jwt")})
+    @SetApplication(app)
+    @SetInicjator("jwt_settings", SettingsInjector("jwt"))
     def somemethod(argument, jwt_settings):
         ...
 
@@ -219,10 +198,12 @@ But, you can always get the all settings if you want:
 
 .. code-block:: python
 
-    from qq.injectors import ArgsInjector
+    from qq.injectors import SetApplication
+    from qq.injectors import SetInicjator
     from qq.injectors import ContextInicjator
 
-    @ArgsInjector(app, {"all_settings": ContextInicjator("settings")})
+    @SetApplication(app)
+    @SetInicjator("all_settings", ContextInicjator("settings"))
     def somemethod(argument, all_settings):
         ...
 

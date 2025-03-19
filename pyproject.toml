@@ -25,6 +25,8 @@ icecream = { version = "^2.1.1" }
 pytest_async = "^0.1.1"
 pytest-asyncio = "^0.17.2"
 pytest = {version = "^7.0.1", extras = ["toml"]}
+recommonmark = "^0.7.1"
+sphinx-rtd-theme = "^3.0.2"
 
 [tool.poetry.extras]
 alembic = ["alembic"]

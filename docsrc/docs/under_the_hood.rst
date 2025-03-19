@@ -123,8 +123,8 @@ is used to close connections or handle exceptions. Please, remember that `start`
 is run in order of creating in `create_plugins`, but `exit` plugins is run in
 reversed order.
 
-Injectors and ApplicationInitializer
-====================================
+Injectors
+=========
 
 This feature is designed as a dependency injection. Injector is an object that
 gets a context and return something. This function needs to be decorated with
@@ -141,21 +141,23 @@ Example:
             return self.context[self.key]
 
 In order to use the `injector`, it needs to be provided as a default var in a
-function. Also, the `ApplicationInitializer` needs to be used for that function.
-The `ApplicationInitializer` is responsible for "starting" the injectors.
+function. Also, the `SetInicjator` needs to be used for that function.
+The `SetInicjator` is responsible for "starting" the injectors.
 
 Example:
 
 .. code-block:: python
 
-    from qq.injectors import ArgsInjector
+    from qq.injectors import SetApplication
+    from qq.injectors import SetInicjator
 
-    @ArgsInjector(application, {"settings": SimpleInicjator("settings")})
+    @SetApplication(application)
+    @SetInicjator("settings", SimpleInicjator("settings"))
     def fun(settings):
         ...
 
 
-The `ApplicationInitializer` decorator is used to initialize the injectors with
+The `SetInicjator` decorator is used to initialize the injectors with
 provided application. There is no need of using `Application` as a context manager
 here,
 the function will be used under a with statement. For example, above code can be
@@ -181,7 +183,8 @@ Example:
 
 .. code-block:: python
 
-    @ArgsInjector(application, {"settings": SimpleInicjator("settings")})
+    @SetApplication(application)
+    @SetInicjator("settings", SimpleInicjator("settings"))
     def fun(settings):
         return settings
 
@@ -190,7 +193,7 @@ Example:
         assert fun(mock) == mock
 
 
-The `ApplicationInitializer` function can overwrite the application var, so you
+The `SetInicjator` function can overwrite the application var, so you
 can create a function with injectors in a library, but add the application var
 later.
 
@@ -198,15 +201,15 @@ Example:
 
 .. code-block:: python
 
-    from qq import ApplicationInitializer
+    from qq import SetInicjator
 
-    @ArgsInjector(None, {"settings": SimpleInicjator("settings")})
+    @SetInicjator("settings", SimpleInicjator("settings"))
     def fun(settings):
         ...
 
-    fun2 = ArgsInjector(application)(fun)
+    fun2 = SetApplication(application)(fun)
 
-The `ApplicationInitializer` will overwrite the `application` value in all injectors.
+The `SetInicjator` will overwrite the `application` value in all injectors.
 If those injectors would have it's own injectors in the arguments, those injectors
 will have the new `application` value as well.
 

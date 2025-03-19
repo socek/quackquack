@@ -39,11 +39,12 @@ injection) in function's arguments.
 .. code-block:: python
 
     from qq import Application
-    from qq import ApplicationInitializer
     from qq import Context
     from qq import SimpleInjector
     from qq.plugins import SettingsPlugin
     from qq.plugins.types import Settings
+    from qq.injectors import SetApplication
+    from qq.injectors import SetInjector
 
 
     class MyApplication(Application):
@@ -57,11 +58,12 @@ injection) in function's arguments.
     with Context(application) as ctx:
         print(ctx["settings"])
 
-    app = ApplicationInitializer(application)
+    app = SetApplication(application)
 
 
     @app
-    def samplefun(settings: Settings = SimpleInjector("settings")):
+    @SetInjector("settings", SimpleInjector("settings"))
+    def samplefun(settings: Settings):
         print(settings)
 
 

@@ -1,22 +1,21 @@
+
+
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="en">
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>1. About &mdash; Quack Quack 1.0.4 documentation</title>
-      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
-  <!--[if lt IE 9]>
-    <script src="../_static/js/html5shiv.min.js"></script>
-  <![endif]-->
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+
   
-        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
-        <script src="../_static/jquery.js"></script>
-        <script src="../_static/underscore.js"></script>
-        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script src="../_static/doctools.js"></script>
-        <script src="../_static/sphinx_highlight.js"></script>
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=535dfbd7"></script>
+      <script src="../_static/doctools.js?v=888ff710"></script>
+      <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -29,11 +28,15 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="../index.html" class="icon icon-home"> Quack Quack
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Quack Quack
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -69,7 +72,7 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../index.html" class="icon icon-home"></a></li>
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
       <li class="breadcrumb-item active"><span class="section-number">1. </span>About</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../_sources/docs/about.rst.txt" rel="nofollow"> View page source</a>
@@ -106,34 +109,34 @@ rest.</p>
 <code class="docutils literal notranslate"><span class="pre">qq.Application</span></code>) in which you need to add plugins. After configuring, you
 need to “start” (initialize)
 the application. After that you can use the application as context manager.
-Also, you can make simple decorator, so you can use injectors (dependency
+Also, you can make simple decorator, so you can use inicjators (dependency
 injection) in function’s arguments.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">qq</span> <span class="kn">import</span> <span class="n">Application</span>
-<span class="kn">from</span> <span class="nn">qq</span> <span class="kn">import</span> <span class="n">ApplicationInitializer</span>
-<span class="kn">from</span> <span class="nn">qq</span> <span class="kn">import</span> <span class="n">Context</span>
-<span class="kn">from</span> <span class="nn">qq</span> <span class="kn">import</span> <span class="n">SimpleInjector</span>
-<span class="kn">from</span> <span class="nn">qq.plugins</span> <span class="kn">import</span> <span class="n">SettingsPlugin</span>
-<span class="kn">from</span> <span class="nn">qq.plugins.types</span> <span class="kn">import</span> <span class="n">Settings</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">qq</span><span class="w"> </span><span class="kn">import</span> <span class="n">Application</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qq</span><span class="w"> </span><span class="kn">import</span> <span class="n">Context</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qq.injectors</span><span class="w"> </span><span class="kn">import</span> <span class="n">SetApplication</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qq.injectors</span><span class="w"> </span><span class="kn">import</span> <span class="n">SetInicjator</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qq.injectors</span><span class="w"> </span><span class="kn">import</span> <span class="n">ContextInicjator</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qq.plugins</span><span class="w"> </span><span class="kn">import</span> <span class="n">SettingsPlugin</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qq.plugins.types</span><span class="w"> </span><span class="kn">import</span> <span class="n">Settings</span>
 
 
-<span class="k">class</span> <span class="nc">MyApplication</span><span class="p">(</span><span class="n">Application</span><span class="p">):</span>
-    <span class="k">def</span> <span class="nf">create_plugins</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">plugins</span><span class="p">[</span><span class="s2">&quot;settings&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">SettingsPlugin</span><span class="p">(</span><span class="s2">&quot;settings&quot;</span><span class="p">)</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">MyApplication</span><span class="p">(</span><span class="n">Application</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">create_plugins</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">plugins</span><span class="p">(</span><span class="n">SettingsPlugin</span><span class="p">(</span><span class="s2">&quot;settings&quot;</span><span class="p">))</span>
 
 
 <span class="n">application</span> <span class="o">=</span> <span class="n">MyApplication</span><span class="p">()</span>
-<span class="n">application</span><span class="o">.</span><span class="n">start</span><span class="p">(</span><span class="s2">&quot;application&quot;</span><span class="p">)</span>
+
+<span class="nd">@SetInicjator</span><span class="p">(</span><span class="s2">&quot;settings&quot;</span><span class="p">,</span> <span class="n">ContextInicjator</span><span class="p">(</span><span class="s2">&quot;settings&quot;</span><span class="p">))</span>
+<span class="nd">@SetApplication</span><span class="p">(</span><span class="n">application</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">samplefun</span><span class="p">(</span><span class="n">settings</span><span class="p">:</span> <span class="n">Settings</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">settings</span><span class="p">)</span>
+
+
+<span class="n">application</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
 
 <span class="k">with</span> <span class="n">Context</span><span class="p">(</span><span class="n">application</span><span class="p">)</span> <span class="k">as</span> <span class="n">ctx</span><span class="p">:</span>
     <span class="nb">print</span><span class="p">(</span><span class="n">ctx</span><span class="p">[</span><span class="s2">&quot;settings&quot;</span><span class="p">])</span>
-
-<span class="n">app</span> <span class="o">=</span> <span class="n">ApplicationInitializer</span><span class="p">(</span><span class="n">application</span><span class="p">)</span>
-
-
-<span class="nd">@app</span>
-<span class="k">def</span> <span class="nf">samplefun</span><span class="p">(</span><span class="n">settings</span><span class="p">:</span> <span class="n">Settings</span> <span class="o">=</span> <span class="n">SimpleInjector</span><span class="p">(</span><span class="s2">&quot;settings&quot;</span><span class="p">)):</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">settings</span><span class="p">)</span>
-
 
 <span class="n">samplefun</span><span class="p">()</span>
 <span class="n">samplefun</span><span class="p">({</span><span class="s2">&quot;info&quot;</span><span class="p">:</span> <span class="s2">&quot;fake settings&quot;</span><span class="p">})</span>  <span class="c1"># dependency injection !!</span>

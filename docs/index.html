@@ -1,22 +1,21 @@
+
+
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="en">
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Quack Quack &mdash; Quack Quack 1.0.4 documentation</title>
-      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  <!--[if lt IE 9]>
-    <script src="_static/js/html5shiv.min.js"></script>
-  <![endif]-->
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+
   
-        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-        <script src="_static/jquery.js"></script>
-        <script src="_static/underscore.js"></script>
-        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script src="_static/doctools.js"></script>
-        <script src="_static/sphinx_highlight.js"></script>
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=535dfbd7"></script>
+      <script src="_static/doctools.js?v=888ff710"></script>
+      <script src="_static/sphinx_highlight.js?v=4825356b"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -28,11 +27,15 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="#" class="icon icon-home"> Quack Quack
+
+          
+          
+          <a href="#" class="icon icon-home">
+            Quack Quack
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -63,7 +66,7 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="#" class="icon icon-home"></a></li>
+      <li><a href="#" class="icon icon-home" aria-label="Home"></a></li>
       <li class="breadcrumb-item active">Quack Quack</li>
       <li class="wy-breadcrumbs-aside">
             <a href="_sources/index.rst.txt" rel="nofollow"> View page source</a>
@@ -76,8 +79,8 @@
              
   <section id="quack-quack">
 <h1>Quack Quack<a class="headerlink" href="#quack-quack" title="Permalink to this heading"></a></h1>
-<p>If it quacks like a quack, then it’s a Quack Quack.</p>
-<p>Version: 1.2.0</p>
+<p>A simple application initializator.</p>
+<p>Version: 1.3.0</p>
 <div class="toctree-wrapper compound">
 <p class="caption" role="heading"><span class="caption-text">Table of Contents</span></p>
 <ul>
@@ -107,7 +110,7 @@
 <li class="toctree-l3"><a class="reference internal" href="docs/under_the_hood.html#exiting-context">3.2.3. Exiting context</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="docs/under_the_hood.html#injectors-and-applicationinitializer">3.3. Injectors and ApplicationInitializer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="docs/under_the_hood.html#injectors">3.3. Injectors</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="docs/plugins.html">4. Plugins</a><ul>
@@ -115,8 +118,7 @@
 <li class="toctree-l3"><a class="reference internal" href="docs/settings.html#history-and-concept">4.1.1. History and concept</a></li>
 <li class="toctree-l3"><a class="reference internal" href="docs/settings.html#implementing-settings">4.1.2. Implementing settings</a></li>
 <li class="toctree-l3"><a class="reference internal" href="docs/settings.html#other-plugins-that-uses-settings">4.1.3. Other plugins that uses settings</a></li>
-<li class="toctree-l3"><a class="reference internal" href="docs/settings.html#implementing-paths-settings">4.1.4. Implementing paths settings</a></li>
-<li class="toctree-l3"><a class="reference internal" href="docs/settings.html#settings-injector">4.1.5. Settings Injector</a></li>
+<li class="toctree-l3"><a class="reference internal" href="docs/settings.html#settings-injector">4.1.4. Settings Injector</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="docs/logging.html">4.2. Logging</a></li>
@@ -128,7 +130,7 @@
 <li class="toctree-l3"><a class="reference internal" href="docs/sqlalchemy.html#settings-description">4.4.4. Settings description</a></li>
 <li class="toctree-l3"><a class="reference internal" href="docs/sqlalchemy.html#defining-sql-table">4.4.5. Defining sql table</a></li>
 <li class="toctree-l3"><a class="reference internal" href="docs/sqlalchemy.html#using-in-the-context">4.4.6. Using in the context</a></li>
-<li class="toctree-l3"><a class="reference internal" href="docs/sqlalchemy.html#injectors">4.4.7. Injectors</a></li>
+<li class="toctree-l3"><a class="reference internal" href="docs/sqlalchemy.html#inicjators">4.4.7. Inicjators</a></li>
 <li class="toctree-l3"><a class="reference internal" href="docs/sqlalchemy.html#transactions-and-commiting">4.4.8. Transactions and commiting</a></li>
 <li class="toctree-l3"><a class="reference internal" href="docs/sqlalchemy.html#integrate-with-alembic">4.4.9. Integrate with Alembic</a></li>
 </ul>
@@ -161,20 +163,22 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="docs/CHANGELOG.html">7. Changelog</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="docs/CHANGELOG.html#version-1-2-0">7.1. Version: 1.2.0</a></li>
-<li class="toctree-l2"><a class="reference internal" href="docs/CHANGELOG.html#version-1-1-1">7.2. Version: 1.1.1</a></li>
-<li class="toctree-l2"><a class="reference internal" href="docs/CHANGELOG.html#version-1-1-0">7.3. Version: 1.1.0</a></li>
-<li class="toctree-l2"><a class="reference internal" href="docs/CHANGELOG.html#version-1-0-5">7.4. Version: 1.0.5</a></li>
-<li class="toctree-l2"><a class="reference internal" href="docs/CHANGELOG.html#version-1-0-4">7.5. Version: 1.0.4</a></li>
-<li class="toctree-l2"><a class="reference internal" href="docs/CHANGELOG.html#version-1-0-3">7.6. Version: 1.0.3</a></li>
-<li class="toctree-l2"><a class="reference internal" href="docs/CHANGELOG.html#version-1-0-2">7.7. Version: 1.0.2</a></li>
-<li class="toctree-l2"><a class="reference internal" href="docs/CHANGELOG.html#version-1-0-1">7.8. Version: 1.0.1</a></li>
-<li class="toctree-l2"><a class="reference internal" href="docs/CHANGELOG.html#version-1-0-0">7.9. Version: 1.0.0</a></li>
-<li class="toctree-l2"><a class="reference internal" href="docs/CHANGELOG.html#version-0-5-0">7.10. Version: 0.5.0</a></li>
-<li class="toctree-l2"><a class="reference internal" href="docs/CHANGELOG.html#version-0-4-0-split-context-manager-and-decorator-for-configurator">7.11. Version: 0.4.0 - Split Context Manager and Decorator for Configurator</a></li>
-<li class="toctree-l2"><a class="reference internal" href="docs/CHANGELOG.html#version-0-3-0-plugins-and-documentation">7.12. Version: 0.3.0 - Plugins and documentation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="docs/CHANGELOG.html#version-0-2-0-fragment-context">7.13. Version: 0.2.0 - Fragment Context</a></li>
-<li class="toctree-l2"><a class="reference internal" href="docs/CHANGELOG.html#version-0-1-0-first-release">7.14. Version: 0.1.0 - First Release</a></li>
+<li class="toctree-l2"><a class="reference internal" href="docs/CHANGELOG.html#version-1-3-0">7.1. Version: 1.3.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="docs/CHANGELOG.html#version-1-2-1">7.2. Version: 1.2.1</a></li>
+<li class="toctree-l2"><a class="reference internal" href="docs/CHANGELOG.html#version-1-2-0">7.3. Version: 1.2.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="docs/CHANGELOG.html#version-1-1-1">7.4. Version: 1.1.1</a></li>
+<li class="toctree-l2"><a class="reference internal" href="docs/CHANGELOG.html#version-1-1-0">7.5. Version: 1.1.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="docs/CHANGELOG.html#version-1-0-5">7.6. Version: 1.0.5</a></li>
+<li class="toctree-l2"><a class="reference internal" href="docs/CHANGELOG.html#version-1-0-4">7.7. Version: 1.0.4</a></li>
+<li class="toctree-l2"><a class="reference internal" href="docs/CHANGELOG.html#version-1-0-3">7.8. Version: 1.0.3</a></li>
+<li class="toctree-l2"><a class="reference internal" href="docs/CHANGELOG.html#version-1-0-2">7.9. Version: 1.0.2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="docs/CHANGELOG.html#version-1-0-1">7.10. Version: 1.0.1</a></li>
+<li class="toctree-l2"><a class="reference internal" href="docs/CHANGELOG.html#version-1-0-0">7.11. Version: 1.0.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="docs/CHANGELOG.html#version-0-5-0">7.12. Version: 0.5.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="docs/CHANGELOG.html#version-0-4-0-split-context-manager-and-decorator-for-configurator">7.13. Version: 0.4.0 - Split Context Manager and Decorator for Configurator</a></li>
+<li class="toctree-l2"><a class="reference internal" href="docs/CHANGELOG.html#version-0-3-0-plugins-and-documentation">7.14. Version: 0.3.0 - Plugins and documentation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="docs/CHANGELOG.html#version-0-2-0-fragment-context">7.15. Version: 0.2.0 - Fragment Context</a></li>
+<li class="toctree-l2"><a class="reference internal" href="docs/CHANGELOG.html#version-0-1-0-first-release">7.16. Version: 0.1.0 - First Release</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="docs/contributors.html">8. Contributors</a></li>

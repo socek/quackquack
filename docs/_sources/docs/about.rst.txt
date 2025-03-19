@@ -30,40 +30,42 @@ To use Quack Quack you need to create the application class (inherited from
 ``qq.Application``\ ) in which you need to add plugins. After configuring, you
 need to "start" (initialize)
 the application. After that you can use the application as context manager.
-Also, you can make simple decorator, so you can use injectors (dependency
+Also, you can make simple decorator, so you can use inicjators (dependency
 injection) in function's arguments.
 
 .. code-block:: python
 
     from qq import Application
-    from qq import ApplicationInitializer
     from qq import Context
-    from qq import SimpleInjector
+    from qq.injectors import SetApplication
+    from qq.injectors import SetInicjator
+    from qq.injectors import ContextInicjator
     from qq.plugins import SettingsPlugin
     from qq.plugins.types import Settings
 
 
     class MyApplication(Application):
         def create_plugins(self):
-            self.plugins["settings"] = SettingsPlugin("settings")
+            self.plugins(SettingsPlugin("settings"))
 
 
     application = MyApplication()
-    application.start("application")
+
+    @SetInicjator("settings", ContextInicjator("settings"))
+    @SetApplication(application)
+    def samplefun(settings: Settings):
+        print(settings)
+
+
+    application.start()
 
     with Context(application) as ctx:
         print(ctx["settings"])
 
-    app = ApplicationInitializer(application)
-
-
-    @app
-    def samplefun(settings: Settings = SimpleInjector("settings")):
-        print(settings)
-
-
     samplefun()
     samplefun({"info": "fake settings"})  # dependency injection !!
+
+
 
 
 ``context["settings"]`` in above example, is a variable made by the SettingsPlugin.

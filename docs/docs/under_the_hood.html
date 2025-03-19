@@ -1,22 +1,21 @@
+
+
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="en">
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>3. Models details &mdash; Quack Quack 1.0.4 documentation</title>
-      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
-  <!--[if lt IE 9]>
-    <script src="../_static/js/html5shiv.min.js"></script>
-  <![endif]-->
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+
   
-        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
-        <script src="../_static/jquery.js"></script>
-        <script src="../_static/underscore.js"></script>
-        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script src="../_static/doctools.js"></script>
-        <script src="../_static/sphinx_highlight.js"></script>
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=535dfbd7"></script>
+      <script src="../_static/doctools.js?v=888ff710"></script>
+      <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -29,11 +28,15 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="../index.html" class="icon icon-home"> Quack Quack
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Quack Quack
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -55,7 +58,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#exiting-context">3.2.3. Exiting context</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#injectors-and-applicationinitializer">3.3. Injectors and ApplicationInitializer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#injectors">3.3. Injectors</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="plugins.html">4. Plugins</a></li>
@@ -78,7 +81,7 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../index.html" class="icon icon-home"></a></li>
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
       <li class="breadcrumb-item active"><span class="section-number">3. </span>Models details</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../_sources/docs/under_the_hood.rst.txt" rel="nofollow"> View page source</a>
@@ -109,9 +112,9 @@ already created plugin.</p>
 there will be only one instance of plugin. Those plugins needs to be inserted
 by calling the <cite>self.plugins</cite>. Other plugins can have more instances (for example
 if you need to have 2 databases )</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">MyApplication</span><span class="p">(</span><span class="n">Application</span><span class="p">):</span>
-    <span class="k">def</span> <span class="nf">create_plugins</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">plugins</span><span class="p">[</span><span class="s2">&quot;settings&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">SettingsPlugin</span><span class="p">()</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">MyApplication</span><span class="p">(</span><span class="n">Application</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">create_plugins</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">plugins</span><span class="p">(</span><span class="n">SettingsPlugin</span><span class="p">(</span><span class="s1">&#39;path.to.settings&#39;</span><span class="p">))</span>
 </pre></div>
 </div>
 <p>Plugins can return data in couple of places. Plugin’s key is used to gather those
@@ -140,10 +143,10 @@ value will be used in <a class="reference internal" href="settings.html"><span c
 function, so the settings for normal run and tests run will be different.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">app</span> <span class="o">=</span> <span class="n">MyApplication</span><span class="p">()</span>
 
-<span class="k">def</span> <span class="nf">normal_run</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">normal_run</span><span class="p">():</span>
     <span class="n">app</span><span class="o">.</span><span class="n">start</span><span class="p">(</span><span class="s2">&quot;normal_run&quot;</span><span class="p">)</span>
 
-<span class="k">def</span> <span class="nf">tests_run</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">tests_run</span><span class="p">():</span>
     <span class="n">app</span><span class="o">.</span><span class="n">start</span><span class="p">(</span><span class="s2">&quot;tests_run&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -161,7 +164,7 @@ in the <cite>Application.extra</cite> dict for plugins to use.</p>
 <h2><span class="section-number">3.2. </span>Plugin<a class="headerlink" href="#plugin" title="Permalink to this heading"></a></h2>
 <section id="starting">
 <h3><span class="section-number">3.2.1. </span>Starting<a class="headerlink" href="#starting" title="Permalink to this heading"></a></h3>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">application</span><span class="p">:</span> <span class="n">Application</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">application</span><span class="p">:</span> <span class="n">Application</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
 </pre></div>
 </div>
 <p>This is the place, when the plugins are started (initialized). If there is a
@@ -171,7 +174,7 @@ be put into <cite>Application.globals[key]</cite>.</p>
 </section>
 <section id="entering-context">
 <h3><span class="section-number">3.2.2. </span>Entering context<a class="headerlink" href="#entering-context" title="Permalink to this heading"></a></h3>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">enter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="n">Context</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">enter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="n">Context</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
 </pre></div>
 </div>
 <p>This place will be run every time the application will be used as a context manager.
@@ -180,7 +183,7 @@ of the <cite>enter</cite> method will be put into <cite>Context[key]</cite>.</p>
 </section>
 <section id="exiting-context">
 <h3><span class="section-number">3.2.3. </span>Exiting context<a class="headerlink" href="#exiting-context" title="Permalink to this heading"></a></h3>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">exit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="n">Context</span><span class="p">,</span> <span class="n">exc_type</span><span class="p">,</span> <span class="n">exc_value</span><span class="p">,</span> <span class="n">traceback</span><span class="p">):</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">exit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">:</span> <span class="n">Context</span><span class="p">,</span> <span class="n">exc_type</span><span class="p">,</span> <span class="n">exc_value</span><span class="p">,</span> <span class="n">traceback</span><span class="p">):</span>
 </pre></div>
 </div>
 <p>As any other context manager, Plugin’s class have also the <cite>exit</cite> method. This
@@ -189,38 +192,40 @@ is run in order of creating in <cite>create_plugins</cite>, but <cite>exit</cite
 reversed order.</p>
 </section>
 </section>
-<section id="injectors-and-applicationinitializer">
-<h2><span class="section-number">3.3. </span>Injectors and ApplicationInitializer<a class="headerlink" href="#injectors-and-applicationinitializer" title="Permalink to this heading"></a></h2>
+<section id="injectors">
+<h2><span class="section-number">3.3. </span>Injectors<a class="headerlink" href="#injectors" title="Permalink to this heading"></a></h2>
 <p>This feature is designed as a dependency injection. Injector is an object that
 gets a context and return something. This function needs to be decorated with
 <cite>Injector</cite> function.</p>
 <p>Example:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">qq</span> <span class="kn">import</span> <span class="n">Injector</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">qq.injectors</span><span class="w"> </span><span class="kn">import</span> <span class="n">ContextInicjator</span>
 
-<span class="nd">@Injector</span>
-<span class="k">def</span> <span class="nf">SimpleInjector</span><span class="p">(</span><span class="n">context</span><span class="p">:</span> <span class="n">Context</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
-    <span class="k">return</span> <span class="n">context</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">SimpleInicjator</span><span class="p">(</span><span class="n">ContextInicjator</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">key</span><span class="p">]</span>
 </pre></div>
 </div>
 <p>In order to use the <cite>injector</cite>, it needs to be provided as a default var in a
-function. Also, the <cite>ApplicationInitializer</cite> needs to be used for that function.
-The <cite>ApplicationInitializer</cite> is responsible for “starting” the injectors.</p>
+function. Also, the <cite>SetInicjator</cite> needs to be used for that function.
+The <cite>SetInicjator</cite> is responsible for “starting” the injectors.</p>
 <p>Example:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">qq</span> <span class="kn">import</span> <span class="n">ApplicationInitializer</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">qq.injectors</span><span class="w"> </span><span class="kn">import</span> <span class="n">SetApplication</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qq.injectors</span><span class="w"> </span><span class="kn">import</span> <span class="n">SetInicjator</span>
 
-<span class="nd">@ApplicationInitializer</span><span class="p">(</span><span class="n">application</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">fun</span><span class="p">(</span><span class="n">settings</span> <span class="o">=</span> <span class="n">SimpleInjector</span><span class="p">(</span><span class="s2">&quot;settings&quot;</span><span class="p">)):</span>
+<span class="nd">@SetApplication</span><span class="p">(</span><span class="n">application</span><span class="p">)</span>
+<span class="nd">@SetInicjator</span><span class="p">(</span><span class="s2">&quot;settings&quot;</span><span class="p">,</span> <span class="n">SimpleInicjator</span><span class="p">(</span><span class="s2">&quot;settings&quot;</span><span class="p">))</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">fun</span><span class="p">(</span><span class="n">settings</span><span class="p">):</span>
     <span class="o">...</span>
 </pre></div>
 </div>
-<p>The <cite>ApplicationInitializer</cite> decorator is used to initialize the injectors with
+<p>The <cite>SetInicjator</cite> decorator is used to initialize the injectors with
 provided application. There is no need of using <cite>Application</cite> as a context manager
 here,
 the function will be used under a with statement. For example, above code can be
 Implemented like this:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">qq.context</span> <span class="kn">import</span> <span class="n">Context</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">qq.context</span><span class="w"> </span><span class="kn">import</span> <span class="n">Context</span>
 
-<span class="k">def</span> <span class="nf">fun</span><span class="p">(</span><span class="n">settings</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">fun</span><span class="p">(</span><span class="n">settings</span><span class="p">):</span>
     <span class="o">...</span>
 
 <span class="k">with</span> <span class="n">Context</span><span class="p">(</span><span class="n">application</span><span class="p">)</span> <span class="k">as</span> <span class="n">context</span><span class="p">:</span>
@@ -233,29 +238,30 @@ everywhere or use the <cite>with</cite> statement. So it mitigate the boilerplat
 you can pass arguments instead of default values in functions. This dependency
 injection is very helpful in implementation of tests.</p>
 <p>Example:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@ApplicationInitializer</span><span class="p">(</span><span class="n">application</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">fun</span><span class="p">(</span><span class="n">settings</span> <span class="o">=</span> <span class="n">SimpleInjector</span><span class="p">(</span><span class="s2">&quot;settings&quot;</span><span class="p">)):</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@SetApplication</span><span class="p">(</span><span class="n">application</span><span class="p">)</span>
+<span class="nd">@SetInicjator</span><span class="p">(</span><span class="s2">&quot;settings&quot;</span><span class="p">,</span> <span class="n">SimpleInicjator</span><span class="p">(</span><span class="s2">&quot;settings&quot;</span><span class="p">))</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">fun</span><span class="p">(</span><span class="n">settings</span><span class="p">):</span>
     <span class="k">return</span> <span class="n">settings</span>
 
-<span class="k">def</span> <span class="nf">test_flow</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">test_flow</span><span class="p">():</span>
     <span class="n">mock</span> <span class="o">=</span> <span class="n">MagicMock</span><span class="p">()</span>
     <span class="k">assert</span> <span class="n">fun</span><span class="p">(</span><span class="n">mock</span><span class="p">)</span> <span class="o">==</span> <span class="n">mock</span>
 </pre></div>
 </div>
-<p>The <cite>ApplicationInitializer</cite> function can overwrite the application var, so you
+<p>The <cite>SetInicjator</cite> function can overwrite the application var, so you
 can create a function with injectors in a library, but add the application var
 later.</p>
 <p>Example:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">qq</span> <span class="kn">import</span> <span class="n">ApplicationInitializer</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">qq</span><span class="w"> </span><span class="kn">import</span> <span class="n">SetInicjator</span>
 
-<span class="nd">@ApplicationInitializer</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">fun</span><span class="p">(</span><span class="n">settings</span> <span class="o">=</span> <span class="n">SimpleInjector</span><span class="p">(</span><span class="s2">&quot;settings&quot;</span><span class="p">)):</span>
+<span class="nd">@SetInicjator</span><span class="p">(</span><span class="s2">&quot;settings&quot;</span><span class="p">,</span> <span class="n">SimpleInicjator</span><span class="p">(</span><span class="s2">&quot;settings&quot;</span><span class="p">))</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">fun</span><span class="p">(</span><span class="n">settings</span><span class="p">):</span>
     <span class="o">...</span>
 
-<span class="n">fun2</span> <span class="o">=</span> <span class="n">ApplicationInitializer</span><span class="p">(</span><span class="n">application</span><span class="p">)(</span><span class="n">fun</span><span class="p">)</span>
+<span class="n">fun2</span> <span class="o">=</span> <span class="n">SetApplication</span><span class="p">(</span><span class="n">application</span><span class="p">)(</span><span class="n">fun</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>The <cite>ApplicationInitializer</cite> will overwrite the <cite>application</cite> value in all injectors.
+<p>The <cite>SetInicjator</cite> will overwrite the <cite>application</cite> value in all injectors.
 If those injectors would have it’s own injectors in the arguments, those injectors
 will have the new <cite>application</cite> value as well.</p>
 </section>

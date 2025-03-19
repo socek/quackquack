@@ -37,7 +37,8 @@ injection) in function's arguments.
 
     from qq import Application
     from qq import Context
-    from qq.injectors import ArgsInjector
+    from qq.injectors import SetApplication
+    from qq.injectors import SetInicjator
     from qq.injectors import ContextInicjator
     from qq.plugins import SettingsPlugin
     from qq.plugins.types import Settings
@@ -50,12 +51,8 @@ injection) in function's arguments.
 
     application = MyApplication()
 
-    @ArgsInjector(
-        configuration={
-            "settings": ContextInicjator("settings"),
-        }
-    )
-    @ArgsInjector(application)
+    @SetInicjator("settings", ContextInicjator("settings"))
+    @SetApplication(application)
     def samplefun(settings: Settings):
         print(settings)
 

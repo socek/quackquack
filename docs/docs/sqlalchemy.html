@@ -1,22 +1,21 @@
+
+
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="en">
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>4.4. SQLAlchemy Plugin &mdash; Quack Quack 1.0.4 documentation</title>
-      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
-  <!--[if lt IE 9]>
-    <script src="../_static/js/html5shiv.min.js"></script>
-  <![endif]-->
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+
   
-        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
-        <script src="../_static/jquery.js"></script>
-        <script src="../_static/underscore.js"></script>
-        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script src="../_static/doctools.js"></script>
-        <script src="../_static/sphinx_highlight.js"></script>
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=535dfbd7"></script>
+      <script src="../_static/doctools.js?v=888ff710"></script>
+      <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -29,11 +28,15 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="../index.html" class="icon icon-home"> Quack Quack
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Quack Quack
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -55,7 +58,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#settings-description">4.4.4. Settings description</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#defining-sql-table">4.4.5. Defining sql table</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#using-in-the-context">4.4.6. Using in the context</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#injectors">4.4.7. Injectors</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#inicjators">4.4.7. Inicjators</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#transactions-and-commiting">4.4.8. Transactions and commiting</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#integrate-with-alembic">4.4.9. Integrate with Alembic</a></li>
 </ul>
@@ -82,7 +85,7 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../index.html" class="icon icon-home"></a></li>
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="plugins.html"><span class="section-number">4. </span>Plugins</a></li>
       <li class="breadcrumb-item active"><span class="section-number">4.4. </span>SQLAlchemy Plugin</li>
       <li class="wy-breadcrumbs-aside">
@@ -111,23 +114,23 @@ database session at context phase start and closing it at context phase end.</p>
 </section>
 <section id="example-implementation">
 <h2><span class="section-number">4.4.3. </span>Example implementation<a class="headerlink" href="#example-implementation" title="Permalink to this heading"></a></h2>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">qq</span> <span class="kn">import</span> <span class="n">Application</span>
-<span class="kn">from</span> <span class="nn">qq.plugins.settings</span> <span class="kn">import</span> <span class="n">SettingsPlugin</span>
-<span class="kn">from</span> <span class="nn">qq.plugins.sqlalchemy.plugin</span> <span class="kn">import</span> <span class="n">SqlAlchemyPlugin</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">qq</span><span class="w"> </span><span class="kn">import</span> <span class="n">Application</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qq.plugins.settings</span><span class="w"> </span><span class="kn">import</span> <span class="n">SettingsPlugin</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qq.plugins.sqlalchemy.plugin</span><span class="w"> </span><span class="kn">import</span> <span class="n">SqlAlchemyPlugin</span>
 
-<span class="k">class</span> <span class="nc">MyApplication</span><span class="p">(</span><span class="n">Application</span><span class="p">):</span>
-    <span class="k">def</span> <span class="nf">create_plugins</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">MyApplication</span><span class="p">(</span><span class="n">Application</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">create_plugins</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">plugins</span><span class="p">(</span><span class="n">SettingsPlugin</span><span class="p">(</span><span class="s2">&quot;myapp.application.settings&quot;</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">plugins</span><span class="p">[</span><span class="s2">&quot;database&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">SqlAlchemyPlugin</span><span class="p">()</span>
 </pre></div>
 </div>
 <p>Before you cane use this code, you need to make proper settings. Example:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">default</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Settings</span><span class="p">:</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">default</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Settings</span><span class="p">:</span>
     <span class="n">settings</span> <span class="o">=</span> <span class="n">Settings</span><span class="p">()</span>
     <span class="n">settings</span><span class="p">[</span><span class="s2">&quot;database&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">database</span><span class="p">()</span>
     <span class="k">return</span> <span class="n">settings</span>
 
-<span class="k">def</span> <span class="nf">database</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Settings</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">database</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Settings</span><span class="p">:</span>
     <span class="n">name</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">get_env</span><span class="p">(</span><span class="s2">&quot;DB_NAME&quot;</span><span class="p">)</span>
     <span class="n">user</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">get_env</span><span class="p">(</span><span class="s2">&quot;DB_USER&quot;</span><span class="p">)</span>
     <span class="n">password</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">get_env</span><span class="p">(</span><span class="s2">&quot;DB_PASSWORD&quot;</span><span class="p">)</span>
@@ -158,16 +161,16 @@ For more info visit <a class="reference external" href="http://docs.sqlalchemy.o
 definition of such base table.</p>
 <p>Also it implements TableFinder which is used for searching all defined tables
 in our package. This will be used in the Alembic integration later.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
-<span class="kn">from</span> <span class="nn">uuid</span> <span class="kn">import</span> <span class="n">uuid4</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">datetime</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">uuid</span><span class="w"> </span><span class="kn">import</span> <span class="n">uuid4</span>
 
-<span class="kn">from</span> <span class="nn">qq.finder</span> <span class="kn">import</span> <span class="n">ObjectFinder</span>
-<span class="kn">from</span> <span class="nn">sqlalchemy</span> <span class="kn">import</span> <span class="n">Column</span>
-<span class="kn">from</span> <span class="nn">sqlalchemy</span> <span class="kn">import</span> <span class="n">DateTime</span>
-<span class="kn">from</span> <span class="nn">sqlalchemy</span> <span class="kn">import</span> <span class="n">Integer</span>
-<span class="kn">from</span> <span class="nn">sqlalchemy.dialects.postgresql</span> <span class="kn">import</span> <span class="n">UUID</span>
-<span class="kn">from</span> <span class="nn">sqlalchemy.ext.declarative</span> <span class="kn">import</span> <span class="n">declarative_base</span>
-<span class="kn">from</span> <span class="nn">sqlalchemy.schema</span> <span class="kn">import</span> <span class="n">MetaData</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qq.finder</span><span class="w"> </span><span class="kn">import</span> <span class="n">ObjectFinder</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sqlalchemy</span><span class="w"> </span><span class="kn">import</span> <span class="n">Column</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sqlalchemy</span><span class="w"> </span><span class="kn">import</span> <span class="n">DateTime</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sqlalchemy</span><span class="w"> </span><span class="kn">import</span> <span class="n">Integer</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sqlalchemy.dialects.postgresql</span><span class="w"> </span><span class="kn">import</span> <span class="n">UUID</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sqlalchemy.ext.declarative</span><span class="w"> </span><span class="kn">import</span> <span class="n">declarative_base</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sqlalchemy.schema</span><span class="w"> </span><span class="kn">import</span> <span class="n">MetaData</span>
 
 <span class="c1"># Recommended naming convention used by Alembic, as various different database</span>
 <span class="c1"># providers will autogenerate vastly different names making migrations more</span>
@@ -182,19 +185,19 @@ in our package. This will be used in the Alembic integration later.</p>
 <span class="n">metadata</span> <span class="o">=</span> <span class="n">MetaData</span><span class="p">(</span><span class="n">naming_convention</span><span class="o">=</span><span class="n">NAMING_CONVENTION</span><span class="p">)</span>
 
 
-<span class="k">class</span> <span class="nc">Base</span><span class="p">:</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">Base</span><span class="p">:</span>
     <span class="nb">id</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span><span class="n">UUID</span><span class="p">(</span><span class="n">as_uuid</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span> <span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="n">uuid4</span><span class="p">,</span> <span class="n">unique</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">nullable</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
     <span class="n">created_at</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span><span class="n">DateTime</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">utcnow</span><span class="p">)</span>
     <span class="n">updated_at</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span><span class="n">DateTime</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">utcnow</span><span class="p">,</span> <span class="n">onupdate</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">utcnow</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_asdict</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_asdict</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">data</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">)</span>
         <span class="k">del</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;_sa_instance_state&quot;</span><span class="p">]</span>
         <span class="k">return</span> <span class="n">data</span>
 
 
-<span class="k">class</span> <span class="nc">TableFinder</span><span class="p">(</span><span class="n">ObjectFinder</span><span class="p">):</span>
-    <span class="k">def</span> <span class="nf">is_collectable</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">element</span><span class="p">:</span> <span class="nb">object</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">TableFinder</span><span class="p">(</span><span class="n">ObjectFinder</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">is_collectable</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">element</span><span class="p">:</span> <span class="nb">object</span><span class="p">):</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="k">return</span> <span class="nb">issubclass</span><span class="p">(</span><span class="n">element</span><span class="p">,</span> <span class="n">SqlTable</span><span class="p">)</span> <span class="ow">and</span> <span class="n">element</span> <span class="o">!=</span> <span class="n">SqlTable</span>
         <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
@@ -214,40 +217,35 @@ context like this (assuming your main key is “database”):</p>
 </pre></div>
 </div>
 </section>
-<section id="injectors">
-<h2><span class="section-number">4.4.7. </span>Injectors<a class="headerlink" href="#injectors" title="Permalink to this heading"></a></h2>
+<section id="inicjators">
+<h2><span class="section-number">4.4.7. </span>Inicjators<a class="headerlink" href="#inicjators" title="Permalink to this heading"></a></h2>
 <p>There was no point in creating additional injectors, so you need to create your
 own, for example:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">qq.injector</span> <span class="kn">import</span> <span class="n">SimpleInjector</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">qq.plugins.sqlalchemy.injectors</span><span class="w"> </span><span class="kn">import</span> <span class="n">SesssionInicjator</span>
 
-<span class="n">ISession</span> <span class="o">=</span> <span class="n">SimpleInjector</span><span class="p">(</span><span class="s2">&quot;database&quot;</span><span class="p">)</span>
+<span class="n">Query</span> <span class="o">=</span> <span class="n">SesssionInicjator</span><span class="p">(</span><span class="s2">&quot;database&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>And use it like this:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">sqlalchemy.orm.session</span> <span class="kn">import</span> <span class="n">Session</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">sqlalchemy.orm.session</span><span class="w"> </span><span class="kn">import</span> <span class="n">Session</span>
 
-<span class="nd">@app</span>
-<span class="k">def</span> <span class="nf">get_items</span><span class="p">(</span><span class="n">psql</span><span class="p">:</span> <span class="n">Session</span> <span class="o">=</span> <span class="n">ISession</span><span class="p">):</span>
+<span class="nd">@SetInjector</span><span class="p">(</span><span class="s2">&quot;psql&quot;</span><span class="p">,</span> <span class="n">Query</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_items</span><span class="p">(</span><span class="n">psql</span><span class="p">:</span> <span class="n">Session</span><span class="p">):</span>
     <span class="o">...</span>
 </pre></div>
 </div>
 </section>
 <section id="transactions-and-commiting">
 <h2><span class="section-number">4.4.8. </span>Transactions and commiting<a class="headerlink" href="#transactions-and-commiting" title="Permalink to this heading"></a></h2>
-<p>Normally, the commit should be done manually. But you can use TransactionDecorator
-in order to have this done automaticly. First, you need to create the decorator:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">qq.plugins.sqlalchemy.injectors</span> <span class="kn">import</span> <span class="n">TransactionDecorator</span>
+<p>Normally, the commit should be done manually. But you can use TransactionInicjator
+in order to have this done automaticly.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">qq.plugins.sqlalchemy.injectors</span><span class="w"> </span><span class="kn">import</span> <span class="n">TransactionInicjator</span>
 
-<span class="n">Transaction</span> <span class="o">=</span> <span class="n">TransactionDecorator</span><span class="p">(</span><span class="n">application</span><span class="p">,</span> <span class="s2">&quot;database&quot;</span><span class="p">)</span>
-</pre></div>
-</div>
-<p>And after that you can just decorate your function (no &#64;app decorator needed here).
-Example:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@Transaction</span>
-<span class="k">def</span> <span class="nf">clear_reports</span><span class="p">(</span>
-    <span class="n">from_date</span><span class="p">:</span> <span class="n">date</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">to_date</span><span class="p">:</span> <span class="n">date</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">psql</span><span class="p">:</span> <span class="n">Session</span> <span class="o">=</span> <span class="n">ISession</span><span class="p">,</span>
+<span class="nd">@SetInjector</span><span class="p">(</span><span class="s2">&quot;psql&quot;</span><span class="p">,</span> <span class="n">TransactionInicjator</span><span class="p">())</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">clear_reports</span><span class="p">(</span>
+    <span class="n">from_date</span><span class="p">:</span> <span class="n">date</span><span class="p">,</span>
+    <span class="n">to_date</span><span class="p">:</span> <span class="n">date</span><span class="p">,</span>
+    <span class="n">psql</span><span class="p">:</span> <span class="n">Session</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
     <span class="n">stmt</span> <span class="o">=</span> <span class="n">delete</span><span class="p">(</span><span class="n">SomeTable</span><span class="p">)</span><span class="o">.</span><span class="n">where</span><span class="p">(</span>
         <span class="n">BillingReportsTable</span><span class="o">.</span><span class="n">day</span> <span class="o">&gt;=</span> <span class="n">from_date</span><span class="p">,</span> <span class="n">BillingReportsTable</span><span class="o">.</span><span class="n">day</span> <span class="o">&lt;</span> <span class="n">to_date</span>
@@ -260,11 +258,11 @@ Example:</p>
 <h2><span class="section-number">4.4.9. </span>Integrate with Alembic<a class="headerlink" href="#integrate-with-alembic" title="Permalink to this heading"></a></h2>
 <p>Alembic is a library to manage migrations. Alembic makes a folder for the version
 changes. This folder contains “env.py” file, which we need to change like this:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">qq.plugins.sqlalchemy.alembic</span> <span class="kn">import</span> <span class="n">run_migrations</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">qq.plugins.sqlalchemy.alembic</span><span class="w"> </span><span class="kn">import</span> <span class="n">run_migrations</span>
 
-<span class="kn">from</span> <span class="nn">PACKAGE</span> <span class="kn">import</span> <span class="n">application</span>
-<span class="kn">from</span> <span class="nn">PACKAGE.app.db</span> <span class="kn">import</span> <span class="n">SqlTable</span>
-<span class="kn">from</span> <span class="nn">PACKAGE.app.db</span> <span class="kn">import</span> <span class="n">TableFinder</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">PACKAGE</span><span class="w"> </span><span class="kn">import</span> <span class="n">application</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">PACKAGE.app.db</span><span class="w"> </span><span class="kn">import</span> <span class="n">SqlTable</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">PACKAGE.app.db</span><span class="w"> </span><span class="kn">import</span> <span class="n">TableFinder</span>
 
 <span class="n">application</span><span class="o">.</span><span class="n">start</span><span class="p">(</span><span class="s2">&quot;default&quot;</span><span class="p">)</span>
 <span class="n">TableFinder</span><span class="p">([</span><span class="n">DOTTED_PATH_TO_PACKAGES</span><span class="p">],</span> <span class="p">[</span><span class="n">DOTTED_PATH_TO_MODULES_TO_IGNORE</span><span class="p">])</span><span class="o">.</span><span class="n">find</span><span class="p">()</span>

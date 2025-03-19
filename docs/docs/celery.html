@@ -1,22 +1,21 @@
+
+
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="en">
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>4.5. Celery Plugin &mdash; Quack Quack 1.0.4 documentation</title>
-      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
-  <!--[if lt IE 9]>
-    <script src="../_static/js/html5shiv.min.js"></script>
-  <![endif]-->
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+
   
-        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
-        <script src="../_static/jquery.js"></script>
-        <script src="../_static/underscore.js"></script>
-        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script src="../_static/doctools.js"></script>
-        <script src="../_static/sphinx_highlight.js"></script>
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=535dfbd7"></script>
+      <script src="../_static/doctools.js?v=888ff710"></script>
+      <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -29,11 +28,15 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="../index.html" class="icon icon-home"> Quack Quack
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Quack Quack
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -77,7 +80,7 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../index.html" class="icon icon-home"></a></li>
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="plugins.html"><span class="section-number">4. </span>Plugins</a></li>
       <li class="breadcrumb-item active"><span class="section-number">4.5. </span>Celery Plugin</li>
       <li class="wy-breadcrumbs-aside">
@@ -109,7 +112,7 @@ Quack needs only to configure this object.</p>
 <p>So first, we need place to create the Celery app object, for example: <cite>app/capp.py</cite></p>
 <div class="literal-block-wrapper docutils container" id="id1">
 <div class="code-block-caption"><span class="caption-text">something/app/capp.py</span><a class="headerlink" href="#id1" title="Permalink to this code"></a></div>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">celery</span> <span class="kn">import</span> <span class="n">Celery</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">celery</span><span class="w"> </span><span class="kn">import</span> <span class="n">Celery</span>
 
 <span class="n">celery_app</span> <span class="o">=</span> <span class="n">Celery</span><span class="p">(</span><span class="s2">&quot;something&quot;</span><span class="p">)</span>
 </pre></div>
@@ -118,15 +121,15 @@ Quack needs only to configure this object.</p>
 <p>Then, we need to add the Celery plugin to QQ application:</p>
 <div class="literal-block-wrapper docutils container" id="id2">
 <div class="code-block-caption"><span class="caption-text">something/app/app.py</span><a class="headerlink" href="#id2" title="Permalink to this code"></a></div>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">qq</span> <span class="kn">import</span> <span class="n">Application</span>
-<span class="kn">from</span> <span class="nn">qq.plugins</span> <span class="kn">import</span> <span class="n">SettingsPlugin</span>
-<span class="kn">from</span> <span class="nn">qq.plugins.celery.plugin</span> <span class="kn">import</span> <span class="n">CeleryPlugin</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">qq</span><span class="w"> </span><span class="kn">import</span> <span class="n">Application</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qq.plugins</span><span class="w"> </span><span class="kn">import</span> <span class="n">SettingsPlugin</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qq.plugins.celery.plugin</span><span class="w"> </span><span class="kn">import</span> <span class="n">CeleryPlugin</span>
 
-<span class="kn">from</span> <span class="nn">something.app.capp</span> <span class="kn">import</span> <span class="n">celery_app</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">something.app.capp</span><span class="w"> </span><span class="kn">import</span> <span class="n">celery_app</span>
 
 
-<span class="k">class</span> <span class="nc">SomethingApplication</span><span class="p">(</span><span class="n">Application</span><span class="p">):</span>
-    <span class="k">def</span> <span class="nf">create_plugins</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">SomethingApplication</span><span class="p">(</span><span class="n">Application</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">create_plugins</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">plugins</span><span class="p">(</span><span class="n">SettingsPlugin</span><span class="p">(</span><span class="s2">&quot;something.app.settings&quot;</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">plugins</span><span class="p">(</span><span class="n">CeleryPlugin</span><span class="p">(</span><span class="n">celery_app</span><span class="p">))</span>
 
@@ -139,15 +142,15 @@ Quack needs only to configure this object.</p>
 celeryapp.conf.update method. You can read more <a class="reference external" href="https://docs.celeryproject.org/en/stable/userguide/application.html#configuration">here</a>.</p>
 <div class="literal-block-wrapper docutils container" id="id3">
 <div class="code-block-caption"><span class="caption-text">something/app/settings.py</span><a class="headerlink" href="#id3" title="Permalink to this code"></a></div>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">qq.plugins.types</span> <span class="kn">import</span> <span class="n">Settings</span>
-<span class="kn">from</span> <span class="nn">qq.plugins.celery.plugin</span> <span class="kn">import</span> <span class="n">CeleryPlugin</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">qq.plugins.types</span><span class="w"> </span><span class="kn">import</span> <span class="n">Settings</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qq.plugins.celery.plugin</span><span class="w"> </span><span class="kn">import</span> <span class="n">CeleryPlugin</span>
 
 
-<span class="k">def</span> <span class="nf">default</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Settings</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">default</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Settings</span><span class="p">:</span>
     <span class="k">return</span> <span class="p">{</span><span class="n">CeleryPlugin</span><span class="o">.</span><span class="n">key</span><span class="p">:</span> <span class="n">celerysettings</span><span class="p">()}</span>
 
 
-<span class="k">def</span> <span class="nf">celerysettings</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Settings</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">celerysettings</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">Settings</span><span class="p">:</span>
     <span class="n">host</span> <span class="o">=</span> <span class="s2">&quot;localhost&quot;</span>
     <span class="n">user</span> <span class="o">=</span> <span class="s2">&quot;guest&quot;</span>
     <span class="n">password</span> <span class="o">=</span> <span class="s2">&quot;guest&quot;</span>
@@ -167,10 +170,10 @@ For this purpose we need to:
 - start QQ application</p>
 <div class="literal-block-wrapper docutils container" id="id4">
 <div class="code-block-caption"><span class="caption-text">cstart.py</span><a class="headerlink" href="#id4" title="Permalink to this code"></a></div>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">qq.plugins.celery.finder</span> <span class="kn">import</span> <span class="n">TaskFinder</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">qq.plugins.celery.finder</span><span class="w"> </span><span class="kn">import</span> <span class="n">TaskFinder</span>
 
-<span class="kn">from</span> <span class="nn">something.app.app</span> <span class="kn">import</span> <span class="n">application</span>
-<span class="kn">from</span> <span class="nn">qqe.capp</span> <span class="kn">import</span> <span class="n">celery_app</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">something.app.app</span><span class="w"> </span><span class="kn">import</span> <span class="n">application</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qqe.capp</span><span class="w"> </span><span class="kn">import</span> <span class="n">celery_app</span>
 
 <span class="n">application</span><span class="o">.</span><span class="n">start</span><span class="p">(</span><span class="s2">&quot;celery&quot;</span><span class="p">)</span>
 <span class="n">TaskFinder</span><span class="p">([</span><span class="s2">&quot;something&quot;</span><span class="p">],</span> <span class="n">celery_app</span><span class="o">=</span><span class="n">celery_app</span><span class="p">)</span><span class="o">.</span><span class="n">find</span><span class="p">()</span>
@@ -203,10 +206,10 @@ more information please go to the Celery’s <a class="reference external" href=
 <p>Now we can create a simple task.</p>
 <div class="literal-block-wrapper docutils container" id="id7">
 <div class="code-block-caption"><span class="caption-text">something/tasks.py</span><a class="headerlink" href="#id7" title="Permalink to this code"></a></div>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">something.app.capp</span> <span class="kn">import</span> <span class="n">celery_app</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">something.app.capp</span><span class="w"> </span><span class="kn">import</span> <span class="n">celery_app</span>
 
 <span class="nd">@celery_app</span><span class="o">.</span><span class="n">task</span>
-<span class="k">def</span> <span class="nf">celeryprint</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">celeryprint</span><span class="p">():</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;This is a celery task:&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -214,8 +217,8 @@ more information please go to the Celery’s <a class="reference external" href=
 <p>Now we can create a simple command that will start this task.</p>
 <div class="literal-block-wrapper docutils container" id="id8">
 <div class="code-block-caption"><span class="caption-text">command.py</span><a class="headerlink" href="#id8" title="Permalink to this code"></a></div>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">something.app.app</span> <span class="kn">import</span> <span class="n">application</span>
-<span class="kn">from</span> <span class="nn">something.tasks</span> <span class="kn">import</span> <span class="n">celeryprint</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">something.app.app</span><span class="w"> </span><span class="kn">import</span> <span class="n">application</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">something.tasks</span><span class="w"> </span><span class="kn">import</span> <span class="n">celeryprint</span>
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
     <span class="n">application</span><span class="o">.</span><span class="n">start</span><span class="p">(</span><span class="s2">&quot;default&quot;</span><span class="p">)</span>

@@ -152,11 +152,7 @@ And use it like this:
 
     from sqlalchemy.orm.session import Session
 
-    @ArgsInjector(
-        configuration={
-            "psql": Query,
-        }
-    )
+    @SetInjector("psql", Query)
     def get_items(psql: Session):
         ...
 
@@ -164,37 +160,23 @@ And use it like this:
 Transactions and commiting
 --------------------------
 
-Normally, the commit should be done manually. But you can use TransactionDecorator
-in order to have this done automaticly. First, you need to create the decorator:
-
-.. code-block:: python
-
-
-
-    Transaction = TransactionDecorator(application, "database")
-
-And after that you can just decorate your function (no @app decorator needed here).
-Example:
+Normally, the commit should be done manually. But you can use TransactionInicjator
+in order to have this done automaticly.
 
 .. code-block:: python
 
     from qq.plugins.sqlalchemy.injectors import TransactionInicjator
 
-    @ArgsInjector(
-        configuration={
-            "transaction": TransactionInicjator(),
-        }
-    )
+    @SetInjector("psql", TransactionInicjator())
     def clear_reports(
         from_date: date,
         to_date: date,
-        transaction: Session,
+        psql: Session,
     ) -> int:
         stmt = delete(SomeTable).where(
             BillingReportsTable.day >= from_date, BillingReportsTable.day < to_date
         )
-        return transaction.execute(stmt).rowcount
-
+        return psql.execute(stmt).rowcount
 
 
 Integrate with Alembic
