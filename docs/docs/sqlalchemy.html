@@ -61,6 +61,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#inicjators">4.4.7. Inicjators</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#transactions-and-commiting">4.4.8. Transactions and commiting</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#integrate-with-alembic">4.4.9. Integrate with Alembic</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#async-support">4.4.10. Async Support</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="celery.html">4.5. Celery Plugin</a></li>
@@ -273,6 +274,15 @@ changes. This folder contains “env.py” file, which we need to change like th
 ORM. Also, you need to import all the models in this file, if you want to use
 “–autogenerate”. Last, but not least you need to run AlembicScript.</p>
 <p>For more info, you can go to the Alembic <a class="reference external" href="http://alembic.zzzcomputing.com/en/latest/">documentation</a></p>
+</section>
+<section id="async-support">
+<h2><span class="section-number">4.4.10. </span>Async Support<a class="headerlink" href="#async-support" title="Permalink to this heading"></a></h2>
+<p>SQLAlchemy from 2.0.0 support async. In order to use it, you need to use:</p>
+<ul class="simple">
+<li><p><cite>qq.plugins.sqlalchemy.plugin.SqlAlchemyPluginAsync</cite></p></li>
+<li><p><cite>qq.plugins.sqlalchemy.injectors.TransactionInicjatorAsync</cite></p></li>
+</ul>
+<p>The rest can be used with normal functionality.</p>
 </section>
 </section>
 

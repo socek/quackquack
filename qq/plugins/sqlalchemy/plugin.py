@@ -3,15 +3,15 @@ from typing import Dict
 from sqlalchemy.engine import Engine
 from sqlalchemy.engine import create_engine
 from sqlalchemy.engine.url import make_url
+from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.ext.asyncio import create_async_engine
 from sqlalchemy.orm import Session
-from sqlalchemy.orm import sessionmaker
 
 from qq.application import Application
 from qq.context import Context
 from qq.plugins.settings import SettingsBasedPlugin
 from qq.plugins.sqlalchemy.consts import ENGINE_KEY
 from qq.plugins.sqlalchemy.consts import OPTIONS_KEY
-from qq.plugins.sqlalchemy.consts import SESSIONMAKER_KEY
 from qq.plugins.sqlalchemy.consts import URL_KEY
 from qq.plugins.sqlalchemy.exceptions import SettingMissing
 
@@ -32,34 +32,28 @@ class SqlAlchemyPlugin(SettingsBasedPlugin):
         self._settings = self.get_my_settings(application)
         self._validate_settings()
         self.engine = self.create_engine()
-        self.sessionmaker = sessionmaker(
-            autoflush=False, autocommit=False, bind=self.engine
-        )
-        self.session = None
-        self.session_index = 0
         return {
             ENGINE_KEY: self.engine,
-            SESSIONMAKER_KEY: self.sessionmaker,
         }
 
     def enter(self, context: Context) -> Session:
-        self.session = self.sessionmaker()
-        return self.session
-
-    def exit(self, context, exc_type, exc_value, traceback):
-        if exc_type:
-            self.session.rollback()
-        self.session.close()
+        return Session(self.engine, expire_on_commit=False)
 
     def create_engine(self) -> Engine:
         return create_engine(self.url, **self._settings.get(OPTIONS_KEY, {}))
-
-    def recreate(self, metadata):
-        engine = self.create_engine()
-        metadata.drop_all(engine)
-        metadata.create_all(engine)
 
     def _validate_settings(self):
         if URL_KEY not in self._settings:
             raise SettingMissing(URL_KEY, self.key)
         make_url(self._settings[URL_KEY])
+
+
+class SqlAlchemyPluginAsync(SqlAlchemyPlugin):
+
+    def enter(self, context: Context) -> Session:
+        return AsyncSession(self.engine, expire_on_commit=False)
+
+    def create_engine(self) -> Engine:
+        return create_async_engine(
+            self.url, **self._settings.get(OPTIONS_KEY, {})
+        )

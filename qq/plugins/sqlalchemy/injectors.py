@@ -20,8 +20,14 @@ class TransactionInicjator(SesssionInicjator):
 
     def finish(self, er=None):
         if er:
-            self.session.rollback()
+            return self.session.rollback()
         elif self.settings.get(TESTS_KEY, False):
-            self.session.flush()
+            return self.session.flush()
         else:
-            self.session.commit()
+            return self.session.commit()
+
+
+class TransactionInicjatorAsync(SesssionInicjator):
+
+    async def finish(self, er=None):
+        await super().finish(er)

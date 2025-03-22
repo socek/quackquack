@@ -133,6 +133,7 @@
 <li class="toctree-l3"><a class="reference internal" href="docs/sqlalchemy.html#inicjators">4.4.7. Inicjators</a></li>
 <li class="toctree-l3"><a class="reference internal" href="docs/sqlalchemy.html#transactions-and-commiting">4.4.8. Transactions and commiting</a></li>
 <li class="toctree-l3"><a class="reference internal" href="docs/sqlalchemy.html#integrate-with-alembic">4.4.9. Integrate with Alembic</a></li>
+<li class="toctree-l3"><a class="reference internal" href="docs/sqlalchemy.html#async-support">4.4.10. Async Support</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="docs/celery.html">4.5. Celery Plugin</a><ul>
@@ -163,23 +164,24 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="docs/CHANGELOG.html">7. Changelog</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="docs/CHANGELOG.html#version-1-3-1">7.1. Version: 1.3.1</a></li>
-<li class="toctree-l2"><a class="reference internal" href="docs/CHANGELOG.html#version-1-3-0">7.2. Version: 1.3.0</a></li>
-<li class="toctree-l2"><a class="reference internal" href="docs/CHANGELOG.html#version-1-2-1">7.3. Version: 1.2.1</a></li>
-<li class="toctree-l2"><a class="reference internal" href="docs/CHANGELOG.html#version-1-2-0">7.4. Version: 1.2.0</a></li>
-<li class="toctree-l2"><a class="reference internal" href="docs/CHANGELOG.html#version-1-1-1">7.5. Version: 1.1.1</a></li>
-<li class="toctree-l2"><a class="reference internal" href="docs/CHANGELOG.html#version-1-1-0">7.6. Version: 1.1.0</a></li>
-<li class="toctree-l2"><a class="reference internal" href="docs/CHANGELOG.html#version-1-0-5">7.7. Version: 1.0.5</a></li>
-<li class="toctree-l2"><a class="reference internal" href="docs/CHANGELOG.html#version-1-0-4">7.8. Version: 1.0.4</a></li>
-<li class="toctree-l2"><a class="reference internal" href="docs/CHANGELOG.html#version-1-0-3">7.9. Version: 1.0.3</a></li>
-<li class="toctree-l2"><a class="reference internal" href="docs/CHANGELOG.html#version-1-0-2">7.10. Version: 1.0.2</a></li>
-<li class="toctree-l2"><a class="reference internal" href="docs/CHANGELOG.html#version-1-0-1">7.11. Version: 1.0.1</a></li>
-<li class="toctree-l2"><a class="reference internal" href="docs/CHANGELOG.html#version-1-0-0">7.12. Version: 1.0.0</a></li>
-<li class="toctree-l2"><a class="reference internal" href="docs/CHANGELOG.html#version-0-5-0">7.13. Version: 0.5.0</a></li>
-<li class="toctree-l2"><a class="reference internal" href="docs/CHANGELOG.html#version-0-4-0-split-context-manager-and-decorator-for-configurator">7.14. Version: 0.4.0 - Split Context Manager and Decorator for Configurator</a></li>
-<li class="toctree-l2"><a class="reference internal" href="docs/CHANGELOG.html#version-0-3-0-plugins-and-documentation">7.15. Version: 0.3.0 - Plugins and documentation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="docs/CHANGELOG.html#version-0-2-0-fragment-context">7.16. Version: 0.2.0 - Fragment Context</a></li>
-<li class="toctree-l2"><a class="reference internal" href="docs/CHANGELOG.html#version-0-1-0-first-release">7.17. Version: 0.1.0 - First Release</a></li>
+<li class="toctree-l2"><a class="reference internal" href="docs/CHANGELOG.html#version-1-3-2">7.1. Version: 1.3.2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="docs/CHANGELOG.html#version-1-3-1">7.2. Version: 1.3.1</a></li>
+<li class="toctree-l2"><a class="reference internal" href="docs/CHANGELOG.html#version-1-3-0">7.3. Version: 1.3.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="docs/CHANGELOG.html#version-1-2-1">7.4. Version: 1.2.1</a></li>
+<li class="toctree-l2"><a class="reference internal" href="docs/CHANGELOG.html#version-1-2-0">7.5. Version: 1.2.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="docs/CHANGELOG.html#version-1-1-1">7.6. Version: 1.1.1</a></li>
+<li class="toctree-l2"><a class="reference internal" href="docs/CHANGELOG.html#version-1-1-0">7.7. Version: 1.1.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="docs/CHANGELOG.html#version-1-0-5">7.8. Version: 1.0.5</a></li>
+<li class="toctree-l2"><a class="reference internal" href="docs/CHANGELOG.html#version-1-0-4">7.9. Version: 1.0.4</a></li>
+<li class="toctree-l2"><a class="reference internal" href="docs/CHANGELOG.html#version-1-0-3">7.10. Version: 1.0.3</a></li>
+<li class="toctree-l2"><a class="reference internal" href="docs/CHANGELOG.html#version-1-0-2">7.11. Version: 1.0.2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="docs/CHANGELOG.html#version-1-0-1">7.12. Version: 1.0.1</a></li>
+<li class="toctree-l2"><a class="reference internal" href="docs/CHANGELOG.html#version-1-0-0">7.13. Version: 1.0.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="docs/CHANGELOG.html#version-0-5-0">7.14. Version: 0.5.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="docs/CHANGELOG.html#version-0-4-0-split-context-manager-and-decorator-for-configurator">7.15. Version: 0.4.0 - Split Context Manager and Decorator for Configurator</a></li>
+<li class="toctree-l2"><a class="reference internal" href="docs/CHANGELOG.html#version-0-3-0-plugins-and-documentation">7.16. Version: 0.3.0 - Plugins and documentation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="docs/CHANGELOG.html#version-0-2-0-fragment-context">7.17. Version: 0.2.0 - Fragment Context</a></li>
+<li class="toctree-l2"><a class="reference internal" href="docs/CHANGELOG.html#version-0-1-0-first-release">7.18. Version: 0.1.0 - First Release</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="docs/contributors.html">8. Contributors</a></li>

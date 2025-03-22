@@ -1,14 +1,11 @@
 from copy import copy
 from functools import update_wrapper
-from functools import wraps
-from inspect import isawaitable
 from inspect import iscoroutine
 from inspect import iscoroutinefunction
 from inspect import signature
 from typing import Any
 from typing import Callable
 
-from qq.application import Application
 from qq.context import Context
 
 
@@ -108,16 +105,12 @@ class AsyncFunctionWrapper(FunctionWrapper):
 
 
 def _init_function(fun):
-    print("e", fun)
     if isinstance(fun, FunctionWrapper):
-        print("\tis instance")
         return fun
 
     if iscoroutinefunction(fun):
-        print("\tis awaitable")
         return AsyncFunctionWrapper(fun)
     else:
-        print("\tis not awaitable")
         return FunctionWrapper(fun)
 
 

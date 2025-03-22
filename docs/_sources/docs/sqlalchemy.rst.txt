@@ -203,3 +203,13 @@ ORM. Also, you need to import all the models in this file, if you want to use
 "--autogenerate". Last, but not least you need to run AlembicScript.
 
 For more info, you can go to the Alembic `documentation <http://alembic.zzzcomputing.com/en/latest/>`_
+
+Async Support
+-------------
+
+SQLAlchemy from 2.0.0 support async. In order to use it, you need to use:
+
+- `qq.plugins.sqlalchemy.plugin.SqlAlchemyPluginAsync`
+- `qq.plugins.sqlalchemy.injectors.TransactionInicjatorAsync`
+
+The rest can be used with normal functionality.
